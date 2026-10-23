@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>취약점 우선순위 P0~P3 정하는 법: KEV·EPSS·도달성 규칙 | security-sweep</title>
+<meta name="description" content="security-sweep은 CISA KEV 등재, 심각도, 코드 도달성, EPSS를 조합한 규칙으로 취약점 우선순위 P0~P3를 매기고, Claude가 P0·P1을 코드 근거로 확정합니다. P0~P3 규칙표와 판단 근거, Elixir 프로젝트의 실제 조정 사례까지 함께 정리했습니다.">
+<link rel="canonical" href="https://baryonlabs.github.io/security-sweep/ko/priority/">
+
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#0f1b2d">
+<meta name="author" content="Baryon Labs">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="security-sweep">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="취약점 우선순위 P0~P3 정하는 법: KEV·EPSS·도달성 규칙 | security-sweep">
+<meta property="og:description" content="security-sweep은 CISA KEV 등재, 심각도, 코드 도달성, EPSS를 조합한 규칙으로 취약점 우선순위 P0~P3를 매기고, Claude가 P0·P1을 코드 근거로 확정합니다. P0~P3 규칙표와 판단 근거, Elixir 프로젝트의 실제 조정 사례까지 함께 정리했습니다.">
+<meta property="og:url" content="https://baryonlabs.github.io/security-sweep/ko/priority/">
+<meta property="og:image" content="https://baryonlabs.github.io/security-sweep/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="security-sweep: 한 문장으로 모든 프로젝트·서버·이미지의 알려진 취약점을 점검">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="취약점 우선순위 P0~P3 정하는 법: KEV·EPSS·도달성 규칙 | security-sweep">
+<meta name="twitter:description" content="security-sweep은 CISA KEV 등재, 심각도, 코드 도달성, EPSS를 조합한 규칙으로 취약점 우선순위 P0~P3를 매기고, Claude가 P0·P1을 코드 근거로 확정합니다. P0~P3 규칙표와 판단 근거, Elixir 프로젝트의 실제 조정 사례까지 함께 정리했습니다.">
+<meta name="twitter:image" content="https://baryonlabs.github.io/security-sweep/og.jpg">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/style.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://baryonlabs.github.io/security-sweep/#org",
+   "name": "Baryon Labs",
+   "url": "https://github.com/baryonlabs",
+   "sameAs": [
+    "https://github.com/baryonlabs"
+   ]
+  },
+  {
+   "@type": "SoftwareApplication",
+   "@id": "https://baryonlabs.github.io/security-sweep/#app",
+   "name": "security-sweep",
+   "description": "security-sweep은 한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬입니다.",
+   "url": "https://baryonlabs.github.io/security-sweep/",
+   "downloadUrl": "https://github.com/baryonlabs/security-sweep",
+   "applicationCategory": "DeveloperApplication",
+   "applicationSubCategory": "Security",
+   "operatingSystem": "macOS, Linux",
+   "softwareVersion": "0.1.1",
+   "datePublished": "2026-10-23",
+   "image": "https://baryonlabs.github.io/security-sweep/og.jpg",
+   "license": "https://opensource.org/licenses/MIT",
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+   },
+   "author": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "publisher": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   }
+  },
+  {
+   "@type": "SoftwareSourceCode",
+   "@id": "https://baryonlabs.github.io/security-sweep/#source",
+   "name": "security-sweep",
+   "description": "security-sweep은 한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬입니다.",
+   "codeRepository": "https://github.com/baryonlabs/security-sweep",
+   "programmingLanguage": [
+    "Python",
+    "Shell"
+   ],
+   "runtimePlatform": "Claude Code",
+   "license": "https://opensource.org/licenses/MIT",
+   "version": "0.1.1",
+   "author": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "targetProduct": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#app"
+   }
+  },
+  {
+   "@type": "WebPage",
+   "@id": "https://baryonlabs.github.io/security-sweep/ko/priority/#page",
+   "url": "https://baryonlabs.github.io/security-sweep/ko/priority/",
+   "name": "취약점 우선순위 P0~P3 정하는 법: KEV·EPSS·도달성 규칙 | security-sweep",
+   "description": "security-sweep은 CISA KEV 등재, 심각도, 코드 도달성, EPSS를 조합한 규칙으로 취약점 우선순위 P0~P3를 매기고, Claude가 P0·P1을 코드 근거로 확정합니다. P0~P3 규칙표와 판단 근거, Elixir 프로젝트의 실제 조정 사례까지 함께 정리했습니다.",
+   "inLanguage": "ko",
+   "dateModified": "2026-10-23",
+   "about": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#app"
+   },
+   "publisher": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "primaryImageOfPage": "https://baryonlabs.github.io/security-sweep/og.jpg"
+  },
+  {
+   "@type": "BreadcrumbList",
+   "@id": "https://baryonlabs.github.io/security-sweep/ko/priority/#breadcrumb",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "홈",
+     "item": "https://baryonlabs.github.io/security-sweep/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "우선순위 P0~P3",
+     "item": "https://baryonlabs.github.io/security-sweep/ko/priority/"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://baryonlabs.github.io/security-sweep/ko/priority/#faq",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "P1이 100건 넘게 나오면 어떻게 읽나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "패키지별로 묶어 읽습니다. 실제 예시의 P1 107건 중 99건은 pillow와 sharp 두 패키지였습니다. 할 일은 건수가 아니라 올릴 패키지 수입니다."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "KEV 항목도 코드에서 안 쓰면 내려도 되나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "아니요. KEV 항목은 도달성과 무관하게 P0를 유지합니다. 도달성 판정이 grep 기반 추정이라 오판 비용이 너무 크기 때문입니다."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">본문 바로가기</a>
+<header class="site-header"><div class="wrap">
+<a class="brand" href="../../"><img src="../../favicon.svg" alt="" width="28" height="28"><span>security-sweep</span></a>
+<nav class="site-nav" aria-label="주요 메뉴"><a href="../../#install">설치</a><a href="../../#how">동작 방식</a><a href="../../#example">실제 예시</a><a href="../../#compare">비교</a><a href="../../#faq">FAQ</a><a href="https://github.com/baryonlabs/security-sweep">GitHub</a><a class="lang" href="../../en/" hreflang="en" lang="en">English</a></nav>
+</div></header>
+<div class="hero"><div class="wrap">
+<nav class="crumbs" aria-label="경로"><ol><li><a href="../../">홈</a></li><li aria-current="page">우선순위 P0~P3</li></ol></nav>
+<p class="eyebrow">security-sweep 안내</p>
+<h1>취약점 우선순위 P0~P3는 어떻게 정하나요?</h1>
+</div></div>
+<main id="main"><div class="wrap">
+<p class="answer">KEV 등재·심각도·도달성·EPSS를 조합한 규칙으로 매깁니다.</p>
+<p>security-sweep의 <code>report.py</code>가 아래 규칙으로 1차 우선순위를 매기고, 이어서 Claude가 P0/P1 항목마다 코드 근거를 직접 열어 확정하거나 한 줄 사유와 함께 조정합니다. 여러 조건이 겹치면 가장 높은 우선순위를 씁니다.</p>
+<h2>규칙</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">우선순위</th><th scope="col">조건</th><th scope="col">의미</th></tr></thead><tbody>
+<tr><td><span class="badge b-p0">P0</span></td><td>CISA KEV 등재, 또는 critical/high 이고 실제 호출(called)</td><td>지금 고친다</td></tr>
+<tr><td><span class="badge b-p1">P1</span></td><td>critical/high 이고 imported/unknown, 또는 EPSS ≥ 0.1, 또는 비밀 발견</td><td>이번 주</td></tr>
+<tr><td><span class="badge b-p2">P2</span></td><td>medium, 또는 high 인데 not-imported</td><td>다음 정기 업그레이드</td></tr>
+<tr><td><span class="badge b-p3">P3</span></td><td>low/unknown, 낮은 설정 문제</td><td>기록만</td></tr>
+<tr><td>검증 실패</td><td>OSV 404: 우선순위 없이 별도 섹션</td><td>출처 스캐너와 ID만 나열</td></tr>
+</tbody></table></div>
+<h2>근거</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">신호</th><th scope="col">왜 이렇게 쓰나</th></tr></thead><tbody>
+<tr><td>CISA KEV</td><td>실제 공격에 쓰인 것이 확인된 목록입니다. “공격받을 수 있다”가 아니라 “공격받고 있다”이므로 도달성과 무관하게 P0입니다.</td></tr>
+<tr><td>EPSS ≥ 0.1</td><td>30일 내 악용 확률 추정치(0~1)입니다. 0.1 이상은 상위 소수에 해당하므로 심각도가 medium이어도 P1로 올립니다.</td></tr>
+<tr><td>도달성</td><td>실제 호출(called)이면 심각도 그대로, import만 있으면(imported) P1, 흔적이 없으면(not-imported) 한 단계 내립니다. 판정 불가(unknown)는 보수적으로 P1입니다.</td></tr>
+<tr><td>비밀값</td><td>이미 노출된 자격 증명은 교체 전까지 위험이 그대로이므로 항상 P1 이상입니다.</td></tr>
+</tbody></table></div>
+<div class="callout"><p><strong>not-imported ≠ 안전.</strong> 앱 코드가 B를 import하지 않아도 의존성 A가 B의 취약 함수를 호출할 수 있습니다. 그래서 P3가 아니라 P2로 둡니다. 동적 로딩(<code>importlib</code>, <code>require(variable)</code>, <code>apply/3</code>)도 grep으로는 보이지 않습니다.</p></div>
+<h2>실제 조정 예시</h2>
+<p>도구의 imported는 “코드 어딘가에서 이 패키지를 쓴다”까지만 말해 줍니다. 실제 예시에서 Elixir 프로젝트 하나를 코드로 판정한 결과입니다.</p>
+<div class="table-wrap wide"><table><thead><tr><th scope="col">도구 우선순위</th><th scope="col">발견</th><th scope="col">사람 판정</th><th scope="col">근거</th></tr></thead><tbody>
+<tr><td>P1</td><td>bandit 1.12.5 EEF-CVE-2026-105659 (HTTP/2 리소스 고갈)</td><td>실제 (조건부)</td><td>Bandit이 실제 HTTP 서버. 앞단 프록시가 HTTP/1.1로만 전달하면 위험 감소</td></tr>
+<tr><td>P2</td><td>decimal 3.1.1 CVE-2026-97853 (Decimal.round/3 DoS)</td><td>도달 불가</td><td>유일한 호출이 Decimal.round(0)으로 자릿수가 상수라 공격자가 조종 못 함</td></tr>
+<tr><td>P1</td><td>config/config.exs 하드코딩 비밀값 (EXS-CFG-001)</td><td>오탐</td><td>Phoenix가 생성한 LiveView signing_salt는 비밀이 아님</td></tr>
+</tbody></table></div>
+<p>좋은 사유는 “위치 + 무엇이 어디로 흐르는지 / 왜 닿지 않는지”이고, 나쁜 사유는 “아마 안 씀”, “오래된 CVE”, “ID가 이상함”입니다. 근거 위치가 없는 조정은 하지 않습니다.</p>
+<p><a href="https://github.com/baryonlabs/security-sweep/blob/main/skills/security-sweep/references/prioritize.md">전체 규칙 문서 (prioritize.md)</a> · <a href="../../ko/verify-cve/">CVE 실재 검증 방법</a> · <a href="../../">security-sweep 소개</a></p>
+<section id="faq" class="faq"><h2>자주 묻는 질문</h2>
+<h3>P1이 100건 넘게 나오면 어떻게 읽나요?</h3>
+<p>패키지별로 묶어 읽습니다. 실제 예시의 P1 107건 중 99건은 pillow와 sharp 두 패키지였습니다. 할 일은 건수가 아니라 올릴 패키지 수입니다.</p>
+<h3>KEV 항목도 코드에서 안 쓰면 내려도 되나요?</h3>
+<p>아니요. KEV 항목은 도달성과 무관하게 P0를 유지합니다. 도달성 판정이 grep 기반 추정이라 오판 비용이 너무 크기 때문입니다.</p>
+</section>
+<section id="about"><h2>security-sweep이란?</h2>
+<p>security-sweep은 한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬입니다.</p>
+<pre><code>/plugin marketplace add baryonlabs/security-sweep
+/plugin install security-sweep@baryonlabs-security</code></pre>
+<p><a href="../../">소개 페이지</a> · <a href="https://github.com/baryonlabs/security-sweep">GitHub 저장소</a></p>
+</section>
+</div></main>
+<footer class="site-footer"><div class="wrap"><div class="cols">
+<div><h2>security-sweep</h2><p>여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬. MIT 라이선스 © 2026 Baryon Labs.</p></div>
+<div><h2>질문별 안내</h2><ul><li><a href="../../ko/scan-all-projects/">여러 프로젝트를 한 번에 점검하려면?</a></li><li><a href="../../ko/verify-cve/">CVE 번호가 진짜인지 확인하는 법</a></li><li><a href="../../ko/priority/">P0~P3 우선순위는 어떻게 정하나요?</a></li><li><a href="../../ko/vs-claude-security/">Claude Security·Codex Security와 차이</a></li></ul></div>
+<div><h2>저장소</h2><ul><li><a href="https://github.com/baryonlabs/security-sweep">GitHub 저장소</a></li><li><a href="https://github.com/baryonlabs/security-sweep/releases">릴리스</a></li><li><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">실제 예시 보고서</a></li><li><a href="https://github.com/baryonlabs/security-sweep/issues">이슈·제보</a></li><li><a href="https://github.com/baryonlabs/elixir-security-audit">elixir-security-audit</a></li></ul></div>
+</div><p class="updated">최종 갱신 2026-10-23 · v0.1.1 · <a href="../../en/" hreflang="en" lang="en">English</a></p></div></footer>
+</body>
+</html>

@@ -1,0 +1,60 @@
+# security-sweep — https://baryonlabs.github.io/security-sweep/
+# Open-source project (MIT). We want search engines and AI assistants to read,
+# index and cite these pages, so every crawler purpose is allowed:
+#   search index, real-time fetch on a user's question, and model training.
+#
+# Note: crawlers read robots.txt only from the host root
+# (https://baryonlabs.github.io/robots.txt). This copy documents the policy
+# for this project path; see SEO.md.
+
+User-agent: *
+Allow: /
+
+# --- Search engines ---
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Naver
+User-agent: Yeti
+Allow: /
+
+# --- AI search index ---
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# --- AI real-time fetch (user-initiated) ---
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# --- AI training ---
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://baryonlabs.github.io/security-sweep/sitemap.xml

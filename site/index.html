@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>security-sweep: 여러 프로젝트·서버 취약점을 한 번에 점검하는 Claude Code 스킬</title>
+<meta name="description" content="한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 점검하는 오픈소스 Claude Code 스킬. osv-scanner·trivy로 훑고 모든 CVE를 OSV로 실재 검증한 뒤 도달성까지 판정해 P0~P3 보고서를 만듭니다. 기본은 읽기 전용입니다.">
+<link rel="canonical" href="https://baryonlabs.github.io/security-sweep/">
+<link rel="alternate" hreflang="ko" href="https://baryonlabs.github.io/security-sweep/">
+<link rel="alternate" hreflang="en" href="https://baryonlabs.github.io/security-sweep/en/">
+<link rel="alternate" hreflang="x-default" href="https://baryonlabs.github.io/security-sweep/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#0f1b2d">
+<meta name="author" content="Baryon Labs">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="security-sweep">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="security-sweep: 여러 프로젝트·서버 취약점을 한 번에 점검하는 Claude Code 스킬">
+<meta property="og:description" content="한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 점검하는 오픈소스 Claude Code 스킬. osv-scanner·trivy로 훑고 모든 CVE를 OSV로 실재 검증한 뒤 도달성까지 판정해 P0~P3 보고서를 만듭니다. 기본은 읽기 전용입니다.">
+<meta property="og:url" content="https://baryonlabs.github.io/security-sweep/">
+<meta property="og:image" content="https://baryonlabs.github.io/security-sweep/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="security-sweep: 한 문장으로 모든 프로젝트·서버·이미지의 알려진 취약점을 점검">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="security-sweep: 여러 프로젝트·서버 취약점을 한 번에 점검하는 Claude Code 스킬">
+<meta name="twitter:description" content="한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 점검하는 오픈소스 Claude Code 스킬. osv-scanner·trivy로 훑고 모든 CVE를 OSV로 실재 검증한 뒤 도달성까지 판정해 P0~P3 보고서를 만듭니다. 기본은 읽기 전용입니다.">
+<meta name="twitter:image" content="https://baryonlabs.github.io/security-sweep/og.jpg">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://baryonlabs.github.io/security-sweep/#org",
+   "name": "Baryon Labs",
+   "url": "https://github.com/baryonlabs",
+   "sameAs": [
+    "https://github.com/baryonlabs"
+   ]
+  },
+  {
+   "@type": "SoftwareApplication",
+   "@id": "https://baryonlabs.github.io/security-sweep/#app",
+   "name": "security-sweep",
+   "description": "security-sweep은 한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬입니다.",
+   "url": "https://baryonlabs.github.io/security-sweep/",
+   "downloadUrl": "https://github.com/baryonlabs/security-sweep",
+   "applicationCategory": "DeveloperApplication",
+   "applicationSubCategory": "Security",
+   "operatingSystem": "macOS, Linux",
+   "softwareVersion": "0.1.1",
+   "datePublished": "2026-10-23",
+   "image": "https://baryonlabs.github.io/security-sweep/og.jpg",
+   "license": "https://opensource.org/licenses/MIT",
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+   },
+   "author": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "publisher": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   }
+  },
+  {
+   "@type": "SoftwareSourceCode",
+   "@id": "https://baryonlabs.github.io/security-sweep/#source",
+   "name": "security-sweep",
+   "description": "security-sweep은 한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬입니다.",
+   "codeRepository": "https://github.com/baryonlabs/security-sweep",
+   "programmingLanguage": [
+    "Python",
+    "Shell"
+   ],
+   "runtimePlatform": "Claude Code",
+   "license": "https://opensource.org/licenses/MIT",
+   "version": "0.1.1",
+   "author": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "targetProduct": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#app"
+   }
+  },
+  {
+   "@type": "WebPage",
+   "@id": "https://baryonlabs.github.io/security-sweep/#page",
+   "url": "https://baryonlabs.github.io/security-sweep/",
+   "name": "security-sweep: 여러 프로젝트·서버 취약점을 한 번에 점검하는 Claude Code 스킬",
+   "description": "한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 점검하는 오픈소스 Claude Code 스킬. osv-scanner·trivy로 훑고 모든 CVE를 OSV로 실재 검증한 뒤 도달성까지 판정해 P0~P3 보고서를 만듭니다. 기본은 읽기 전용입니다.",
+   "inLanguage": "ko",
+   "dateModified": "2026-10-23",
+   "about": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#app"
+   },
+   "publisher": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "primaryImageOfPage": "https://baryonlabs.github.io/security-sweep/og.jpg"
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://baryonlabs.github.io/security-sweep/#faq",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "서버에 뭔가 설치되나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "아니요. ssh -o BatchMode=yes로 사용자가 이름을 댄 호스트에만 접속하고, 원격에 trivy가 있으면 trivy rootfs를 읽기 전용으로 실행합니다. trivy가 없으면 패키지 목록(dpkg-query/rpm -qa/apk info)만 수집합니다. sudo는 사용자가 명시할 때만 씁니다."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "not-imported면 안전한가요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "아닙니다. 전이 의존성은 직접 import 없이도 실행됩니다. not-imported는 우선순위를 한 단계 낮출 근거일 뿐이며, 함수 단위 도달성은 Go(govulncheck)와 OSV 권고에 취약 심볼이 적힌 경우에만 판정합니다."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "CVE 번호가 가짜처럼 보이는데요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "생김새로 판단하지 마세요. CVE-2026-97853은 이상해 보여도 OSV에 실재하고, 그럴듯한 번호가 404일 수도 있습니다. security-sweep은 OSV 조회 결과만 근거로 쓰고, 404는 “검증 실패” 섹션으로 따로 분리합니다."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "네트워크가 없는 CI에서도 되나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "verify_cves.py --offline을 쓰면 osv-scanner 출력에 포함된 OSV 레코드와 캐시만 사용합니다. 이 경우 trivy만 보고한 ID는 “미검증”으로 남습니다."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "고쳐 주지는 않나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "스윕은 의도적으로 읽기 전용입니다. 끝나면 프로젝트별 수정 명령을 제안하고, Elixir 프로젝트는 elixir-security-audit로 넘겨 브랜치에서 수정·검증합니다."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Claude Security나 Codex Security가 있으면 필요 없나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "역할이 다릅니다. 세 LLM 도구는 코드를 읽어 로직 결함을 찾는 데 강하고 의존성 CVE는 직접 스캔하지 않습니다. security-sweep은 알려진 취약점을 결정적 스캐너로 빠짐없이 훑습니다. Claude Security 공식 문서도 기존 의존성 스캐너와 함께 쓰라고 안내합니다."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">본문 바로가기</a>
+<header class="site-header"><div class="wrap">
+<a class="brand" href=""><img src="favicon.svg" alt="" width="28" height="28"><span>security-sweep</span></a>
+<nav class="site-nav" aria-label="주요 메뉴"><a href="#install">설치</a><a href="#how">동작 방식</a><a href="#example">실제 예시</a><a href="#compare">비교</a><a href="#faq">FAQ</a><a href="https://github.com/baryonlabs/security-sweep">GitHub</a><a class="lang" href="en/" hreflang="en" lang="en">English</a></nav>
+</div></header>
+<div class="hero"><div class="wrap">
+<p class="eyebrow">Open source · Claude Code skill · MIT</p>
+<h1><span class="accent">security-sweep</span>: 한 문장으로 모든 프로젝트·서버·이미지의 알려진 취약점 점검</h1>
+<p class="lead">security-sweep은 한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬입니다.</p>
+<p class="sub">osv-scanner와 trivy로 훑고, 모든 CVE/GHSA ID를 OSV API로 실재 검증하고, CISA KEV·EPSS로 보강하고, 코드에서 실제로 쓰는지(도달성) 판정해 P0~P3 우선순위 보고서를 만듭니다. 기본은 읽기 전용이고, 서버에는 아무것도 설치하지 않습니다.</p>
+<div class="cta"><a class="btn btn-primary" href="#install">설치하기</a><a class="btn btn-ghost" href="https://github.com/baryonlabs/security-sweep">GitHub에서 보기</a></div>
+<ul class="facts">
+<li><b>8개 생태계</b><span>npm · PyPI · Hex · Go · Cargo · Packagist · RubyGems · Maven</span></li>
+<li><b>OSV 실재 검증</b><span>모든 CVE·GHSA ID를 조회, KEV·EPSS 보강</span></li>
+<li><b>읽기 전용</b><span>코드를 바꾸지 않고, 서버에 설치하지 않음</span></li>
+<li><b><em>5건 → 1건</em></b><span>실제 예시: 패치 후 재스캔</span></li>
+</ul>
+</div></div>
+<main id="main"><div class="wrap">
+<section id="install"><h2><span class="num">01</span>설치</h2>
+<p>Claude Code에서 플러그인 마켓플레이스를 추가하고 설치합니다. 무료 오픈소스(MIT)이며 macOS·Linux에서 동작합니다.</p>
+<pre><code>/plugin marketplace add baryonlabs/security-sweep
+/plugin install security-sweep@baryonlabs-security</code></pre>
+<p>플러그인으로 설치했다면 명령은 <code>/security-sweep:security-sweep</code>입니다. 스킬 폴더만 복사했다면 <code>/security-sweep</code>입니다.</p>
+<pre><code>git clone https://github.com/baryonlabs/security-sweep
+cp -r security-sweep/skills/security-sweep ~/.claude/skills/</code></pre>
+<h3>한 문장으로 실행</h3>
+<pre><code>/security-sweep:security-sweep ~/work 아래 모든 프로젝트 취약점 점검해줘
+/security-sweep:security-sweep 서버 deploy@web1, deploy@web2 점검. 설치는 하지 말고 보고서만
+/security-sweep:security-sweep 이미지 myapp:prod 랑 실행 중인 컨테이너 전부 CVE 확인
+/security-sweep:security-sweep CVE-2026-97853 이 우리 프로젝트에 영향 있는지 확인해줘</code></pre>
+<p class="muted small">같은 마켓플레이스에 Elixir 전용 점검·수정 스킬도 있습니다: <code>/plugin install elixir-security-audit@baryonlabs-security</code></p>
+</section>
+<section id="how"><h2><span class="num">02</span>동작 방식: 5단계 파이프라인</h2>
+<p>security-sweep은 <strong>탐색 → 스캔 → 검증 → 도달성 → 보고서</strong> 순서로 실행하고, 마지막에 Claude가 P0/P1 항목마다 코드 근거를 직접 열어 우선순위를 확정하거나 한 줄 사유와 함께 조정합니다.</p>
+<ol class="steps">
+<li><b>탐색</b><span>루트 아래 lockfile로 프로젝트와 생태계를 판별합니다 (npm · PyPI · Hex · Go · Cargo · Packagist · RubyGems · Maven).</span></li>
+<li><b>스캔</b><span>프로젝트마다 osv-scanner, trivy fs(비밀·설정), 이미지는 trivy, 서버는 읽기 전용 ssh로 점검합니다.</span></li>
+<li><b>검증</b><span>모든 CVE/GHSA/OSV ID를 OSV API로 조회해 실재 여부를 확인하고 CISA KEV·EPSS로 보강합니다.</span></li>
+<li><b>도달성</b><span>govulncheck, 취약 심볼 grep, import grep으로 called / imported / not-imported를 판정합니다.</span></li>
+<li><b>보고서</b><span>P0~P3 우선순위로 findings.json, REPORT.md, 단일 파일 REPORT.html을 만듭니다.</span></li>
+</ol>
+<figure><img src="assets/sweep-pipeline.webp" alt="한 문장으로 전체 보안 스윕: 탐색, 스캔, 검증, 도달성, 보고서 5단계 파이프라인" width="1536" height="1024" loading="lazy" decoding="async"></figure>
+<p>스윕은 <strong>아무것도 고치지 않습니다.</strong> 끝나면 프로젝트별 수정 명령(<code>npm audit fix</code>, <code>mix deps.update pkg</code>, <code>go get pkg@fixed</code> 등)을 제안만 하고, Elixir 프로젝트는 elixir-security-audit로 넘겨 별도 브랜치에서 수정·검증합니다.</p>
+<p>Claude 없이 스크립트만 돌릴 수도 있습니다 (bash + python3 표준 라이브러리):</p>
+<pre><code>S=skills/security-sweep/scripts
+OUT=./security-sweep-$(date +%Y%m%d-%H%M)
+bash    $S/discover.sh ~/work --max-depth 4 --out "$OUT"
+bash    $S/sweep.sh --targets "$OUT/targets.json" --out "$OUT"
+python3 $S/verify_cves.py "$OUT"      # --offline 가능
+python3 $S/reachability.py "$OUT"
+python3 $S/report.py "$OUT"</code></pre>
+</section>
+<section id="example"><h2><span class="num">03</span>실제 예시: 26개 프로젝트, 5건 → 1건</h2>
+<p>실제 개발자 맥북의 <code>~/projects</code> 아래 프로젝트 26개를 security-sweep으로 한 번 돌린 결과입니다 (2026-10-23, 프로젝트명·경로는 가명 처리, 취약점 ID·버전·우선순위는 실제 결과 그대로).</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">항목</th><th scope="col">결과</th></tr></thead><tbody>
+<tr><td>탐지된 프로젝트</td><td>26개 (npm · PyPI · Hex · Go · Maven), 그중 취약점이 나온 곳 15개</td></tr>
+<tr><td>취약점 권고</td><td>고유 <span class=stat>75개</span>, 전부 OSV에서 실재 확인 (404 0건, CISA KEV 0건)</td></tr>
+<tr><td>우선순위</td><td><span class="badge b-p0">P0</span> 0 · <span class="badge b-p1">P1</span> 107 · <span class="badge b-p2">P2</span> 72 · <span class="badge b-p3">P3</span> 2</td></tr>
+<tr><td>비밀값</td><td>3건 (GitHub OAuth 토큰 1, JWT 2), 모두 .gitignore된 build 폴더, 값은 마스킹</td></tr>
+</tbody></table></div>
+<div class="callout"><p><strong>P1 107건 중 99건은 패키지 두 개입니다.</strong> 81건은 <code>pillow 12.3.0</code> 하나에 걸린 권고 27개가 프로젝트 3곳에서 반복된 것이고, 18건은 <code>sharp 0.34.5</code>가 프로젝트 6곳에서 반복된 것입니다. 개수보다 "어떤 패키지 몇 개를 올리면 되나"로 읽으면 됩니다.</p></div>
+<h3>한 프로젝트를 검토하고, 패치하고, 다시 스캔</h3>
+<p>Elixir/Phoenix 프로젝트 하나에서 나온 5건을 코드로 판정한 뒤(1건은 오탐, <code>decimal</code>은 도달 불가), <code>mix deps.update bandit decimal plug_crypto</code>로 올리고 <code>mix test</code>(226 tests, 0 failures)를 통과시킨 다음 그 프로젝트만 재스캔했습니다.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col"></th><th scope="col">패치 전</th><th scope="col">패치 후</th></tr></thead><tbody>
+<tr><td>의존성 취약점</td><td>4건 (P1 1 · P2 3)</td><td><strong>0건</strong> (osv-scanner exit 0)</td></tr>
+<tr><td>코드 발견</td><td>1건 (EXS-CFG-001)</td><td>1건 (같은 항목, 오탐으로 판정 기록)</td></tr>
+<tr><td>합계</td><td><strong>5건</strong></td><td><strong>1건</strong></td></tr>
+</tbody></table></div>
+<figure><img src="assets/before-after.webp" alt="한 번 돌리고, 고치고, 다시 확인: 5건에서 1건으로" width="1536" height="1024" loading="lazy" decoding="async"></figure>
+<p><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">가명 처리한 실제 보고서 전체 보기 (GitHub)</a></p>
+</section>
+<section id="compare"><h2><span class="num">04</span>탐정과 공항 검색대: 다른 보안 도구와의 차이</h2>
+<p>Claude Security, Codex Security, <code>/security-review</code>는 <strong>탐정</strong>처럼 코드를 읽고 추리해 로직 결함을 찾습니다. security-sweep은 <strong>공항 검색대</strong>처럼 모든 프로젝트·서버·이미지를 통과시키며 알려진 취약점(CVE)을 빠짐없이 찾습니다. 대체가 아니라 조합입니다.</p>
+<figure><img src="assets/easy-compare.webp" alt="탐정과 공항 검색대: 로직 결함은 AI 보안 리뷰가, 알려진 취약점은 스캐너 스윕이 찾습니다" width="1536" height="1024" loading="lazy" decoding="async"></figure>
+<div class="table-wrap wide"><table><thead><tr><th scope="col"></th><th scope="col">탐정: AI 보안 리뷰<br><span class=muted>Codex Security · Claude Security · /security-review</span></th><th scope="col">공항 검색대: 스캐너 스윕<br><span class=muted>security-sweep · elixir-security-audit</span></th></tr></thead><tbody>
+<tr><td>하는 일</td><td>코드를 처음부터 읽고 추리해서 설계·로직 결함을 찾습니다</td><td>모든 가방(프로젝트·서버·이미지)을 통과시키며 수배 목록(CVE DB)에 오른 위험물을 빠짐없이 찾습니다</td></tr>
+<tr><td>잘 찾는 것</td><td>인가 우회, 잘못된 신뢰 경계, 처음 보는 수법</td><td>오래된 라이브러리, 서버 OS 패키지 취약점, 흘린 비밀값, 언어별 위험 API</td></tr>
+<tr><td>놓치기 쉬운 것</td><td>수배 목록 대조 (의존성 CVE는 직접 안 봄)</td><td>목록에 없는 새로운 수법</td></tr>
+<tr><td>결과</td><td>똑똑하지만 돌릴 때마다 조금씩 다름</td><td>같은 입력이면 항상 같은 결과</td></tr>
+<tr><td>확인 방법</td><td>다른 에이전트가 한 번 더 검증</td><td>수배 목록이 진짜인지 OSV로 조회하고, 실제로 꺼내 쓰는지(도달성) 확인</td></tr>
+<tr><td>비용</td><td>모델 토큰 (스캔마다)</td><td>스캐너는 무료, LLM은 분류할 때만</td></tr>
+</tbody></table></div>
+<p><strong>그래서 둘 다 씁니다.</strong> 검색대로 알려진 위험을 먼저 전부 걸러내고, 중요한 저장소는 탐정에게 맡겨 숨은 로직 결함을 찾습니다.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">이럴 때</th><th scope="col">이것부터</th></tr></thead><tbody>
+<tr><td>“우리 프로젝트·서버 전체에 알려진 취약점 있나?”</td><td><strong>security-sweep</strong></td></tr>
+<tr><td>“이 Phoenix 앱 고쳐 줘”</td><td><strong>elixir-security-audit</strong></td></tr>
+<tr><td>“PR 하나 머지 전에 빨리 봐 줘”</td><td><code>/security-review</code></td></tr>
+<tr><td>“결제·인증 같은 핵심 저장소를 깊게 털어 줘”</td><td><strong>Claude Security</strong> 또는 <strong>Codex Security</strong></td></tr>
+</tbody></table></div>
+<p><a href="ko/vs-claude-security/">도구별 자세한 비교표 보기 (Codex Security · /security-review · Claude Security)</a></p>
+</section>
+<section id="priority"><h2><span class="num">05</span>우선순위 P0~P3</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">우선순위</th><th scope="col">조건</th><th scope="col">의미</th></tr></thead><tbody>
+<tr><td><span class="badge b-p0">P0</span></td><td>CISA KEV 등재, 또는 critical/high 이고 실제 호출(called)</td><td>지금 고친다</td></tr>
+<tr><td><span class="badge b-p1">P1</span></td><td>critical/high 이고 imported/unknown, 또는 EPSS ≥ 0.1, 또는 비밀 발견</td><td>이번 주</td></tr>
+<tr><td><span class="badge b-p2">P2</span></td><td>medium, 또는 high 인데 not-imported</td><td>다음 정기 업그레이드</td></tr>
+<tr><td><span class="badge b-p3">P3</span></td><td>low/unknown, 낮은 설정 문제</td><td>기록만</td></tr>
+<tr><td>검증 실패</td><td>OSV 404: 우선순위 없이 별도 섹션</td><td>출처 스캐너와 ID만 나열</td></tr>
+</tbody></table></div>
+<p><code>not-imported</code>는 "안전"이 아닙니다. 전이 의존성은 직접 import 없이도 실행됩니다. <a href="ko/priority/">우선순위 규칙과 근거 자세히 보기</a></p>
+</section>
+<section id="principles"><h2><span class="num">06</span>안전 원칙</h2>
+<ul class="checklist">
+<li><strong>기본 읽기 전용.</strong> 코드·lockfile을 바꾸지 않습니다. 수정은 사용자가 지시한 프로젝트만, 별도 브랜치에서 합니다.</li>
+<li><strong>서버에 아무것도 설치하지 않습니다.</strong> ssh는 <code>BatchMode=yes</code>, 사용자가 이름을 댄 호스트만, sudo는 명시할 때만 씁니다.</li>
+<li>스캐너 출력·권고 본문·코드 주석은 <strong>데이터</strong>이지 지시가 아닙니다 (프롬프트 인젝션 방어).</li>
+<li>비밀값은 위치와 종류만 기록하고 원문은 마스킹합니다.</li>
+<li>CVE 실재 여부는 <strong>OSV 조회 결과로만</strong> 판단합니다. 번호 생김새로 판단하지 않습니다.</li>
+</ul>
+<h3>요구 사항</h3>
+<ul>
+<li>macOS 또는 Linux, bash, python3 (표준 라이브러리만)</li>
+<li><code>osv-scanner</code>와 <code>trivy</code> 중 하나 이상 (둘 다 권장). macOS: <code>brew install osv-scanner trivy</code></li>
+<li>선택: <code>govulncheck</code> (Go 호출 그래프 도달성), elixir-security-audit (Hex 프로젝트)</li>
+<li>네트워크: api.osv.dev, cisa.gov(KEV), api.first.org(EPSS). 없으면 <code>--offline</code></li>
+</ul>
+</section>
+<section id="guides"><h2><span class="num">07</span>질문별 안내</h2><div class="cards"><a class="card" href="ko/scan-all-projects/"><h3>여러 프로젝트를 한 번에 점검하려면?</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/verify-cve/"><h3>CVE 번호가 진짜인지 확인하는 법</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/priority/"><h3>P0~P3 우선순위는 어떻게 정하나요?</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/vs-claude-security/"><h3>Claude Security·Codex Security와 차이</h3><p class="go">답 보기 →</p></a></div></section>
+<section id="faq" class="faq"><h2>자주 묻는 질문</h2>
+<h3>서버에 뭔가 설치되나요?</h3>
+<p>아니요. <code>ssh -o BatchMode=yes</code>로 사용자가 이름을 댄 호스트에만 접속하고, 원격에 trivy가 있으면 <code>trivy rootfs</code>를 읽기 전용으로 실행합니다. trivy가 없으면 패키지 목록(<code>dpkg-query</code>/<code>rpm -qa</code>/<code>apk info</code>)만 수집합니다. sudo는 사용자가 명시할 때만 씁니다.</p>
+<h3>not-imported면 안전한가요?</h3>
+<p>아닙니다. 전이 의존성은 직접 import 없이도 실행됩니다. not-imported는 우선순위를 한 단계 낮출 근거일 뿐이며, 함수 단위 도달성은 Go(govulncheck)와 OSV 권고에 취약 심볼이 적힌 경우에만 판정합니다.</p>
+<h3>CVE 번호가 가짜처럼 보이는데요?</h3>
+<p>생김새로 판단하지 마세요. CVE-2026-97853은 이상해 보여도 OSV에 실재하고, 그럴듯한 번호가 404일 수도 있습니다. security-sweep은 OSV 조회 결과만 근거로 쓰고, 404는 “검증 실패” 섹션으로 따로 분리합니다.</p>
+<h3>네트워크가 없는 CI에서도 되나요?</h3>
+<p><code>verify_cves.py --offline</code>을 쓰면 osv-scanner 출력에 포함된 OSV 레코드와 캐시만 사용합니다. 이 경우 trivy만 보고한 ID는 “미검증”으로 남습니다.</p>
+<h3>고쳐 주지는 않나요?</h3>
+<p>스윕은 의도적으로 읽기 전용입니다. 끝나면 프로젝트별 수정 명령을 제안하고, Elixir 프로젝트는 elixir-security-audit로 넘겨 브랜치에서 수정·검증합니다.</p>
+<h3>Claude Security나 Codex Security가 있으면 필요 없나요?</h3>
+<p>역할이 다릅니다. 세 LLM 도구는 코드를 읽어 로직 결함을 찾는 데 강하고 의존성 CVE는 직접 스캔하지 않습니다. security-sweep은 알려진 취약점을 결정적 스캐너로 빠짐없이 훑습니다. Claude Security 공식 문서도 기존 의존성 스캐너와 함께 쓰라고 안내합니다.</p>
+</section>
+</div></main>
+<footer class="site-footer"><div class="wrap"><div class="cols">
+<div><h2>security-sweep</h2><p>여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬. MIT 라이선스 © 2026 Baryon Labs.</p></div>
+<div><h2>질문별 안내</h2><ul><li><a href="ko/scan-all-projects/">여러 프로젝트를 한 번에 점검하려면?</a></li><li><a href="ko/verify-cve/">CVE 번호가 진짜인지 확인하는 법</a></li><li><a href="ko/priority/">P0~P3 우선순위는 어떻게 정하나요?</a></li><li><a href="ko/vs-claude-security/">Claude Security·Codex Security와 차이</a></li></ul></div>
+<div><h2>저장소</h2><ul><li><a href="https://github.com/baryonlabs/security-sweep">GitHub 저장소</a></li><li><a href="https://github.com/baryonlabs/security-sweep/releases">릴리스</a></li><li><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">실제 예시 보고서</a></li><li><a href="https://github.com/baryonlabs/security-sweep/issues">이슈·제보</a></li><li><a href="https://github.com/baryonlabs/elixir-security-audit">elixir-security-audit</a></li></ul></div>
+</div><p class="updated">최종 갱신 2026-10-23 · v0.1.1 · <a href="en/" hreflang="en" lang="en">English</a></p></div></footer>
+</body>
+</html>

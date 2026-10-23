@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="960" viewBox="0 0 1240 960" font-family="-apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Segoe UI', sans-serif" role="img" aria-labelledby="t d">
+<title id="t">보안 점검 도구 비교: Codex Security, /security-review, Claude Security, elixir-security-audit, security-sweep</title>
+<desc id="d">LLM 기반 코드 보안 리뷰 도구 3종과 Baryon Labs의 스캐너 기반 스킬 2종을 10개 항목으로 비교한 표</desc>
+<rect width="1240" height="960" rx="16" fill="#f7f8f6"/>
+<text x="24" y="44" font-size="24" font-weight="700" fill="#1c2420">무엇이 다른가 — LLM 보안 리뷰 vs 스캐너 기반 스윕</text>
+<text x="24" y="72" font-size="14" fill="#5f6a64">왼쪽 셋은 LLM이 코드를 읽고 로직 결함을 찾는 도구, 오른쪽 둘(파란 칸)은 알려진 취약점·의존성·서버를 결정적 스캐너로 훑고 LLM은 분류에 쓰는 도구입니다.</text>
+<circle cx="31" cy="94" r="7" fill="#2f6b55"/>
+<text x="44" y="99" font-size="13" fill="#5f6a64">지원</text>
+<circle cx="131" cy="94" r="6" fill="none" stroke="#c08a1e" stroke-width="2.5"/><path d="M131 88 A6 6 0 0 1 131 100 Z" fill="#c08a1e"/>
+<text x="144" y="99" font-size="13" fill="#5f6a64">부분 지원</text>
+<circle cx="231" cy="94" r="6" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="244" y="99" font-size="13" fill="#5f6a64">없음</text>
+<rect x="836.5999999999999" y="108" width="185.2" height="732" rx="10" fill="#eaf1fb" stroke="#9db6de" stroke-width="1"/>
+<rect x="1027.8" y="108" width="185.2" height="732" rx="10" fill="#eaf1fb" stroke="#9db6de" stroke-width="1"/>
+<text x="355.6" y="134" text-anchor="middle" font-size="12" fill="#5f6a64" letter-spacing="0.5">OpenAI</text>
+<text x="355.6" y="158" text-anchor="middle" font-size="16" font-weight="700" fill="#1c2420">Codex Security</text>
+<text x="355.6" y="180" text-anchor="middle" font-size="12" fill="#5f6a64">CLI · SDK · Codex 플러그인</text>
+<text x="546.8" y="134" text-anchor="middle" font-size="12" fill="#5f6a64" letter-spacing="0.5">Claude Code 내장</text>
+<text x="546.8" y="158" text-anchor="middle" font-size="16" font-weight="700" fill="#1c2420">/security-review</text>
+<text x="546.8" y="180" text-anchor="middle" font-size="12" fill="#5f6a64">현재 브랜치 1회 패스</text>
+<text x="738.0" y="134" text-anchor="middle" font-size="12" fill="#5f6a64" letter-spacing="0.5">Anthropic 공식</text>
+<text x="738.0" y="158" text-anchor="middle" font-size="16" font-weight="700" fill="#1c2420">Claude Security</text>
+<text x="738.0" y="180" text-anchor="middle" font-size="12" fill="#5f6a64">멀티에이전트 플러그인</text>
+<text x="929.1999999999999" y="134" text-anchor="middle" font-size="12" fill="#2b4f8f" letter-spacing="0.5">Baryon Labs</text>
+<text x="929.1999999999999" y="158" text-anchor="middle" font-size="16" font-weight="700" fill="#1c2420">elixir-security-audit</text>
+<text x="929.1999999999999" y="180" text-anchor="middle" font-size="12" fill="#5f6a64">Elixir 전용 점검·수정</text>
+<text x="1120.3999999999999" y="134" text-anchor="middle" font-size="12" fill="#2b4f8f" letter-spacing="0.5">Baryon Labs</text>
+<text x="1120.3999999999999" y="158" text-anchor="middle" font-size="16" font-weight="700" fill="#1c2420">security-sweep</text>
+<text x="1120.3999999999999" y="180" text-anchor="middle" font-size="12" fill="#5f6a64">여러 프로젝트·서버 스윕</text>
+<line x1="24" y1="200" x2="1216" y2="200" stroke="#e1e5e1" stroke-width="1.5"/>
+<text x="24" y="224" font-size="14" font-weight="700" fill="#1c2420">코드 로직 취약점</text>
+<text x="24" y="242" font-size="12" fill="#5f6a64">LLM 추론으로 탐지</text>
+<circle cx="355.6" cy="219" r="8" fill="#2f6b55"/>
+<text x="355.6" y="244" text-anchor="middle" font-size="12" fill="#1c2420">standard · deep 스캔</text>
+<circle cx="546.8" cy="219" r="7" fill="none" stroke="#c08a1e" stroke-width="2.5"/><path d="M546.8 212 A7 7 0 0 1 546.8 226 Z" fill="#c08a1e"/>
+<text x="546.8" y="244" text-anchor="middle" font-size="12" fill="#1c2420">브랜치 1회 검토</text>
+<circle cx="738.0" cy="219" r="8" fill="#2f6b55"/>
+<text x="738.0" y="244" text-anchor="middle" font-size="12" fill="#1c2420">위협 모델 + 탐색</text>
+<circle cx="929.1999999999999" cy="219" r="7" fill="none" stroke="#c08a1e" stroke-width="2.5"/><path d="M929.1999999999999 212 A7 7 0 0 1 929.1999999999999 226 Z" fill="#c08a1e"/>
+<text x="929.1999999999999" y="244" text-anchor="middle" font-size="12" fill="#1c2420">분류 단계에서 판독</text>
+<circle cx="1120.3999999999999" cy="219" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="1120.3999999999999" y="244" text-anchor="middle" font-size="12" fill="#5f6a64">범위 밖 (넘김)</text>
+<line x1="24" y1="254" x2="1216" y2="254" stroke="#e1e5e1" stroke-width="1"/>
+<text x="24" y="278" font-size="14" font-weight="700" fill="#1c2420">언어 전용 규칙</text>
+<text x="24" y="296" font-size="12" fill="#5f6a64">Sobelow·Opengrep 등</text>
+<circle cx="355.6" cy="273" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="355.6" y="298" text-anchor="middle" font-size="12" fill="#5f6a64">범용 LLM</text>
+<circle cx="546.8" cy="273" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="546.8" y="298" text-anchor="middle" font-size="12" fill="#5f6a64">범용 LLM</text>
+<circle cx="738.0" cy="273" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="738.0" y="298" text-anchor="middle" font-size="12" fill="#5f6a64">범용 LLM</text>
+<circle cx="929.1999999999999" cy="273" r="8" fill="#2f6b55"/>
+<text x="929.1999999999999" y="298" text-anchor="middle" font-size="12" fill="#1c2420">Sobelow + 룰 17개</text>
+<circle cx="1120.3999999999999" cy="273" r="7" fill="none" stroke="#c08a1e" stroke-width="2.5"/><path d="M1120.3999999999999 266 A7 7 0 0 1 1120.3999999999999 280 Z" fill="#c08a1e"/>
+<text x="1120.3999999999999" y="298" text-anchor="middle" font-size="12" fill="#1c2420">govulncheck · Elixir 연동</text>
+<line x1="24" y1="308" x2="1216" y2="308" stroke="#e1e5e1" stroke-width="1"/>
+<text x="24" y="332" font-size="14" font-weight="700" fill="#1c2420">의존성 CVE (SCA)</text>
+<text x="24" y="350" font-size="12" fill="#5f6a64">lockfile ↔ 권고 DB</text>
+<circle cx="355.6" cy="327" r="7" fill="none" stroke="#c08a1e" stroke-width="2.5"/><path d="M355.6 320 A7 7 0 0 1 355.6 334 Z" fill="#c08a1e"/>
+<text x="355.6" y="352" text-anchor="middle" font-size="12" fill="#1c2420">Snyk·Endor 결과 가져오기</text>
+<circle cx="546.8" cy="327" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="546.8" y="352" text-anchor="middle" font-size="12" fill="#5f6a64">다루지 않음</text>
+<circle cx="738.0" cy="327" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="738.0" y="352" text-anchor="middle" font-size="12" fill="#5f6a64">기존 스캐너와 병행 권장</text>
+<circle cx="929.1999999999999" cy="327" r="8" fill="#2f6b55"/>
+<text x="929.1999999999999" y="352" text-anchor="middle" font-size="12" fill="#1c2420">mix_audit · hex · OSV</text>
+<circle cx="1120.3999999999999" cy="327" r="8" fill="#2f6b55"/>
+<text x="1120.3999999999999" y="352" text-anchor="middle" font-size="12" fill="#1c2420">OSV-Scanner 전 생태계</text>
+<line x1="24" y1="362" x2="1216" y2="362" stroke="#e1e5e1" stroke-width="1"/>
+<text x="24" y="386" font-size="14" font-weight="700" fill="#1c2420">CVE 실재 검증</text>
+<text x="24" y="404" font-size="12" fill="#5f6a64">OSV 조회 · KEV · EPSS</text>
+<circle cx="355.6" cy="381" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="355.6" y="406" text-anchor="middle" font-size="12" fill="#5f6a64">—</text>
+<circle cx="546.8" cy="381" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="546.8" y="406" text-anchor="middle" font-size="12" fill="#5f6a64">—</text>
+<circle cx="738.0" cy="381" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="738.0" y="406" text-anchor="middle" font-size="12" fill="#5f6a64">—</text>
+<circle cx="929.1999999999999" cy="381" r="7" fill="none" stroke="#c08a1e" stroke-width="2.5"/><path d="M929.1999999999999 374 A7 7 0 0 1 929.1999999999999 388 Z" fill="#c08a1e"/>
+<text x="929.1999999999999" y="406" text-anchor="middle" font-size="12" fill="#1c2420">OSV 대조</text>
+<circle cx="1120.3999999999999" cy="381" r="8" fill="#2f6b55"/>
+<text x="1120.3999999999999" y="406" text-anchor="middle" font-size="12" fill="#1c2420">OSV + KEV + EPSS</text>
+<line x1="24" y1="416" x2="1216" y2="416" stroke="#e1e5e1" stroke-width="1"/>
+<text x="24" y="440" font-size="14" font-weight="700" fill="#1c2420">발견 재검증</text>
+<text x="24" y="458" font-size="12" fill="#5f6a64">오탐 걸러내기</text>
+<circle cx="355.6" cy="435" r="8" fill="#2f6b55"/>
+<text x="355.6" y="460" text-anchor="middle" font-size="12" fill="#1c2420">validate · verify-fix</text>
+<circle cx="546.8" cy="435" r="7" fill="none" stroke="#c08a1e" stroke-width="2.5"/><path d="M546.8 428 A7 7 0 0 1 546.8 442 Z" fill="#c08a1e"/>
+<text x="546.8" y="460" text-anchor="middle" font-size="12" fill="#1c2420">단일 패스</text>
+<circle cx="738.0" cy="435" r="8" fill="#2f6b55"/>
+<text x="738.0" y="460" text-anchor="middle" font-size="12" fill="#1c2420">독립 검증 에이전트</text>
+<circle cx="929.1999999999999" cy="435" r="8" fill="#2f6b55"/>
+<text x="929.1999999999999" y="460" text-anchor="middle" font-size="12" fill="#1c2420">재스캔 + compile/test</text>
+<circle cx="1120.3999999999999" cy="435" r="8" fill="#2f6b55"/>
+<text x="1120.3999999999999" y="460" text-anchor="middle" font-size="12" fill="#1c2420">OSV 실재 + 도달성</text>
+<line x1="24" y1="470" x2="1216" y2="470" stroke="#e1e5e1" stroke-width="1"/>
+<text x="24" y="494" font-size="14" font-weight="700" fill="#1c2420">여러 저장소 일괄</text>
+<text x="24" y="512" font-size="12" fill="#5f6a64">한 번에 여러 개</text>
+<circle cx="355.6" cy="489" r="8" fill="#2f6b55"/>
+<text x="355.6" y="514" text-anchor="middle" font-size="12" fill="#1c2420">bulk scan 캠페인</text>
+<circle cx="546.8" cy="489" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="546.8" y="514" text-anchor="middle" font-size="12" fill="#5f6a64">현재 브랜치만</text>
+<circle cx="738.0" cy="489" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="738.0" y="514" text-anchor="middle" font-size="12" fill="#5f6a64">저장소 단위</text>
+<circle cx="929.1999999999999" cy="489" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="929.1999999999999" y="514" text-anchor="middle" font-size="12" fill="#5f6a64">프로젝트 1개</text>
+<circle cx="1120.3999999999999" cy="489" r="8" fill="#2f6b55"/>
+<text x="1120.3999999999999" y="514" text-anchor="middle" font-size="12" fill="#1c2420">디렉터리 전체 탐색</text>
+<line x1="24" y1="524" x2="1216" y2="524" stroke="#e1e5e1" stroke-width="1"/>
+<text x="24" y="548" font-size="14" font-weight="700" fill="#1c2420">서버 · 컨테이너</text>
+<text x="24" y="566" font-size="12" fill="#5f6a64">OS 패키지 · 이미지</text>
+<circle cx="355.6" cy="543" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="355.6" y="568" text-anchor="middle" font-size="12" fill="#5f6a64">코드 대상</text>
+<circle cx="546.8" cy="543" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="546.8" y="568" text-anchor="middle" font-size="12" fill="#5f6a64">코드 대상</text>
+<circle cx="738.0" cy="543" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="738.0" y="568" text-anchor="middle" font-size="12" fill="#5f6a64">코드 대상</text>
+<circle cx="929.1999999999999" cy="543" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="929.1999999999999" y="568" text-anchor="middle" font-size="12" fill="#5f6a64">코드 대상</text>
+<circle cx="1120.3999999999999" cy="543" r="8" fill="#2f6b55"/>
+<text x="1120.3999999999999" y="568" text-anchor="middle" font-size="12" fill="#1c2420">trivy rootfs · image</text>
+<line x1="24" y1="578" x2="1216" y2="578" stroke="#e1e5e1" stroke-width="1"/>
+<text x="24" y="602" font-size="14" font-weight="700" fill="#1c2420">패치 생성</text>
+<text x="24" y="620" font-size="12" fill="#5f6a64">수정까지 해 주나</text>
+<circle cx="355.6" cy="597" r="8" fill="#2f6b55"/>
+<text x="355.6" y="622" text-anchor="middle" font-size="12" fill="#1c2420">cs patch</text>
+<circle cx="546.8" cy="597" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="546.8" y="622" text-anchor="middle" font-size="12" fill="#5f6a64">보고 중심</text>
+<circle cx="738.0" cy="597" r="8" fill="#2f6b55"/>
+<text x="738.0" y="622" text-anchor="middle" font-size="12" fill="#1c2420">patches/ · 자동 적용 안 함</text>
+<circle cx="929.1999999999999" cy="597" r="8" fill="#2f6b55"/>
+<text x="929.1999999999999" y="622" text-anchor="middle" font-size="12" fill="#1c2420">브랜치 커밋 · 승인 후</text>
+<circle cx="1120.3999999999999" cy="597" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="1120.3999999999999" y="622" text-anchor="middle" font-size="12" fill="#5f6a64">읽기 전용 · 넘김</text>
+<line x1="24" y1="632" x2="1216" y2="632" stroke="#e1e5e1" stroke-width="1"/>
+<text x="24" y="656" font-size="14" font-weight="700" fill="#1c2420">재현성</text>
+<text x="24" y="674" font-size="12" fill="#5f6a64">같은 입력 → 같은 결과</text>
+<circle cx="355.6" cy="651" r="7" fill="none" stroke="#c08a1e" stroke-width="2.5"/><path d="M355.6 644 A7 7 0 0 1 355.6 658 Z" fill="#c08a1e"/>
+<text x="355.6" y="676" text-anchor="middle" font-size="12" fill="#1c2420">LLM 판단</text>
+<circle cx="546.8" cy="651" r="7" fill="none" stroke="#c08a1e" stroke-width="2.5"/><path d="M546.8 644 A7 7 0 0 1 546.8 658 Z" fill="#c08a1e"/>
+<text x="546.8" y="676" text-anchor="middle" font-size="12" fill="#1c2420">LLM 판단</text>
+<circle cx="738.0" cy="651" r="7" fill="none" stroke="#c08a1e" stroke-width="2.5"/><path d="M738.0 644 A7 7 0 0 1 738.0 658 Z" fill="#c08a1e"/>
+<text x="738.0" y="676" text-anchor="middle" font-size="12" fill="#1c2420">비결정적 (공식 문서)</text>
+<circle cx="929.1999999999999" cy="651" r="8" fill="#2f6b55"/>
+<text x="929.1999999999999" y="676" text-anchor="middle" font-size="12" fill="#1c2420">스캐너 단계 결정적</text>
+<circle cx="1120.3999999999999" cy="651" r="8" fill="#2f6b55"/>
+<text x="1120.3999999999999" y="676" text-anchor="middle" font-size="12" fill="#1c2420">스캐너 단계 결정적</text>
+<line x1="24" y1="686" x2="1216" y2="686" stroke="#e1e5e1" stroke-width="1"/>
+<text x="24" y="710" font-size="14" font-weight="700" fill="#1c2420">LLM 없이 실행</text>
+<text x="24" y="728" font-size="12" fill="#5f6a64">CI · 오프라인</text>
+<circle cx="355.6" cy="705" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="355.6" y="730" text-anchor="middle" font-size="12" fill="#5f6a64">모델 호출 필요</text>
+<circle cx="546.8" cy="705" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="546.8" y="730" text-anchor="middle" font-size="12" fill="#5f6a64">모델 호출 필요</text>
+<circle cx="738.0" cy="705" r="7" fill="none" stroke="#c9cfcb" stroke-width="2"/>
+<text x="738.0" y="730" text-anchor="middle" font-size="12" fill="#5f6a64">모델 호출 필요</text>
+<circle cx="929.1999999999999" cy="705" r="8" fill="#2f6b55"/>
+<text x="929.1999999999999" y="730" text-anchor="middle" font-size="12" fill="#1c2420">scan.sh 단독</text>
+<circle cx="1120.3999999999999" cy="705" r="8" fill="#2f6b55"/>
+<text x="1120.3999999999999" y="730" text-anchor="middle" font-size="12" fill="#1c2420">스크립트 단독 · --offline</text>
+<line x1="24" y1="740" x2="1216" y2="740" stroke="#e1e5e1" stroke-width="1"/>
+<text x="24" y="770" font-size="14" font-weight="700" fill="#1c2420">필요 조건</text>
+<text x="355.6" y="762" text-anchor="middle" font-size="12" fill="#1c2420">OpenAI 로그인·API 키</text>
+<text x="355.6" y="779" text-anchor="middle" font-size="12" fill="#1c2420">(Bedrock 등 가능)</text>
+<text x="546.8" y="770" text-anchor="middle" font-size="12" fill="#1c2420">Claude Code</text>
+<text x="738.0" y="762" text-anchor="middle" font-size="12" fill="#1c2420">유료 플랜·API</text>
+<text x="738.0" y="779" text-anchor="middle" font-size="12" fill="#1c2420">python3 3.9+</text>
+<text x="929.1999999999999" y="762" text-anchor="middle" font-size="12" fill="#1c2420">Claude Code</text>
+<text x="929.1999999999999" y="779" text-anchor="middle" font-size="12" fill="#1c2420">Elixir·Python</text>
+<text x="1120.3999999999999" y="762" text-anchor="middle" font-size="12" fill="#1c2420">Claude Code</text>
+<text x="1120.3999999999999" y="779" text-anchor="middle" font-size="12" fill="#1c2420">osv-scanner·trivy</text>
+<line x1="24" y1="790" x2="1216" y2="790" stroke="#e1e5e1" stroke-width="1"/>
+<text x="24" y="820" font-size="14" font-weight="700" fill="#1c2420">라이선스</text>
+<text x="355.6" y="820" text-anchor="middle" font-size="12" fill="#1c2420">Apache-2.0</text>
+<text x="546.8" y="820" text-anchor="middle" font-size="12" fill="#1c2420">내장 · Action MIT</text>
+<text x="738.0" y="820" text-anchor="middle" font-size="12" fill="#1c2420">공식 마켓플레이스</text>
+<text x="929.1999999999999" y="820" text-anchor="middle" font-size="12" fill="#1c2420">MIT</text>
+<text x="1120.3999999999999" y="820" text-anchor="middle" font-size="12" fill="#1c2420">MIT</text>
+<line x1="24" y1="840" x2="1216" y2="840" stroke="#e1e5e1" stroke-width="1"/>
+<rect x="24" y="858" width="1192" height="56" rx="10" fill="#ffffff" stroke="#e1e5e1"/>
+<text x="42" y="882" font-size="14" font-weight="700" fill="#1c2420">대체가 아니라 조합</text>
+<text x="42" y="902" font-size="13" fill="#5f6a64">security-sweep · elixir-security-audit로 알려진 CVE·의존성·서버를 먼저 훑고 → Claude Security 또는 Codex Security로 로직 결함을 깊게 봅니다.</text>
+<text x="1216" y="946" text-anchor="end" font-size="11" fill="#5f6a64">출처: openai/codex-security README·docs, code.claude.com/docs/en/claude-security, anthropics/claude-code-security-review · 2026-10-23 기준</text>
+</svg>

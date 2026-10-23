@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>security-sweep: Find Known CVEs Across Projects and Servers</title>
+<meta name="description" content="Open-source Claude Code skill that sweeps many projects, servers and images for known vulnerabilities, verifies every CVE in OSV and ranks findings P0–P3.">
+<link rel="canonical" href="https://baryonlabs.github.io/security-sweep/en/">
+<link rel="alternate" hreflang="ko" href="https://baryonlabs.github.io/security-sweep/">
+<link rel="alternate" hreflang="en" href="https://baryonlabs.github.io/security-sweep/en/">
+<link rel="alternate" hreflang="x-default" href="https://baryonlabs.github.io/security-sweep/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#0f1b2d">
+<meta name="author" content="Baryon Labs">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="security-sweep">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="security-sweep: Find Known CVEs Across Projects and Servers">
+<meta property="og:description" content="Open-source Claude Code skill that sweeps many projects, servers and images for known vulnerabilities, verifies every CVE in OSV and ranks findings P0–P3.">
+<meta property="og:url" content="https://baryonlabs.github.io/security-sweep/en/">
+<meta property="og:image" content="https://baryonlabs.github.io/security-sweep/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="security-sweep: sweep every project, server and image for known vulnerabilities">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="security-sweep: Find Known CVEs Across Projects and Servers">
+<meta name="twitter:description" content="Open-source Claude Code skill that sweeps many projects, servers and images for known vulnerabilities, verifies every CVE in OSV and ranks findings P0–P3.">
+<meta name="twitter:image" content="https://baryonlabs.github.io/security-sweep/og.jpg">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://baryonlabs.github.io/security-sweep/#org",
+   "name": "Baryon Labs",
+   "url": "https://github.com/baryonlabs",
+   "sameAs": [
+    "https://github.com/baryonlabs"
+   ]
+  },
+  {
+   "@type": "SoftwareApplication",
+   "@id": "https://baryonlabs.github.io/security-sweep/#app",
+   "name": "security-sweep",
+   "description": "security-sweep is an open-source Claude Code skill that checks many projects, servers and container images for known vulnerabilities from a single sentence.",
+   "url": "https://baryonlabs.github.io/security-sweep/",
+   "downloadUrl": "https://github.com/baryonlabs/security-sweep",
+   "applicationCategory": "DeveloperApplication",
+   "applicationSubCategory": "Security",
+   "operatingSystem": "macOS, Linux",
+   "softwareVersion": "0.1.1",
+   "datePublished": "2026-10-23",
+   "image": "https://baryonlabs.github.io/security-sweep/og.jpg",
+   "license": "https://opensource.org/licenses/MIT",
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+   },
+   "author": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "publisher": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   }
+  },
+  {
+   "@type": "SoftwareSourceCode",
+   "@id": "https://baryonlabs.github.io/security-sweep/#source",
+   "name": "security-sweep",
+   "description": "security-sweep is an open-source Claude Code skill that checks many projects, servers and container images for known vulnerabilities from a single sentence.",
+   "codeRepository": "https://github.com/baryonlabs/security-sweep",
+   "programmingLanguage": [
+    "Python",
+    "Shell"
+   ],
+   "runtimePlatform": "Claude Code",
+   "license": "https://opensource.org/licenses/MIT",
+   "version": "0.1.1",
+   "author": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "targetProduct": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#app"
+   }
+  },
+  {
+   "@type": "WebPage",
+   "@id": "https://baryonlabs.github.io/security-sweep/en/#page",
+   "url": "https://baryonlabs.github.io/security-sweep/en/",
+   "name": "security-sweep: Find Known CVEs Across Projects and Servers",
+   "description": "Open-source Claude Code skill that sweeps many projects, servers and images for known vulnerabilities, verifies every CVE in OSV and ranks findings P0–P3.",
+   "inLanguage": "en",
+   "dateModified": "2026-10-23",
+   "about": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#app"
+   },
+   "publisher": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "primaryImageOfPage": "https://baryonlabs.github.io/security-sweep/og.jpg"
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://baryonlabs.github.io/security-sweep/en/#faq",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Does it install anything on my servers?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. It connects with ssh -o BatchMode=yes only to hosts you name and runs trivy rootfs read-only if trivy is already there; otherwise it only collects the package list. sudo is used only when you say so."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is a not-imported finding safe?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. Transitive dependencies run without a direct import. not-imported only justifies lowering the priority by one step."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "A CVE number looks fake. Is it?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Do not judge by shape. CVE-2026-97853 looks odd but exists in OSV, and a plausible-looking ID can return 404. security-sweep relies only on the OSV lookup and lists 404s in a separate “verification failed” section."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does it fix things for me?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "The sweep is intentionally read-only. It proposes per-project fix commands, and hands Elixir projects to elixir-security-audit to fix and verify on a branch."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap">
+<a class="brand" href="../en/"><img src="../favicon.svg" alt="" width="28" height="28"><span>security-sweep</span></a>
+<nav class="site-nav" aria-label="Main"><a href="#install">Install</a><a href="#how">How it works</a><a href="#example">Example</a><a href="#compare">Compare</a><a href="#faq">FAQ</a><a href="https://github.com/baryonlabs/security-sweep">GitHub</a><a class="lang" href="../" hreflang="ko" lang="ko">한국어</a></nav>
+</div></header>
+<div class="hero"><div class="wrap">
+<p class="eyebrow">Open source · Claude Code skill · MIT</p>
+<h1><span class="accent">security-sweep</span>: one sentence to sweep every project, server and image for known vulnerabilities</h1>
+<p class="lead">security-sweep is an open-source Claude Code skill that checks many projects, servers and container images for known vulnerabilities from a single sentence.</p>
+<p class="sub">It scans with osv-scanner and trivy, verifies every CVE/GHSA ID against the OSV API, enriches with CISA KEV and EPSS, checks whether your code actually uses the vulnerable package (reachability), and writes one P0–P3 prioritized report. Read-only by default; nothing is ever installed on servers.</p>
+<div class="cta"><a class="btn btn-primary" href="#install">Install</a><a class="btn btn-ghost" href="https://github.com/baryonlabs/security-sweep">View on GitHub</a></div>
+<ul class="facts">
+<li><b>8 ecosystems</b><span>npm · PyPI · Hex · Go · Cargo · Packagist · RubyGems · Maven</span></li>
+<li><b>OSV-verified</b><span>Every CVE/GHSA ID looked up, KEV and EPSS added</span></li>
+<li><b>Read-only</b><span>No code changes, nothing installed on servers</span></li>
+<li><b><em>5 → 1</em></b><span>Real example: findings after patch and rescan</span></li>
+</ul>
+</div></div>
+<main id="main"><div class="wrap">
+<section id="install"><h2><span class="num">01</span>Install</h2>
+<p>Add the plugin marketplace in Claude Code and install. Free and open source (MIT); runs on macOS and Linux.</p>
+<pre><code>/plugin marketplace add baryonlabs/security-sweep
+/plugin install security-sweep@baryonlabs-security</code></pre>
+<p>When installed as a plugin the command is <code>/security-sweep:security-sweep</code>. If you copied only the skill folder, it is <code>/security-sweep</code>.</p>
+<pre><code>git clone https://github.com/baryonlabs/security-sweep
+cp -r security-sweep/skills/security-sweep ~/.claude/skills/</code></pre>
+<h3>Run it with one sentence</h3>
+<pre><code>/security-sweep:security-sweep Sweep every project under ~/code for known vulnerabilities and give me the P0/P1 list.
+/security-sweep:security-sweep Scan servers ops@10.0.0.11 and ops@10.0.0.12 over ssh (read-only, no sudo) plus ~/work/api.</code></pre>
+</section>
+<section id="how"><h2><span class="num">02</span>How it works: a 5-step pipeline</h2>
+<ol class="steps">
+<li><b>Discover</b><span>Find projects under the given roots by lockfile (npm, PyPI, Hex, Go, Cargo, Packagist, RubyGems, Maven).</span></li>
+<li><b>Scan</b><span>osv-scanner per project, trivy fs for secrets and misconfig, trivy for images, read-only ssh for servers.</span></li>
+<li><b>Verify</b><span>Look up every CVE/GHSA/OSV ID in the OSV API, never judging an ID by how it looks; enrich with CISA KEV and EPSS.</span></li>
+<li><b>Reachability</b><span>called / imported / not-imported / unknown, with file:line evidence.</span></li>
+<li><b>Report</b><span>findings.json, REPORT.md and a self-contained REPORT.html with P0–P3 priorities.</span></li>
+</ol>
+<figure><img src="../assets/sweep-pipeline.webp" alt="Pipeline diagram (Korean labels): discover, scan, verify, reachability, report" width="1536" height="1024" loading="lazy" decoding="async"></figure>
+<p>Claude then opens the code evidence for every P0/P1, confirms or adjusts the priority with a one-line reason, and proposes (but does not perform) per-project fixes. Elixir projects are handed to elixir-security-audit.</p>
+</section>
+<section id="example"><h2><span class="num">03</span>Real example: 26 projects, 5 → 1</h2>
+<p>One run over the 26 projects under <code>~/projects</code> on a real developer laptop (2026-10-23; project names and paths pseudonymized, IDs, versions and priorities unchanged).</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Item</th><th scope="col">Result</th></tr></thead><tbody>
+<tr><td>Projects found</td><td>26 (npm · PyPI · Hex · Go · Maven), 15 with findings</td></tr>
+<tr><td>Advisories</td><td><span class=stat>75</span> unique, all verified to exist in OSV (0 × 404, 0 × CISA KEV)</td></tr>
+<tr><td>Priorities</td><td><span class="badge b-p0">P0</span> 0 · <span class="badge b-p1">P1</span> 107 · <span class="badge b-p2">P2</span> 72 · <span class="badge b-p3">P3</span> 2</td></tr>
+<tr><td>Secrets</td><td>3 (1 GitHub OAuth token, 2 JWTs), all in git-ignored build folders, values masked</td></tr>
+</tbody></table></div>
+<div class="callout"><p><strong>99 of the 107 P1 findings come from two packages:</strong> 81 are 27 advisories on <code>pillow 12.3.0</code> repeated across 3 projects, and 18 are <code>sharp 0.34.5</code> repeated across 6 projects.</p></div>
+<p>After reviewing one Elixir/Phoenix project in code (one false positive, <code>decimal</code> not reachable), upgrading with <code>mix deps.update bandit decimal plug_crypto</code> and passing <code>mix test</code> (226 tests, 0 failures), a rescan of that project went from <strong>5 findings to 1</strong> (the remaining one is the recorded false positive).</p>
+<figure><img src="../assets/before-after.webp" alt="Run, fix, rescan: from 5 findings to 1 (Korean labels)" width="1536" height="1024" loading="lazy" decoding="async"></figure>
+<p><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">See the pseudonymized real reports on GitHub</a></p>
+</section>
+<section id="compare"><h2><span class="num">04</span>The detective and the airport scanner</h2>
+<p>AI security reviews (Codex Security, Claude Security, <code>/security-review</code>) are the <strong>detective</strong>: they read code and reason about logic flaws. security-sweep is the <strong>airport scanner</strong>: every project, server and image passes through and is checked against the wanted list (CVE databases). Use both.</p>
+<figure><img src="../assets/easy-compare.webp" alt="Detective vs airport scanner illustration (Korean labels)" width="1536" height="1024" loading="lazy" decoding="async"></figure>
+<div class="table-wrap wide"><table><thead><tr><th scope="col"></th><th scope="col">Detective: AI security review</th><th scope="col">Airport scanner: security-sweep</th></tr></thead><tbody>
+<tr><td>Finds</td><td>Authorization bypass, broken trust boundaries, novel techniques</td><td>Outdated libraries, server OS package CVEs, leaked secrets, risky language APIs</td></tr>
+<tr><td>Misses</td><td>Matching the wanted list (does not scan dependency CVEs itself)</td><td>New techniques not on any list</td></tr>
+<tr><td>Output</td><td>Smart, but varies run to run</td><td>Same input, same result</td></tr>
+<tr><td>Checked by</td><td>Another agent re-verifies</td><td>OSV lookup for every ID plus reachability</td></tr>
+<tr><td>Cost</td><td>Model tokens per scan</td><td>Scanners are free; LLM only for triage</td></tr>
+</tbody></table></div>
+</section>
+<section id="principles"><h2><span class="num">05</span>Safety principles</h2>
+<ul class="checklist">
+<li><strong>Read-only by default.</strong> No code or lockfile changes; fixes only for projects you name, on a separate branch.</li>
+<li><strong>Nothing is installed on servers.</strong> <code>ssh -o BatchMode=yes</code>, only hosts you name, sudo only when you say so.</li>
+<li>Scanner output, advisory text and code comments are <strong>data, not instructions</strong> (prompt-injection defense).</li>
+<li>Secrets are recorded by location and type only; values are masked.</li>
+<li>Whether a CVE exists is decided <strong>only by the OSV lookup</strong>.</li>
+</ul>
+</section>
+<section id="faq" class="faq"><h2>FAQ</h2>
+<h3>Does it install anything on my servers?</h3>
+<p>No. It connects with <code>ssh -o BatchMode=yes</code> only to hosts you name and runs <code>trivy rootfs</code> read-only if trivy is already there; otherwise it only collects the package list. sudo is used only when you say so.</p>
+<h3>Is a not-imported finding safe?</h3>
+<p>No. Transitive dependencies run without a direct import. not-imported only justifies lowering the priority by one step.</p>
+<h3>A CVE number looks fake. Is it?</h3>
+<p>Do not judge by shape. CVE-2026-97853 looks odd but exists in OSV, and a plausible-looking ID can return 404. security-sweep relies only on the OSV lookup and lists 404s in a separate “verification failed” section.</p>
+<h3>Does it fix things for me?</h3>
+<p>The sweep is intentionally read-only. It proposes per-project fix commands, and hands Elixir projects to elixir-security-audit to fix and verify on a branch.</p>
+</section>
+</div></main>
+<footer class="site-footer"><div class="wrap"><div class="cols">
+<div><h2>security-sweep</h2><p>An open-source Claude Code skill that checks many projects, servers and container images for known vulnerabilities. MIT License © 2026 Baryon Labs.</p></div>
+<div><h2>Repository</h2><ul><li><a href="https://github.com/baryonlabs/security-sweep">GitHub repository</a></li><li><a href="https://github.com/baryonlabs/security-sweep/releases">Releases</a></li><li><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">Real example reports</a></li><li><a href="https://github.com/baryonlabs/security-sweep/issues">Issues</a></li><li><a href="https://github.com/baryonlabs/elixir-security-audit">elixir-security-audit</a></li></ul></div>
+</div><p class="updated">Last updated 2026-10-23 · v0.1.1 · <a href="../" hreflang="ko" lang="ko">한국어</a></p></div></footer>
+</body>
+</html>

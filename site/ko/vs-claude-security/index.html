@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Security·Codex Security와 security-sweep의 차이 비교</title>
+<meta name="description" content="Claude Security·Codex Security·/security-review는 코드를 읽어 로직 결함을 찾고, security-sweep은 알려진 취약점(CVE)을 스캐너로 빠짐없이 훑습니다. 탐정과 공항 검색대 비유와 도구별 비교표, 권장 사용 순서를 정리했습니다.">
+<link rel="canonical" href="https://baryonlabs.github.io/security-sweep/ko/vs-claude-security/">
+
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#0f1b2d">
+<meta name="author" content="Baryon Labs">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="security-sweep">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="Claude Security·Codex Security와 security-sweep의 차이 비교">
+<meta property="og:description" content="Claude Security·Codex Security·/security-review는 코드를 읽어 로직 결함을 찾고, security-sweep은 알려진 취약점(CVE)을 스캐너로 빠짐없이 훑습니다. 탐정과 공항 검색대 비유와 도구별 비교표, 권장 사용 순서를 정리했습니다.">
+<meta property="og:url" content="https://baryonlabs.github.io/security-sweep/ko/vs-claude-security/">
+<meta property="og:image" content="https://baryonlabs.github.io/security-sweep/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="security-sweep: 한 문장으로 모든 프로젝트·서버·이미지의 알려진 취약점을 점검">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Claude Security·Codex Security와 security-sweep의 차이 비교">
+<meta name="twitter:description" content="Claude Security·Codex Security·/security-review는 코드를 읽어 로직 결함을 찾고, security-sweep은 알려진 취약점(CVE)을 스캐너로 빠짐없이 훑습니다. 탐정과 공항 검색대 비유와 도구별 비교표, 권장 사용 순서를 정리했습니다.">
+<meta name="twitter:image" content="https://baryonlabs.github.io/security-sweep/og.jpg">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/style.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://baryonlabs.github.io/security-sweep/#org",
+   "name": "Baryon Labs",
+   "url": "https://github.com/baryonlabs",
+   "sameAs": [
+    "https://github.com/baryonlabs"
+   ]
+  },
+  {
+   "@type": "SoftwareApplication",
+   "@id": "https://baryonlabs.github.io/security-sweep/#app",
+   "name": "security-sweep",
+   "description": "security-sweep은 한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬입니다.",
+   "url": "https://baryonlabs.github.io/security-sweep/",
+   "downloadUrl": "https://github.com/baryonlabs/security-sweep",
+   "applicationCategory": "DeveloperApplication",
+   "applicationSubCategory": "Security",
+   "operatingSystem": "macOS, Linux",
+   "softwareVersion": "0.1.1",
+   "datePublished": "2026-10-23",
+   "image": "https://baryonlabs.github.io/security-sweep/og.jpg",
+   "license": "https://opensource.org/licenses/MIT",
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+   },
+   "author": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "publisher": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   }
+  },
+  {
+   "@type": "SoftwareSourceCode",
+   "@id": "https://baryonlabs.github.io/security-sweep/#source",
+   "name": "security-sweep",
+   "description": "security-sweep은 한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬입니다.",
+   "codeRepository": "https://github.com/baryonlabs/security-sweep",
+   "programmingLanguage": [
+    "Python",
+    "Shell"
+   ],
+   "runtimePlatform": "Claude Code",
+   "license": "https://opensource.org/licenses/MIT",
+   "version": "0.1.1",
+   "author": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "targetProduct": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#app"
+   }
+  },
+  {
+   "@type": "WebPage",
+   "@id": "https://baryonlabs.github.io/security-sweep/ko/vs-claude-security/#page",
+   "url": "https://baryonlabs.github.io/security-sweep/ko/vs-claude-security/",
+   "name": "Claude Security·Codex Security와 security-sweep의 차이 비교",
+   "description": "Claude Security·Codex Security·/security-review는 코드를 읽어 로직 결함을 찾고, security-sweep은 알려진 취약점(CVE)을 스캐너로 빠짐없이 훑습니다. 탐정과 공항 검색대 비유와 도구별 비교표, 권장 사용 순서를 정리했습니다.",
+   "inLanguage": "ko",
+   "dateModified": "2026-10-23",
+   "about": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#app"
+   },
+   "publisher": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "primaryImageOfPage": "https://baryonlabs.github.io/security-sweep/og.jpg"
+  },
+  {
+   "@type": "BreadcrumbList",
+   "@id": "https://baryonlabs.github.io/security-sweep/ko/vs-claude-security/#breadcrumb",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "홈",
+     "item": "https://baryonlabs.github.io/security-sweep/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "다른 도구와 비교",
+     "item": "https://baryonlabs.github.io/security-sweep/ko/vs-claude-security/"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://baryonlabs.github.io/security-sweep/ko/vs-claude-security/#faq",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Claude Security를 쓰면 의존성 취약점도 잡히나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "공식 문서 기준으로 Claude Security는 의존성 CVE를 다루지 않고 기존 의존성 스캐너와 병행하라고 안내합니다. 의존성 CVE는 security-sweep 같은 스캐너 스윕이 맡습니다."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "security-sweep도 LLM을 쓰나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "스캔·검증·도달성·보고서는 스크립트로 돌고, LLM(Claude)은 P0/P1 항목을 코드 근거로 확정·조정하는 분류 단계에만 씁니다. 스크립트만 단독으로 실행할 수도 있습니다."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">본문 바로가기</a>
+<header class="site-header"><div class="wrap">
+<a class="brand" href="../../"><img src="../../favicon.svg" alt="" width="28" height="28"><span>security-sweep</span></a>
+<nav class="site-nav" aria-label="주요 메뉴"><a href="../../#install">설치</a><a href="../../#how">동작 방식</a><a href="../../#example">실제 예시</a><a href="../../#compare">비교</a><a href="../../#faq">FAQ</a><a href="https://github.com/baryonlabs/security-sweep">GitHub</a><a class="lang" href="../../en/" hreflang="en" lang="en">English</a></nav>
+</div></header>
+<div class="hero"><div class="wrap">
+<nav class="crumbs" aria-label="경로"><ol><li><a href="../../">홈</a></li><li aria-current="page">다른 도구와 비교</li></ol></nav>
+<p class="eyebrow">security-sweep 안내</p>
+<h1>Claude Security·Codex Security와 무엇이 다른가요?</h1>
+</div></div>
+<main id="main"><div class="wrap">
+<p class="answer">AI 리뷰는 로직 결함을, security-sweep은 알려진 취약점을 찾습니다.</p>
+<p>Claude Security, Codex Security, Claude Code의 <code>/security-review</code>는 LLM이 사람 보안 연구자처럼 코드를 읽어 <strong>로직 결함</strong>(인가 우회, 잘못된 신뢰 경계 등)을 찾는 데 강합니다. security-sweep은 <strong>알려진 취약점</strong>(의존성 CVE, 서버 OS 패키지, 흘린 비밀값)을 결정적 스캐너로 빠짐없이 훑고, CVE가 실재하는지와 코드에서 실제로 쓰는지를 확인합니다. 대체가 아니라 조합입니다.</p>
+<h2>쉽게 말하면: 탐정과 공항 검색대</h2>
+<figure><img src="../../assets/easy-compare.webp" alt="탐정과 공항 검색대: 로직 결함은 AI 보안 리뷰가, 알려진 취약점은 스캐너 스윕이 찾습니다" width="1536" height="1024" loading="lazy" decoding="async"></figure>
+<div class="table-wrap wide"><table><thead><tr><th scope="col"></th><th scope="col">탐정: AI 보안 리뷰</th><th scope="col">공항 검색대: 스캐너 스윕</th></tr></thead><tbody>
+<tr><td>하는 일</td><td>코드를 처음부터 읽고 추리해서 설계·로직 결함을 찾습니다</td><td>모든 가방(프로젝트·서버·이미지)을 통과시키며 수배 목록(CVE DB)에 오른 위험물을 빠짐없이 찾습니다</td></tr>
+<tr><td>잘 찾는 것</td><td>인가 우회, 잘못된 신뢰 경계, 처음 보는 수법</td><td>오래된 라이브러리, 서버 OS 패키지 취약점, 흘린 비밀값, 언어별 위험 API</td></tr>
+<tr><td>놓치기 쉬운 것</td><td>수배 목록 대조 (의존성 CVE는 직접 안 봄)</td><td>목록에 없는 새로운 수법</td></tr>
+<tr><td>결과</td><td>똑똑하지만 돌릴 때마다 조금씩 다름</td><td>같은 입력이면 항상 같은 결과</td></tr>
+<tr><td>확인 방법</td><td>다른 에이전트가 한 번 더 검증</td><td>수배 목록이 진짜인지 OSV로 조회하고, 실제로 꺼내 쓰는지(도달성) 확인</td></tr>
+<tr><td>비용</td><td>모델 토큰 (스캔마다)</td><td>스캐너는 무료, LLM은 분류할 때만</td></tr>
+</tbody></table></div>
+<h2>도구별 자세한 비교 (2026-10-23 기준)</h2>
+<div class="table-wrap wide"><table><thead><tr><th scope="col"></th><th scope="col">OpenAI Codex Security</th><th scope="col">Claude Code /security-review</th><th scope="col">Anthropic Claude Security 플러그인</th><th scope="col">elixir-security-audit</th><th scope="col">security-sweep</th></tr></thead><tbody>
+<tr><td>접근 방식</td><td>LLM이 코드를 읽고 탐지 (CLI·SDK·Codex 플러그인·GitHub Action)</td><td>LLM 1회 보안 패스</td><td>LLM 멀티에이전트 (아키텍처 → 위협 모델 → 탐색 → 독립 검증)</td><td>결정적 스캐너 + LLM 분류·수정</td><td>결정적 스캐너 + LLM 분류</td></tr>
+<tr><td>범위</td><td>저장소·경로·diff, deep 모드, 여러 저장소 bulk 스캔</td><td>현재 브랜치</td><td>저장소 전체·일부, 브랜치·PR·커밋 diff</td><td>Elixir/Phoenix 프로젝트 1개</td><td>디렉터리 아래 모든 프로젝트 + 서버 + 컨테이너 이미지</td></tr>
+<tr><td>의존성 CVE</td><td>직접 스캔하지 않음 (Snyk·Endor 결과 가져오기)</td><td>다루지 않음</td><td>다루지 않음 (공식 문서: 기존 의존성 스캐너와 병행 권장)</td><td>mix_audit · hex.audit · OSV</td><td>OSV-Scanner (전 생태계)</td></tr>
+<tr><td>CVE 실재 검증</td><td>—</td><td>—</td><td>—</td><td>OSV 대조</td><td>OSV 조회 + CISA KEV + EPSS</td></tr>
+<tr><td>수정</td><td>cs patch, verify-fix</td><td>보고 중심</td><td>patches/에 패치 파일, 자동 적용 안 함</td><td>별도 브랜치에 커밋 (승인 후)</td><td>읽기 전용, 언어별 스킬로 넘김</td></tr>
+<tr><td>LLM 없이 실행</td><td>불가</td><td>불가</td><td>불가</td><td>scan.sh 단독 가능</td><td>스크립트 단독·--offline 가능</td></tr>
+<tr><td>필요 조건</td><td>OpenAI 로그인·API 키 (Bedrock 등 가능), Node 22+</td><td>Claude Code</td><td>유료 플랜·API, python3 3.9+</td><td>Claude Code, Elixir</td><td>Claude Code, osv-scanner, trivy</td></tr>
+</tbody></table></div>
+<figure><img src="../../assets/comparison.svg" alt="보안 점검 도구 비교: Codex Security, /security-review, Claude Security, elixir-security-audit, security-sweep" width="1240" height="960" loading="lazy" decoding="async"></figure>
+<p class="muted small">출처: <a href="https://github.com/openai/codex-security">openai/codex-security</a> README·<a href="https://github.com/openai/codex-security/blob/main/docs/agent-workflows.md">agent workflows</a>, <a href="https://code.claude.com/docs/en/claude-security">Claude Security 문서</a>, <a href="https://github.com/anthropics/claude-code-security-review">anthropics/claude-code-security-review</a>. 2026-10-23 기준이며 각 도구는 계속 바뀝니다.</p>
+<h2>무엇부터 쓰면 되나</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">이럴 때</th><th scope="col">이것부터</th></tr></thead><tbody>
+<tr><td>“우리 프로젝트·서버 전체에 알려진 취약점 있나?”</td><td><strong>security-sweep</strong></td></tr>
+<tr><td>“이 Phoenix 앱 고쳐 줘”</td><td><strong>elixir-security-audit</strong></td></tr>
+<tr><td>“PR 하나 머지 전에 빨리 봐 줘”</td><td><code>/security-review</code></td></tr>
+<tr><td>“결제·인증 같은 핵심 저장소를 깊게 털어 줘”</td><td><strong>Claude Security</strong> 또는 <strong>Codex Security</strong></td></tr>
+</tbody></table></div>
+<p>권장 순서: <strong>security-sweep</strong>으로 전체를 훑기 → Elixir 프로젝트는 <strong>elixir-security-audit</strong>로 수정 → 중요한 저장소는 <strong>Claude Security</strong> 또는 <strong>Codex Security</strong>로 로직 결함 딥스캔. Claude Security 공식 문서도 기존 정적 분석·의존성 스캐너와 함께 쓰라고 안내합니다.</p>
+<p><a href="../../">security-sweep 설치 방법 보기</a> · <a href="../../ko/scan-all-projects/">여러 프로젝트를 한 번에 점검하는 법</a></p>
+<section id="faq" class="faq"><h2>자주 묻는 질문</h2>
+<h3>Claude Security를 쓰면 의존성 취약점도 잡히나요?</h3>
+<p>공식 문서 기준으로 Claude Security는 의존성 CVE를 다루지 않고 기존 의존성 스캐너와 병행하라고 안내합니다. 의존성 CVE는 security-sweep 같은 스캐너 스윕이 맡습니다.</p>
+<h3>security-sweep도 LLM을 쓰나요?</h3>
+<p>스캔·검증·도달성·보고서는 스크립트로 돌고, LLM(Claude)은 P0/P1 항목을 코드 근거로 확정·조정하는 분류 단계에만 씁니다. 스크립트만 단독으로 실행할 수도 있습니다.</p>
+</section>
+<section id="about"><h2>security-sweep이란?</h2>
+<p>security-sweep은 한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬입니다.</p>
+<pre><code>/plugin marketplace add baryonlabs/security-sweep
+/plugin install security-sweep@baryonlabs-security</code></pre>
+<p><a href="../../">소개 페이지</a> · <a href="https://github.com/baryonlabs/security-sweep">GitHub 저장소</a></p>
+</section>
+</div></main>
+<footer class="site-footer"><div class="wrap"><div class="cols">
+<div><h2>security-sweep</h2><p>여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬. MIT 라이선스 © 2026 Baryon Labs.</p></div>
+<div><h2>질문별 안내</h2><ul><li><a href="../../ko/scan-all-projects/">여러 프로젝트를 한 번에 점검하려면?</a></li><li><a href="../../ko/verify-cve/">CVE 번호가 진짜인지 확인하는 법</a></li><li><a href="../../ko/priority/">P0~P3 우선순위는 어떻게 정하나요?</a></li><li><a href="../../ko/vs-claude-security/">Claude Security·Codex Security와 차이</a></li></ul></div>
+<div><h2>저장소</h2><ul><li><a href="https://github.com/baryonlabs/security-sweep">GitHub 저장소</a></li><li><a href="https://github.com/baryonlabs/security-sweep/releases">릴리스</a></li><li><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">실제 예시 보고서</a></li><li><a href="https://github.com/baryonlabs/security-sweep/issues">이슈·제보</a></li><li><a href="https://github.com/baryonlabs/elixir-security-audit">elixir-security-audit</a></li></ul></div>
+</div><p class="updated">최종 갱신 2026-10-23 · v0.1.1 · <a href="../../en/" hreflang="en" lang="en">English</a></p></div></footer>
+</body>
+</html>

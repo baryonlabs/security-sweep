@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://baryonlabs.github.io/security-sweep/</loc>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://baryonlabs.github.io/security-sweep/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baryonlabs.github.io/security-sweep/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baryonlabs.github.io/security-sweep/"/>
+  </url>
+  <url>
+    <loc>https://baryonlabs.github.io/security-sweep/en/</loc>
+    <lastmod>2026-10-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://baryonlabs.github.io/security-sweep/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baryonlabs.github.io/security-sweep/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baryonlabs.github.io/security-sweep/"/>
+  </url>
+  <url>
+    <loc>https://baryonlabs.github.io/security-sweep/ko/verify-cve/</loc>
+    <lastmod>2026-10-23</lastmod>
+  </url>
+  <url>
+    <loc>https://baryonlabs.github.io/security-sweep/ko/scan-all-projects/</loc>
+    <lastmod>2026-10-23</lastmod>
+  </url>
+  <url>
+    <loc>https://baryonlabs.github.io/security-sweep/ko/vs-claude-security/</loc>
+    <lastmod>2026-10-23</lastmod>
+  </url>
+  <url>
+    <loc>https://baryonlabs.github.io/security-sweep/ko/priority/</loc>
+    <lastmod>2026-10-23</lastmod>
+  </url>
+</urlset>

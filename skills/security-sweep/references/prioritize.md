@@ -62,7 +62,7 @@
 ```markdown
 | # | 원래 | 최종 | 대상 | ID | 패키지@버전 → 수정 | 사유 (근거 file:line) |
 |---|------|------|------|----|---------------------|------------------------|
-| 1 | P1 | P0 | billing | GHSA-6c27-994x-c52f (CVE-2026-97853) | decimal@<현재> → <OSV fixed> | lib/billing/money.ex:88 Decimal.round/3 에 사용자 입력 precision 전달 |
+| 1 | P1 | P0 | billing | CVE-2026-97853 (EEF-CVE-2026-97853) | decimal@<현재> → <OSV fixed> | lib/billing/money.ex:88 Decimal.round/3 에 사용자 입력 precision 전달 |
 | 2 | P1 | P2 | web | GHSA-xxxx | lodash@4.17.20 → 4.17.21 | devDependency, scripts/build.js:12 에서만 require, 입력은 저장소 내 고정 파일 |
 | 3 | P0 | P0 | api | CVE-yyyy (KEV) | ... | KEV 등재 — 도달성 무관 유지 |
 ```

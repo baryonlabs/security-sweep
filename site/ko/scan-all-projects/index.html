@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>여러 프로젝트의 알려진 취약점(CVE)을 한 번에 점검하는 방법 | security-sweep</title>
+<meta name="description" content="상위 폴더 하나만 지정하면 security-sweep이 lockfile로 프로젝트를 찾아 osv-scanner·trivy로 한 번에 점검하고 보고서로 합칩니다. 실제 개발 머신 26개 프로젝트에서 고유 권고 75개를 찾아 전부 OSV로 실재 확인한 결과를 함께 정리했습니다.">
+<link rel="canonical" href="https://baryonlabs.github.io/security-sweep/ko/scan-all-projects/">
+
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#0f1b2d">
+<meta name="author" content="Baryon Labs">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="security-sweep">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="여러 프로젝트의 알려진 취약점(CVE)을 한 번에 점검하는 방법 | security-sweep">
+<meta property="og:description" content="상위 폴더 하나만 지정하면 security-sweep이 lockfile로 프로젝트를 찾아 osv-scanner·trivy로 한 번에 점검하고 보고서로 합칩니다. 실제 개발 머신 26개 프로젝트에서 고유 권고 75개를 찾아 전부 OSV로 실재 확인한 결과를 함께 정리했습니다.">
+<meta property="og:url" content="https://baryonlabs.github.io/security-sweep/ko/scan-all-projects/">
+<meta property="og:image" content="https://baryonlabs.github.io/security-sweep/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="security-sweep: 한 문장으로 모든 프로젝트·서버·이미지의 알려진 취약점을 점검">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="여러 프로젝트의 알려진 취약점(CVE)을 한 번에 점검하는 방법 | security-sweep">
+<meta name="twitter:description" content="상위 폴더 하나만 지정하면 security-sweep이 lockfile로 프로젝트를 찾아 osv-scanner·trivy로 한 번에 점검하고 보고서로 합칩니다. 실제 개발 머신 26개 프로젝트에서 고유 권고 75개를 찾아 전부 OSV로 실재 확인한 결과를 함께 정리했습니다.">
+<meta name="twitter:image" content="https://baryonlabs.github.io/security-sweep/og.jpg">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/style.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://baryonlabs.github.io/security-sweep/#org",
+   "name": "Baryon Labs",
+   "url": "https://github.com/baryonlabs",
+   "sameAs": [
+    "https://github.com/baryonlabs"
+   ]
+  },
+  {
+   "@type": "SoftwareApplication",
+   "@id": "https://baryonlabs.github.io/security-sweep/#app",
+   "name": "security-sweep",
+   "description": "security-sweep은 한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬입니다.",
+   "url": "https://baryonlabs.github.io/security-sweep/",
+   "downloadUrl": "https://github.com/baryonlabs/security-sweep",
+   "applicationCategory": "DeveloperApplication",
+   "applicationSubCategory": "Security",
+   "operatingSystem": "macOS, Linux",
+   "softwareVersion": "0.1.1",
+   "datePublished": "2026-10-23",
+   "image": "https://baryonlabs.github.io/security-sweep/og.jpg",
+   "license": "https://opensource.org/licenses/MIT",
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+   },
+   "author": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "publisher": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   }
+  },
+  {
+   "@type": "SoftwareSourceCode",
+   "@id": "https://baryonlabs.github.io/security-sweep/#source",
+   "name": "security-sweep",
+   "description": "security-sweep은 한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬입니다.",
+   "codeRepository": "https://github.com/baryonlabs/security-sweep",
+   "programmingLanguage": [
+    "Python",
+    "Shell"
+   ],
+   "runtimePlatform": "Claude Code",
+   "license": "https://opensource.org/licenses/MIT",
+   "version": "0.1.1",
+   "author": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "targetProduct": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#app"
+   }
+  },
+  {
+   "@type": "WebPage",
+   "@id": "https://baryonlabs.github.io/security-sweep/ko/scan-all-projects/#page",
+   "url": "https://baryonlabs.github.io/security-sweep/ko/scan-all-projects/",
+   "name": "여러 프로젝트의 알려진 취약점(CVE)을 한 번에 점검하는 방법 | security-sweep",
+   "description": "상위 폴더 하나만 지정하면 security-sweep이 lockfile로 프로젝트를 찾아 osv-scanner·trivy로 한 번에 점검하고 보고서로 합칩니다. 실제 개발 머신 26개 프로젝트에서 고유 권고 75개를 찾아 전부 OSV로 실재 확인한 결과를 함께 정리했습니다.",
+   "inLanguage": "ko",
+   "dateModified": "2026-10-23",
+   "about": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#app"
+   },
+   "publisher": {
+    "@id": "https://baryonlabs.github.io/security-sweep/#org"
+   },
+   "primaryImageOfPage": "https://baryonlabs.github.io/security-sweep/og.jpg"
+  },
+  {
+   "@type": "BreadcrumbList",
+   "@id": "https://baryonlabs.github.io/security-sweep/ko/scan-all-projects/#breadcrumb",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "홈",
+     "item": "https://baryonlabs.github.io/security-sweep/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "여러 프로젝트 한 번에 점검",
+     "item": "https://baryonlabs.github.io/security-sweep/ko/scan-all-projects/"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://baryonlabs.github.io/security-sweep/ko/scan-all-projects/#faq",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "프로젝트가 아주 많아도 되나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "됩니다. 다만 프로젝트가 50개를 넘거나 서버가 포함되면 진행 전에 한 번 확인을 받습니다. 탐색 깊이는 --max-depth로 조절합니다."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "점검하면서 코드나 lockfile이 바뀌나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "아니요. 스윕은 읽기 전용이고 수정 명령은 제안만 합니다. 수정은 사용자가 지시한 프로젝트만 별도 브랜치에서 합니다."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">본문 바로가기</a>
+<header class="site-header"><div class="wrap">
+<a class="brand" href="../../"><img src="../../favicon.svg" alt="" width="28" height="28"><span>security-sweep</span></a>
+<nav class="site-nav" aria-label="주요 메뉴"><a href="../../#install">설치</a><a href="../../#how">동작 방식</a><a href="../../#example">실제 예시</a><a href="../../#compare">비교</a><a href="../../#faq">FAQ</a><a href="https://github.com/baryonlabs/security-sweep">GitHub</a><a class="lang" href="../../en/" hreflang="en" lang="en">English</a></nav>
+</div></header>
+<div class="hero"><div class="wrap">
+<nav class="crumbs" aria-label="경로"><ol><li><a href="../../">홈</a></li><li aria-current="page">여러 프로젝트 한 번에 점검</li></ol></nav>
+<p class="eyebrow">security-sweep 안내</p>
+<h1>여러 프로젝트의 알려진 취약점을 한 번에 점검하려면?</h1>
+</div></div>
+<main id="main"><div class="wrap">
+<p class="answer">상위 폴더 하나를 지정해 security-sweep으로 한 번에 훑으면 됩니다.</p>
+<p>security-sweep은 지정한 루트 아래의 lockfile을 찾아 프로젝트와 생태계를 자동으로 판별하고, 프로젝트마다 osv-scanner와 trivy를 돌린 뒤 결과를 하나의 P0~P3 보고서로 합칩니다. 서버(ssh, 읽기 전용)와 컨테이너 이미지도 같은 요청에 넣을 수 있습니다.</p>
+<h2>한 문장으로 실행</h2>
+<pre><code>/security-sweep:security-sweep ~/work 아래 모든 프로젝트 취약점 점검해줘
+/security-sweep:security-sweep ~/work/projects 전체랑 서버 web1, web2 (ssh), 이미지 myapp:prod 점검해줘</code></pre>
+<p>설치: <code>/plugin marketplace add baryonlabs/security-sweep</code> 후 <code>/plugin install security-sweep@baryonlabs-security</code></p>
+<h2>무엇을 찾아 무엇으로 점검하나</h2>
+<div class="table-wrap"><table><thead><tr><th scope="col">대상</th><th scope="col">찾는 방법</th><th scope="col">점검 도구</th></tr></thead><tbody>
+<tr><td>프로젝트</td><td>lockfile·매니페스트로 판별: npm, PyPI, Hex, Go, Cargo, Packagist, RubyGems, Maven</td><td>osv-scanner(lockfile별), trivy fs(비밀·설정), 선택: govulncheck, elixir-security-audit</td></tr>
+<tr><td>서버</td><td>사용자가 이름을 댄 호스트만</td><td>원격에 trivy가 있으면 trivy rootfs(읽기 전용), 없으면 패키지 목록만 수집</td></tr>
+<tr><td>컨테이너 이미지</td><td>이름을 지정하거나 실행 중인 컨테이너 이미지 목록</td><td>로컬 trivy image</td></tr>
+</tbody></table></div>
+<h2>실제 결과: 26개 프로젝트를 한 번에</h2>
+<p>2026-10-23 개발자 맥북 한 대의 <code>~/projects</code>를 한 번 돌린 결과입니다.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">항목</th><th scope="col">결과</th></tr></thead><tbody>
+<tr><td>탐지된 프로젝트</td><td>26개, 그중 취약점이 나온 곳 15개</td></tr>
+<tr><td>고유 권고</td><td>75개, 전부 OSV 실재 확인 (404 0건, KEV 0건)</td></tr>
+<tr><td>우선순위</td><td>P0 0 · P1 107 · P2 72 · P3 2</td></tr>
+<tr><td>비밀값</td><td>3건 (값은 마스킹)</td></tr>
+</tbody></table></div>
+<div class="callout"><p>P1 107건 중 99건은 <code>pillow 12.3.0</code>(81건)과 <code>sharp 0.34.5</code>(18건) 두 패키지입니다. 여러 프로젝트를 한 번에 보면 “어느 패키지를 올리면 몇 건이 사라지는지”가 보입니다.</p></div>
+<h2>점검 다음 순서</h2>
+<ol>
+<li>패키지별로 묶어 읽습니다 (개수보다 올릴 패키지 수).</li>
+<li>P0/P1은 Claude가 코드 근거를 열어 확정·조정합니다 (<code>triage.md</code>).</li>
+<li>프로젝트별 최소 업그레이드를 별도 브랜치에서 적용하고 테스트합니다.</li>
+<li>그 프로젝트만 다시 스캔해 줄어든 것을 확인합니다. 예시에서는 5건 → 1건이었습니다.</li>
+</ol>
+<p><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">실제 예시 보고서 보기</a> · <a href="../../ko/priority/">우선순위 규칙 보기</a> · <a href="../../">security-sweep 소개로 돌아가기</a></p>
+<section id="faq" class="faq"><h2>자주 묻는 질문</h2>
+<h3>프로젝트가 아주 많아도 되나요?</h3>
+<p>됩니다. 다만 프로젝트가 50개를 넘거나 서버가 포함되면 진행 전에 한 번 확인을 받습니다. 탐색 깊이는 <code>--max-depth</code>로 조절합니다.</p>
+<h3>점검하면서 코드나 lockfile이 바뀌나요?</h3>
+<p>아니요. 스윕은 읽기 전용이고 수정 명령은 제안만 합니다. 수정은 사용자가 지시한 프로젝트만 별도 브랜치에서 합니다.</p>
+</section>
+<section id="about"><h2>security-sweep이란?</h2>
+<p>security-sweep은 한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬입니다.</p>
+<pre><code>/plugin marketplace add baryonlabs/security-sweep
+/plugin install security-sweep@baryonlabs-security</code></pre>
+<p><a href="../../">소개 페이지</a> · <a href="https://github.com/baryonlabs/security-sweep">GitHub 저장소</a></p>
+</section>
+</div></main>
+<footer class="site-footer"><div class="wrap"><div class="cols">
+<div><h2>security-sweep</h2><p>여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬. MIT 라이선스 © 2026 Baryon Labs.</p></div>
+<div><h2>질문별 안내</h2><ul><li><a href="../../ko/scan-all-projects/">여러 프로젝트를 한 번에 점검하려면?</a></li><li><a href="../../ko/verify-cve/">CVE 번호가 진짜인지 확인하는 법</a></li><li><a href="../../ko/priority/">P0~P3 우선순위는 어떻게 정하나요?</a></li><li><a href="../../ko/vs-claude-security/">Claude Security·Codex Security와 차이</a></li></ul></div>
+<div><h2>저장소</h2><ul><li><a href="https://github.com/baryonlabs/security-sweep">GitHub 저장소</a></li><li><a href="https://github.com/baryonlabs/security-sweep/releases">릴리스</a></li><li><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">실제 예시 보고서</a></li><li><a href="https://github.com/baryonlabs/security-sweep/issues">이슈·제보</a></li><li><a href="https://github.com/baryonlabs/elixir-security-audit">elixir-security-audit</a></li></ul></div>
+</div><p class="updated">최종 갱신 2026-10-23 · v0.1.1 · <a href="../../en/" hreflang="en" lang="en">English</a></p></div></footer>
+</body>
+</html>
