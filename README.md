@@ -121,9 +121,13 @@ cp -r security-sweep/skills/security-sweep ~/.claude/skills/
 
 ### 실제 예시
 
+![한 번 돌리고, 고치고, 다시 확인: 5건 → 1건](docs/before-after.webp)
+
 개발 머신 한 대(프로젝트 26개)를 한 번 돌리고 → 한 프로젝트를 코드로 검토하고 → 패치한 뒤 → 그 프로젝트만 다시 스캔해 5건이 1건으로 줄어드는 과정을, 가명 처리한 실제 보고서와 함께 정리했습니다: [`examples/dev-machine-2026-10-23`](examples/dev-machine-2026-10-23)
 
 ## 동작 방식
+
+![한 문장으로 전체 보안 스윕: 탐색 → 스캔 → 검증 → 도달성 → 보고서](docs/sweep-pipeline.webp)
 
 ```mermaid
 flowchart LR
