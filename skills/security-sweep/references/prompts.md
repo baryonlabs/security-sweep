@@ -1,11 +1,11 @@
 # 원샷 프롬프트 예시
 
-그대로 복사해 쓰거나 경로·호스트만 바꾼다. `/security-sweep` 를 앞에 붙이지 않아도 트리거 문구("전체 보안 점검", "CVE 확인" 등)로 스킬이 실행된다.
+그대로 복사해 쓰거나 경로·호스트만 바꾼다. 플러그인으로 설치했다면 슬래시 명령은 `/security-sweep:security-sweep`, 스킬 폴더만 `~/.claude/skills/`에 복사했다면 `/security-sweep`입니다. 아래 예시는 플러그인 기준입니다. 명령 없이 자연어로 요청해도 Claude가 스킬을 고를 수 있지만, 명령을 붙이는 것이 확실합니다.
 
 ## 1. 내 컴퓨터의 모든 프로젝트
 
 ```text
-/security-sweep ~/work 아래 모든 프로젝트 취약점 점검해줘
+/security-sweep:security-sweep ~/work 아래 모든 프로젝트 취약점 점검해줘
 ```
 
 ```text
@@ -51,7 +51,7 @@ Scan servers ops@10.0.0.11 and ops@10.0.0.12 over ssh (read-only, no sudo) plus 
 ## 6. 프로젝트 + 서버 + 이미지 한 번에
 
 ```text
-/security-sweep ~/work/projects 전체랑 서버 web1, web2 (ssh), 이미지 myapp:prod 점검해줘
+/security-sweep:security-sweep ~/work/projects 전체랑 서버 web1, web2 (ssh), 이미지 myapp:prod 점검해줘
 ```
 
 ## 7. P0/P1 만

@@ -7,7 +7,7 @@
 ## 1단계 · 한 번 돌리기
 
 ```text
-/security-sweep ~/projects 전체 점검해줘
+/security-sweep:security-sweep ~/projects 전체 점검해줘
 ```
 
 | 항목 | 결과 |
@@ -52,7 +52,7 @@ git commit -m "fix(security): upgrade bandit 1.13.1, decimal 3.2.0, plug_crypto 
 ## 4단계 · 그 프로젝트 하나만 다시 스캔하기
 
 ```text
-/security-sweep ~/projects/phoenix-saas 다시 점검해줘
+/security-sweep:security-sweep ~/projects/phoenix-saas 다시 점검해줘
 ```
 
 | | 패치 전 (1단계) | 패치 후 (4단계) |

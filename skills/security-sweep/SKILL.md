@@ -73,7 +73,7 @@ S="${CLAUDE_PLUGIN_ROOT}/skills/security-sweep/scripts"
 
 ```bash
 for t in osv-scanner trivy govulncheck python3 jq; do printf '%s\t' "$t"; command -v "$t" || echo MISSING; done
-echo "${ELIXIR_AUDIT_SCAN:-}"; ls ~/.claude/plugins/**/elixir-security-audit/scripts/scan.sh 2>/dev/null | head -1
+echo "${ELIXIR_AUDIT_SCAN:-}"; find ~/.claude/plugins ~/.claude/skills -path "*elixir-security-audit/scripts/scan.sh" 2>/dev/null | head -1
 ```
 
 - 필수: `python3`, 그리고 `osv-scanner` 와 `trivy` 중 하나 이상. 선택: `govulncheck`(Go 도달성), elixir-security-audit `scan.sh`(Hex).
@@ -170,7 +170,7 @@ python3 "$S/report.py" "$OUT"
 - **매주 재실행:** `/schedule` 로 예약하거나 cron 한 줄을 제안한다:
 
 ```cron
-0 9 * * 1  cd ~/work && claude -p "/security-sweep ~/work 전체 점검, P0/P1 만 요약" >> ~/.cache/security-sweep/weekly.log 2>&1
+0 9 * * 1  cd ~/work && claude -p "/security-sweep:security-sweep ~/work 전체 점검, P0/P1 만 요약" >> ~/.cache/security-sweep/weekly.log 2>&1
 ```
 
   이전 `OUT/findings.json` 과 비교해 신규/해결 항목을 요약하도록 제안한다.

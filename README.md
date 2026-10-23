@@ -15,16 +15,20 @@
 </div>
 
 ```text
-# 실행 예시 (숫자는 예시)
-> /security-sweep ~/work 전체랑 서버 deploy@web1, 이미지 myapp:prod 점검해줘
+> /security-sweep:security-sweep ./work 전체 점검해줘
 
-● 탐색: 프로젝트 32개 (npm 12 · PyPI 9 · Hex 3 · Go 2 · Cargo 1 · Maven 5) + 서버 1 + 이미지 1
-● 스캔: osv-scanner · trivy fs/image/rootfs · govulncheck · elixir-security-audit
-● 검증: 취약점 ID 전부 OSV 조회 → 실재 확인, CISA KEV · EPSS 보강
-● 도달성: called / imported / not-imported + file:line 근거
-● 보고: REPORT.md · REPORT.html  →  P0 1 · P1 11 · P2 9 · P3 2
-● 분류: P0/P1 코드 근거를 직접 열어 확정·조정, 프로젝트별 수정 명령 제안
+● 도구 확인: osv-scanner ✓ trivy ✓ govulncheck ✗ (Go는 grep으로 추정)
+● 탐색: 프로젝트 6개 (npm · PyPI · Hex · Go · Cargo + 비밀값 샘플)
+● 스캔 → OSV 검증 → 도달성 → 보고서
+● 자동 판정:   P0 1 · P1 11 · P2 9 · P3 2
+● 코드 확인 후: P0 0 · P1 6 · P2 15 · P3 2   (조정 12건, 사유는 triage.md)
+    - go-app  GO-2021-0113  P0→P1  language.Parse 인자가 상수라 외부 입력이 닿지 않음
+    - py-app  pyyaml 5.3    P1→P2  safe_load만 사용, 취약한 full_load 미사용
+    - rust-app smallvec     P1→P2  취약 함수 insert_many 미사용
+● 수정 명령 제안 (실행하지 않음): npm audit fix · mix deps.update sweet_xml · cargo update -p smallvec …
 ```
+
+<sub>위는 이 저장소의 `test/fixtures`를 새 Claude Code 세션에서 실제로 돌린 결과를 줄인 것입니다. 실제 개발 머신 26개 프로젝트 결과는 [예시 폴더](examples/dev-machine-2026-10-23)에 있습니다.</sub>
 
 **osv-scanner와 trivy로 훑고 → 모든 CVE/GHSA ID를 OSV API로 실재 검증하고 → CISA KEV·EPSS로 보강하고 → 코드에서 실제로 쓰는지(도달성) 판정해 → P0~P3 우선순위 보고서를 만듭니다.** 기본은 읽기 전용이고, 서버에는 아무것도 설치하지 않습니다.
 
@@ -40,6 +44,31 @@
 그런데 "**내 체크아웃 디렉터리 수십 개 + 서버 몇 대 + 운영 이미지**를 한 번에 돌리고, 스캐너가 내놓은 ID 가 진짜인지 확인하고, 실제 코드에서 쓰는 것부터 보여 줘" 를 한 번에 하는 스킬은 찾지 못했습니다. 특히 LLM 은 CVE 번호 생김새만 보고 "가짜 같다"고 판단하는 실수를 합니다 — 예를 들어 `CVE-2026-97853` 은 이상해 보여도 OSV 에 실재하는 Elixir `decimal` DoS 취약점(`GHSA-6c27-994x-c52f`)이고, 반대로 그럴듯한 ID 가 404 일 수도 있습니다. 이 스킬은 **판단을 OSV 조회 결과에만** 근거하게 합니다.
 
 ## 다른 보안 도구와 무엇이 다른가
+
+### 쉽게 말하면: 탐정과 공항 검색대
+
+<!-- EASY-IMAGE -->
+
+| | 🕵️ **탐정** — AI 보안 리뷰<br/><sub>Codex Security · Claude Security · `/security-review`</sub> | 🛄 **공항 검색대** — 스캐너 스윕<br/><sub>security-sweep · elixir-security-audit</sub> |
+|---|---|---|
+| 하는 일 | 코드를 처음부터 **읽고 추리**해서 "이 문은 잠겨 있지 않네" 같은 **설계·로직 결함**을 찾습니다 | 모든 가방(프로젝트·서버·이미지)을 통과시키며 **수배 목록(CVE DB)에 오른 위험물**을 빠짐없이 찾습니다 |
+| 잘 찾는 것 | 인가 우회, 잘못된 신뢰 경계, 처음 보는 수법 | 오래된 라이브러리, 서버 OS 패키지 취약점, 흘린 비밀값, 언어별 위험 API |
+| 놓치기 쉬운 것 | 수배 목록 대조 (의존성 CVE는 직접 안 봄) | 목록에 없는 새로운 수법 |
+| 결과 | 똑똑하지만 돌릴 때마다 조금씩 다름 | 같은 입력이면 **항상 같은 결과** |
+| 확인 방법 | 다른 에이전트가 한 번 더 검증 | 수배 목록이 **진짜인지 OSV로 조회**하고, 그 물건을 **실제로 꺼내 쓰는지(도달성)** 확인 |
+| 비용 | 모델 토큰 (스캔마다) | 스캐너는 무료, LLM은 분류할 때만 |
+
+**그래서 둘 다 씁니다.** 검색대로 알려진 위험을 먼저 전부 걸러내고, 중요한 저장소는 탐정에게 맡겨 숨은 로직 결함을 찾습니다.
+
+| 이럴 때 | 이것부터 |
+|---|---|
+| "우리 프로젝트·서버 전체에 알려진 취약점 있나?" | **security-sweep** |
+| "이 Phoenix 앱 고쳐 줘" | **elixir-security-audit** |
+| "PR 하나 머지 전에 빨리 봐 줘" | `/security-review` |
+| "결제·인증 같은 핵심 저장소를 깊게 털어 줘" | **Claude Security** 또는 **Codex Security** |
+
+
+### 자세히 비교
 
 ![보안 점검 도구 비교: Codex Security, /security-review, Claude Security, elixir-security-audit, security-sweep](docs/comparison.svg)
 
@@ -77,12 +106,13 @@ cp -r security-sweep/skills/security-sweep ~/.claude/skills/
 
 ### 원샷 프롬프트
 
+플러그인으로 설치했다면 명령은 `/security-sweep:security-sweep`입니다(스킬 폴더만 복사했다면 `/security-sweep`).
+
 ```text
-~/work 아래 모든 프로젝트 취약점 점검해줘
-서버 취약점 점검: deploy@web1, deploy@web2. 설치는 하지 말고 보고서만
-이미지 myapp:prod 랑 실행 중인 컨테이너 전부 CVE 확인
-CVE-2026-97853 이 우리 프로젝트에 영향 있는지 확인해줘
-매주 월요일 전체 보안 스윕 예약해줘
+/security-sweep:security-sweep ~/work 아래 모든 프로젝트 취약점 점검해줘
+/security-sweep:security-sweep 서버 deploy@web1, deploy@web2 점검. 설치는 하지 말고 보고서만
+/security-sweep:security-sweep 이미지 myapp:prod 랑 실행 중인 컨테이너 전부 CVE 확인
+/security-sweep:security-sweep CVE-2026-97853 이 우리 프로젝트에 영향 있는지 확인해줘
 ```
 
 더 많은 예시: [`references/prompts.md`](skills/security-sweep/references/prompts.md)
@@ -215,6 +245,8 @@ shellcheck skills/security-sweep/scripts/*.sh test/*.sh
 <details><summary><b>서버에 뭔가 설치되나요?</b></summary>
 
 아니요. `ssh -o BatchMode=yes`로 사용자가 이름을 댄 호스트에만 접속하고, 원격에 trivy가 있으면 `trivy rootfs`를 읽기 전용으로 실행합니다. 이때 trivy는 원격 사용자의 캐시 디렉터리에 취약점 DB를 내려받습니다(디스크 수백 MB). trivy가 없으면 패키지 목록(`dpkg-query`/`rpm -qa`/`apk info`)만 수집합니다. sudo는 사용자가 명시할 때만 씁니다.
+
+> v0.1.x 기준으로 서버 점검은 접속 실패 처리와 컨테이너 이미지(`trivy image`)까지만 테스트됐습니다. 실제 리눅스 서버에 대한 `trivy rootfs`·패키지 목록 수집은 아직 실서버 검증 전이니, 결과를 보고 이슈로 알려 주세요.
 </details>
 
 <details><summary><b><code>not-imported</code>면 안전한가요?</b></summary>
