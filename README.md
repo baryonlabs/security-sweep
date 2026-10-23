@@ -47,7 +47,9 @@
 
 ### 쉽게 말하면: 탐정과 공항 검색대
 
-![탐정과 공항 검색대: 로직 결함은 AI 보안 리뷰가, 알려진 취약점은 스캐너 스윕이 찾습니다](docs/easy-compare.svg)
+![탐정과 공항 검색대: 로직 결함은 AI 보안 리뷰가, 알려진 취약점은 스캐너 스윕이 찾습니다](docs/easy-compare.webp)
+
+<sub>그림: ChatGPT 이미지 생성. 문구를 고치기 쉬운 [SVG 버전](docs/easy-compare.svg)도 있습니다.</sub>
 
 | | **탐정** — AI 보안 리뷰<br/><sub>Codex Security · Claude Security · `/security-review`</sub> | **공항 검색대** — 스캐너 스윕<br/><sub>security-sweep · elixir-security-audit</sub> |
 |---|---|---|
