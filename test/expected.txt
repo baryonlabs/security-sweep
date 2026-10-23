@@ -1,0 +1,12 @@
+# fixture<TAB>vuln id or alias<TAB>expected reach (called|imported|not-imported; "a,b" = any of; "-" = n/a)
+# All IDs verified against https://api.osv.dev/v1/vulns/<ID> (2026-10-23).
+node-app	GHSA-35jh-r3h4-6jhm	imported,called
+node-app	CVE-2020-8203	imported,called
+node-app	GHSA-xvch-5gv4-984h	not-imported
+node-app	CVE-2020-7598	not-imported
+py-app	GHSA-462w-v97r-4m45	imported,called
+py-app	CVE-2020-14343	imported,called
+go-app	GO-2021-0113	called
+rust-app	RUSTSEC-2021-0003	imported
+elixir-app	GHSA-qpmc-wprv-x746	imported,called
+with-secret	SECRET	-

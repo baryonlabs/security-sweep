@@ -1,0 +1,5 @@
+# host: user@web1
+# os: ID=debian VERSION_ID=12
+# pm: dpkg
+libc6 2.36-9
+openssl 3.0.9-1

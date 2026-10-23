@@ -1,0 +1,11 @@
+{"SchemaVersion":2,"ArtifactName":"webapp","ArtifactType":"filesystem","Results":[
+ {"Target":"package-lock.json","Class":"lang-pkgs","Type":"npm","Vulnerabilities":[
+   {"VulnerabilityID":"CVE-2021-23337","PkgName":"lodash","InstalledVersion":"4.17.15","FixedVersion":"4.17.21","Severity":"HIGH","Title":"nodejs-lodash: command injection via template"},
+   {"VulnerabilityID":"CVE-2099-00001","PkgName":"lodash","InstalledVersion":"4.17.15","FixedVersion":"","Severity":"CRITICAL","Title":"<img src=x onerror=alert(1)> fake"}]},
+ {"Target":"src/cfg.js","Class":"secret","Secrets":[
+   {"RuleID":"github-pat","Category":"GitHub","Severity":"CRITICAL","Title":"GitHub Personal Access Token","StartLine":1,"EndLine":1,
+    "Match":"const t = \"TESTSECRET-DO-NOT-LEAK-7f3a91\";",
+    "Code":{"Lines":[{"Number":1,"Content":"const t = \"TESTSECRET-DO-NOT-LEAK-7f3a91\";"}]}}]},
+ {"Target":"Dockerfile","Class":"config","Type":"dockerfile","Misconfigurations":[
+   {"ID":"DS-0026","Title":"No HEALTHCHECK defined","Severity":"LOW","Status":"FAIL","CauseMetadata":{}},
+   {"ID":"DS-0005","Title":"passing check","Severity":"HIGH","Status":"PASS","CauseMetadata":{}}]}]}

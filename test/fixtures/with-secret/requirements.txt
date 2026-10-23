@@ -1,0 +1,2 @@
+# Lockfile present only so discover.sh treats this directory as a project.
+# Intentionally no dependencies.

@@ -1,0 +1,19 @@
+{
+  "name": "baryonlabs-security",
+  "owner": { "name": "Baryon Labs", "url": "https://github.com/baryonlabs" },
+  "plugins": [
+    {
+      "name": "security-sweep",
+      "source": "./",
+      "description": "Sweep many projects, servers and images for known vulnerabilities with OSV verification, reachability and P0-P3 prioritization.",
+      "version": "0.1.0",
+      "category": "security"
+    },
+    {
+      "name": "elixir-security-audit",
+      "source": { "source": "github", "repo": "baryonlabs/elixir-security-audit" },
+      "description": "Elixir/Phoenix security audit & fix skill (Sobelow, mix_audit, hex.audit, OSV, Semgrep).",
+      "category": "security"
+    }
+  ]
+}

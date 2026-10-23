@@ -1,0 +1,5 @@
+# FAKE test fixture for security-sweep secret detection. NOT a real key.
+# The body below is deliberately junk; only the PEM header shape matters to trivy.
+-----BEGIN RSA PRIVATE KEY-----
+SWEEPFAKEJUNKBODYxQ9vZ7tLmN3pR8kW2sYcA5dHjU6eFgB1oIqXzT4yV0nMrKlP
+-----END RSA PRIVATE KEY-----

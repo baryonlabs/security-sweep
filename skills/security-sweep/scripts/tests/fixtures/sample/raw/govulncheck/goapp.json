@@ -1,0 +1,21 @@
+{
+  "config": {"protocol_version": "v1.0.0", "scanner_name": "govulncheck"}
+}
+{
+  "osv": {"id": "GO-2021-0113", "summary": "Out-of-bounds read in golang.org/x/text/language",
+    "aliases": ["CVE-2021-38561", "GHSA-ppp9-7jff-5vj2"],
+    "affected": [{"package": {"name": "golang.org/x/text", "ecosystem": "Go"},
+      "ranges": [{"type": "SEMVER", "events": [{"introduced": "0"}, {"fixed": "0.3.7"}]}],
+      "ecosystem_specific": {"imports": [{"path": "golang.org/x/text/language", "symbols": ["MatchStrings", "MustParse", "Parse", "ParseAcceptLanguage"]}]}}]}
+}
+{
+  "finding": {"osv": "GO-2021-0113", "fixed_version": "v0.3.7",
+    "trace": [{"module": "golang.org/x/text", "version": "v0.3.5"}]}
+}
+{
+  "finding": {"osv": "GO-2021-0113", "fixed_version": "v0.3.7",
+    "trace": [
+      {"module": "golang.org/x/text", "version": "v0.3.5", "package": "golang.org/x/text/language", "function": "Parse"},
+      {"module": "example.com/goapp", "package": "example.com/goapp", "function": "main",
+       "position": {"filename": "__PROJ__/goapp/main.go", "line": 10}}]}
+}

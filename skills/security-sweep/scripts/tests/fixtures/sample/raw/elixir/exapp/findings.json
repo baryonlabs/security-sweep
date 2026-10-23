@@ -1,0 +1,6 @@
+[
+ {"id":"EXS-DEP-001","tool":"mix_audit","severity":"high","file":"mix.lock","line":3,
+  "message":"decimal 2.1.0: Unbounded allocation in Decimal.round/3 [CVE-2026-97853, GHSA-6c27-994x-c52f] (patched: >= 3.1.2)","snippet":"\"decimal\": {:hex, ...}"},
+ {"id":"EXS-CFG-001","tool":"grep","severity":"high","file":"config/config.exs","line":12,
+  "message":"비밀 값 하드코딩 (secret_key_base / signing_salt)","snippet":"secret_key_base: \"ELIXIRSNIPPETSECRET0123456789\""}
+]

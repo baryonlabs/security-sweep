@@ -1,0 +1,3 @@
+osv-scanner	ok	2.7.0
+trivy	ok	0.76.1
+ssh:web1	partial	trivy 미설치

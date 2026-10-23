@@ -1,0 +1,60 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  OSV_SCANNER_VERSION: v2.7.0
+  TRIVY_VERSION: v0.76.1
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: shellcheck
+        run: |
+          shellcheck --version
+          shellcheck skills/security-sweep/scripts/*.sh test/run.sh
+
+  unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: python unittest
+        run: python3 -m unittest discover -s skills/security-sweep/scripts/tests -v
+
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: install osv-scanner
+        run: |
+          set -euo pipefail
+          base="https://github.com/google/osv-scanner/releases/download/${OSV_SCANNER_VERSION}"
+          cd "$RUNNER_TEMP"
+          curl -fsSLO "$base/osv-scanner_linux_amd64"
+          curl -fsSLO "$base/osv-scanner_SHA256SUMS"
+          grep ' osv-scanner_linux_amd64$' osv-scanner_SHA256SUMS | sha256sum -c -
+          install -m 0755 osv-scanner_linux_amd64 /usr/local/bin/osv-scanner
+          osv-scanner --version
+      - name: install trivy
+        # Pinned by commit SHA (v0.3.1): tags of this action were hijacked once.
+        uses: aquasecurity/setup-trivy@81e514348e19b6112ce2a7e3ecbafe19c1e1f567
+        with:
+          version: ${{ env.TRIVY_VERSION }}
+      - name: integration test
+        run: |
+          trivy --version
+          bash test/run.sh

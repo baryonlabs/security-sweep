@@ -1,0 +1,12 @@
+{"results":[{"source":{"path":"__PROJ__/webapp/package-lock.json","type":"lockfile"},"packages":[
+ {"package":{"name":"lodash","version":"4.17.15","ecosystem":"npm"},
+  "vulnerabilities":[{"id":"GHSA-35jh-r3h4-6jhm","aliases":["CVE-2021-23337"],"summary":"Command Injection in lodash",
+    "severity":[{"type":"CVSS_V3","score":"CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H"}],
+    "affected":[{"package":{"ecosystem":"npm","name":"lodash"},"ranges":[{"type":"SEMVER","events":[{"introduced":"0"},{"fixed":"4.17.21"}]}]}],
+    "database_specific":{"severity":"HIGH"}}],
+  "groups":[{"ids":["GHSA-35jh-r3h4-6jhm"],"aliases":["CVE-2021-23337","GHSA-35jh-r3h4-6jhm"],"max_severity":"7.2"}]},
+ {"package":{"name":"minimist","version":"1.2.0","ecosystem":"npm"},
+  "vulnerabilities":[{"id":"GHSA-xvch-5gv4-984h","aliases":["CVE-2021-44906"],"summary":"Prototype Pollution in minimist",
+    "severity":[{"type":"CVSS_V3","score":"CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"}],
+    "affected":[{"package":{"ecosystem":"npm","name":"minimist"},"ranges":[{"type":"SEMVER","events":[{"introduced":"0"},{"fixed":"1.2.6"}]}]}]}],
+  "groups":[{"ids":["GHSA-xvch-5gv4-984h"],"aliases":["CVE-2021-44906"],"max_severity":"9.8"}]}]}]}

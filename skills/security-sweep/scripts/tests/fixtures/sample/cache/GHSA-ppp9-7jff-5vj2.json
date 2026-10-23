@@ -1,0 +1,2 @@
+{"status":200,"fetched_at":1,"record":{"id":"GHSA-ppp9-7jff-5vj2","aliases":["CVE-2021-38561","GO-2021-0113"],"summary":"golang.org/x/text/language Out-of-bounds Read",
+ "severity":[{"type":"CVSS_V3","score":"CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"}],"database_specific":{"severity":"HIGH"},"affected":[]}}
