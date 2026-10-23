@@ -6,7 +6,7 @@
       "name": "security-sweep",
       "source": "./",
       "description": "Sweep many projects, servers and images for known vulnerabilities with OSV verification, reachability and P0-P3 prioritization.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "category": "security"
     },
     {
