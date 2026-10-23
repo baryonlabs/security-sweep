@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" font-family="-apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Segoe UI', sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">탐정과 공항 검색대: AI 보안 리뷰와 스캐너 스윕의 차이</title>
+  <desc id="d">왼쪽은 돋보기로 코드를 읽어 잠기지 않은 문 같은 로직 결함을 찾는 탐정(AI 보안 리뷰), 오른쪽은 npm, PyPI, Hex, Go, 서버, 이미지 가방을 엑스레이로 통과시키며 CVE 목록과 대조하는 공항 검색대(스캐너 스윕). 아래 문구: 로직 결함은 탐정이, 알려진 취약점은 검색대가, 둘 다 쓰세요.</desc>
+  <defs>
+    <pattern id="grid" width="16" height="16" patternUnits="userSpaceOnUse">
+      <path d="M16 0H0V16" fill="none" stroke="#c9dbe8" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="xray" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f3b57"/>
+      <stop offset="1" stop-color="#2b5675"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="640" rx="18" fill="#f7f8f6"/>
+
+  <!-- ===== LEFT: detective ===== -->
+  <rect x="24" y="24" width="540" height="480" rx="14" fill="#ffffff" stroke="#e1e5e1"/>
+  <text x="48" y="68" font-size="26" font-weight="700" fill="#1c2420">AI 보안 리뷰 = 탐정</text>
+  <text x="48" y="94" font-size="14" fill="#5f6a64">Codex Security · Claude Security · /security-review</text>
+
+  <!-- blueprint -->
+  <rect x="60" y="126" width="250" height="190" rx="6" fill="#eaf3fa" stroke="#9fbfd8"/>
+  <rect x="60" y="126" width="250" height="190" rx="6" fill="url(#grid)"/>
+  <g stroke="#2b5675" stroke-width="3" fill="none">
+    <rect x="84" y="150" width="200" height="140"/>
+    <line x1="184" y1="150" x2="184" y2="290"/>
+    <line x1="84" y1="220" x2="184" y2="220"/>
+  </g>
+  <!-- unlocked door (open, orange) -->
+  <path d="M184 238 L214 228 L214 268 L184 278 Z" fill="#f2a65a" stroke="#c96a1b" stroke-width="2"/>
+  <circle cx="208" cy="250" r="2.5" fill="#7a3e0c"/>
+  <text x="222" y="244" font-size="13" font-weight="700" fill="#c96a1b">문이 열려 있음!</text>
+  <text x="222" y="261" font-size="12" fill="#c96a1b">= 인가 우회</text>
+  <text x="70" y="306" font-size="11" fill="#5f7d95">설계도 (코드 구조)</text>
+
+  <!-- code page -->
+  <rect x="330" y="138" width="190" height="230" rx="6" fill="#ffffff" stroke="#c9cfcb"/>
+  <g fill="#c9d6cf">
+    <rect x="348" y="160" width="120" height="8" rx="4"/>
+    <rect x="360" y="180" width="140" height="8" rx="4"/>
+    <rect x="360" y="200" width="96" height="8" rx="4"/>
+    <rect x="372" y="220" width="120" height="8" rx="4"/>
+    <rect x="360" y="260" width="130" height="8" rx="4"/>
+    <rect x="348" y="280" width="80" height="8" rx="4"/>
+    <rect x="360" y="300" width="140" height="8" rx="4"/>
+    <rect x="360" y="320" width="100" height="8" rx="4"/>
+  </g>
+  <rect x="372" y="240" width="110" height="8" rx="4" fill="#f2a65a"/>
+
+  <!-- magnifying glass -->
+  <circle cx="430" cy="244" r="46" fill="#ffffff" fill-opacity="0.35" stroke="#1f3b57" stroke-width="7"/>
+  <line x1="463" y1="277" x2="508" y2="322" stroke="#1f3b57" stroke-width="12" stroke-linecap="round"/>
+
+  <!-- detective -->
+  <g transform="translate(120 330)">
+    <path d="M10 150 Q60 70 110 150 Z" fill="#2b5675"/>
+    <circle cx="60" cy="58" r="30" fill="#f3d3b5"/>
+    <path d="M22 44 Q60 0 98 44 Z" fill="#1f3b57"/>
+    <rect x="14" y="40" width="92" height="9" rx="4" fill="#1f3b57"/>
+    <circle cx="50" cy="62" r="3" fill="#1c2420"/>
+    <circle cx="72" cy="62" r="3" fill="#1c2420"/>
+    <path d="M52 76 Q61 82 70 76" stroke="#1c2420" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </g>
+  <g font-size="14" fill="#1c2420">
+    <text x="270" y="410" font-weight="700">코드를 읽고 추리합니다</text>
+    <text x="270" y="434" fill="#5f6a64">✔ 처음 보는 수법, 설계·로직 결함</text>
+    <text x="270" y="456" fill="#5f6a64">✖ 수배 목록(의존성 CVE) 대조는 안 함</text>
+    <text x="270" y="478" fill="#5f6a64">~ 돌릴 때마다 결과가 조금씩 다름</text>
+  </g>
+
+  <!-- plus -->
+  <circle cx="600" cy="264" r="26" fill="#1c2420"/>
+  <path d="M600 250 V278 M586 264 H614" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- ===== RIGHT: airport scanner ===== -->
+  <rect x="636" y="24" width="540" height="480" rx="14" fill="#eaf1fb" stroke="#9db6de"/>
+  <text x="660" y="68" font-size="26" font-weight="700" fill="#1c2420">스캐너 스윕 = 공항 검색대</text>
+  <text x="660" y="94" font-size="14" fill="#2b4f8f">security-sweep · elixir-security-audit</text>
+
+  <!-- CVE board -->
+  <rect x="972" y="118" width="180" height="200" rx="8" fill="#ffffff" stroke="#9db6de"/>
+  <text x="990" y="146" font-size="15" font-weight="700" fill="#1c2420">수배 목록 (CVE)</text>
+  <g font-size="13" fill="#1c2420">
+    <circle cx="996" cy="172" r="8" fill="#2f6b55"/><path d="M992 172 l3 3 l6 -6" stroke="#fff" stroke-width="2" fill="none"/>
+    <text x="1012" y="177">lodash 4.17.21+</text>
+    <circle cx="996" cy="200" r="8" fill="#2f6b55"/><path d="M992 200 l3 3 l6 -6" stroke="#fff" stroke-width="2" fill="none"/>
+    <text x="1012" y="205">pyyaml 5.4+</text>
+    <circle cx="996" cy="228" r="8" fill="#c0392b"/><path d="M996 223 v6 M996 232 v1" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+    <text x="1012" y="233" font-weight="700" fill="#c0392b">pillow 12.3.0 ⚠</text>
+    <circle cx="996" cy="256" r="8" fill="#2f6b55"/><path d="M992 256 l3 3 l6 -6" stroke="#fff" stroke-width="2" fill="none"/>
+    <text x="1012" y="261">openssl 3.x</text>
+  </g>
+  <text x="990" y="292" font-size="11" fill="#5f6a64">OSV로 실재 확인 ✓</text>
+  <text x="990" y="308" font-size="11" fill="#5f6a64">KEV · EPSS 보강</text>
+
+  <!-- x-ray tunnel -->
+  <rect x="770" y="148" width="170" height="130" rx="12" fill="url(#xray)"/>
+  <rect x="790" y="168" width="130" height="80" rx="6" fill="#a9d6ee" fill-opacity="0.25" stroke="#a9d6ee"/>
+  <g stroke="#a9d6ee" stroke-width="2" fill="none" opacity="0.9">
+    <rect x="806" y="186" width="34" height="44" rx="4"/>
+    <rect x="852" y="182" width="50" height="50" rx="4"/>
+    <path d="M866 200 h22 v14 h-22 z" stroke="#ff8a65"/>
+  </g>
+  <text x="855" y="268" text-anchor="middle" font-size="12" fill="#cfe6f5">X-RAY</text>
+
+  <!-- conveyor -->
+  <rect x="660" y="318" width="490" height="16" rx="8" fill="#5f6a64"/>
+  <g fill="#9aa59f"><circle cx="680" cy="326" r="5"/><circle cx="760" cy="326" r="5"/><circle cx="840" cy="326" r="5"/><circle cx="920" cy="326" r="5"/><circle cx="1000" cy="326" r="5"/><circle cx="1080" cy="326" r="5"/><circle cx="1130" cy="326" r="5"/></g>
+
+  <!-- suitcases -->
+  <g font-size="13" font-weight="700" text-anchor="middle">
+    <g><rect x="664" y="270" width="64" height="46" rx="7" fill="#2f6b55"/><rect x="684" y="262" width="24" height="10" rx="3" fill="none" stroke="#2f6b55" stroke-width="3"/><text x="696" y="298" fill="#fff">npm</text></g>
+    <g><rect x="664" y="214" width="64" height="46" rx="7" fill="#2b5675"/><rect x="684" y="206" width="24" height="10" rx="3" fill="none" stroke="#2b5675" stroke-width="3"/><text x="696" y="242" fill="#fff">PyPI</text></g>
+    <g><rect x="958" y="340" width="0" height="0"/></g>
+  </g>
+  <g font-size="13" font-weight="700" text-anchor="middle">
+    <g><rect x="676" y="352" width="70" height="46" rx="7" fill="#6b4c9a"/><text x="711" y="380" fill="#fff">Hex</text></g>
+    <g><rect x="756" y="352" width="70" height="46" rx="7" fill="#1f8fa6"/><text x="791" y="380" fill="#fff">Go</text></g>
+    <g><rect x="836" y="352" width="90" height="46" rx="7" fill="#c96a1b"/><text x="881" y="380" fill="#fff">서버</text></g>
+    <g><rect x="936" y="352" width="96" height="46" rx="7" fill="#5f6a64"/><text x="984" y="380" fill="#fff">이미지</text></g>
+    <g><rect x="1042" y="352" width="96" height="46" rx="7" fill="#9aa59f"/><text x="1090" y="380" fill="#fff">Cargo …</text></g>
+  </g>
+  <text x="660" y="414" font-size="11" fill="#5f6a64">모든 프로젝트 · 서버 · 컨테이너 이미지가 줄지어 통과</text>
+
+  <g font-size="14" fill="#1c2420">
+    <text x="660" y="440" font-weight="700">목록과 빠짐없이 대조합니다</text>
+    <text x="660" y="462" fill="#5f6a64">✔ 오래된 라이브러리, 서버 OS 패키지, 흘린 비밀값</text>
+    <text x="660" y="484" fill="#5f6a64">✔ 같은 입력이면 항상 같은 결과 · ✖ 목록에 없는 새 수법</text>
+  </g>
+
+  <!-- ===== bottom banner ===== -->
+  <rect x="24" y="524" width="1152" height="92" rx="14" fill="#1c2420"/>
+  <text x="600" y="566" text-anchor="middle" font-size="26" font-weight="700" fill="#ffffff">로직 결함은 <tspan fill="#f2a65a">탐정</tspan>이, 알려진 취약점은 <tspan fill="#8fd3b4">검색대</tspan>가 — 둘 다 쓰세요</text>
+  <text x="600" y="596" text-anchor="middle" font-size="14" fill="#c9cfcb">security-sweep로 전체를 먼저 훑고 → 핵심 저장소는 Claude Security · Codex Security로 깊게</text>
+</svg>

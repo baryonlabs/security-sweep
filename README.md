@@ -47,9 +47,9 @@
 
 ### 쉽게 말하면: 탐정과 공항 검색대
 
-<!-- EASY-IMAGE -->
+![탐정과 공항 검색대: 로직 결함은 AI 보안 리뷰가, 알려진 취약점은 스캐너 스윕이 찾습니다](docs/easy-compare.svg)
 
-| | 🕵️ **탐정** — AI 보안 리뷰<br/><sub>Codex Security · Claude Security · `/security-review`</sub> | 🛄 **공항 검색대** — 스캐너 스윕<br/><sub>security-sweep · elixir-security-audit</sub> |
+| | **탐정** — AI 보안 리뷰<br/><sub>Codex Security · Claude Security · `/security-review`</sub> | **공항 검색대** — 스캐너 스윕<br/><sub>security-sweep · elixir-security-audit</sub> |
 |---|---|---|
 | 하는 일 | 코드를 처음부터 **읽고 추리**해서 "이 문은 잠겨 있지 않네" 같은 **설계·로직 결함**을 찾습니다 | 모든 가방(프로젝트·서버·이미지)을 통과시키며 **수배 목록(CVE DB)에 오른 위험물**을 빠짐없이 찾습니다 |
 | 잘 찾는 것 | 인가 우회, 잘못된 신뢰 경계, 처음 보는 수법 | 오래된 라이브러리, 서버 OS 패키지 취약점, 흘린 비밀값, 언어별 위험 API |
