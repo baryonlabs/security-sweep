@@ -1,0 +1,70 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>보안 스윕 보고서</title><style>
+:root{--bg:#f7f7f5;--fg:#1d1d1b;--muted:#6b6b66;--card:#fff;--line:#e3e2dd;--code:#f0efea;
+--p0:#b42318;--p1:#c4570d;--p2:#a77b00;--p3:#5a6b7a;--ok:#2f7d4f;--bad:#b42318;--chip-fg:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141413;--fg:#ecebe6;--muted:#a3a29c;
+--card:#1e1e1c;--line:#34332f;--code:#2a2a27;--p0:#f04438;--p1:#f38744;--p2:#e0b100;--p3:#8fa3b5;--ok:#5cc489;--bad:#f04438;--chip-fg:#141413}}
+:root[data-theme="dark"]{--bg:#141413;--fg:#ecebe6;--muted:#a3a29c;--card:#1e1e1c;--line:#34332f;--code:#2a2a27;
+--p0:#f04438;--p1:#f38744;--p2:#e0b100;--p3:#8fa3b5;--ok:#5cc489;--bad:#f04438;--chip-fg:#141413}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Segoe UI",sans-serif}
+main{max-width:1200px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:26px;margin:0 0 4px}h2{font-size:19px;margin:36px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+h3{font-size:16px;margin:22px 0 6px}
+.meta{color:var(--muted);font-size:13px}.meta code{word-break:break-all}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.card b{display:block;font-size:26px;font-variant-numeric:tabular-nums}.card span{color:var(--muted);font-size:13px}
+.card.p0 b{color:var(--p0)}.card.p1 b{color:var(--p1)}.card.p2 b{color:var(--p2)}.card.p3 b{color:var(--p3)}
+.wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;white-space:nowrap}tr:last-child td{border-bottom:0}
+td.mono,code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+code{background:var(--code);padding:1px 4px;border-radius:4px}
+.chip{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;color:var(--chip-fg)}
+.P0{background:var(--p0)}.P1{background:var(--p1)}.P2{background:var(--p2)}.P3{background:var(--p3)}
+.sev{background:transparent;border:1px solid currentColor}.sev.critical{color:var(--p0)}.sev.high{color:var(--p1)}
+.sev.medium{color:var(--p2)}.sev.low,.sev.unknown{color:var(--p3)}
+.v-ok{color:var(--ok)}.v-bad{color:var(--bad)}.v-unk{color:var(--muted)}
+.note{color:var(--muted);font-size:13px;margin:8px 0}
+pre{background:var(--code);padding:12px;border-radius:8px;overflow-x:auto;font-size:12.5px}
+details{margin:8px 0}summary{cursor:pointer;color:var(--muted)}
+ul.ev{margin:4px 0 4px 18px;padding:0}
+</style></head><body><main>
+<h1>보안 스윕 보고서</h1>
+<p class="meta">생성 2026-10-23 20:38 · 프로젝트 2 · 서버 0 · 이미지 0 · <code>/home/dev/security-sweep-20261023-2110</code></p>
+<p class="meta">OSV 검증: 확인 0 · 404 0 · 미확인 0 · KEV cache · EPSS 해당 없음</p>
+<div class="cards">
+<div class="card p0"><b>0</b><span>P0</span></div>
+<div class="card p1"><b>1</b><span>P1</span></div>
+<div class="card p2"><b>0</b><span>P2</span></div>
+<div class="card p3"><b>0</b><span>P3</span></div>
+<div class="card"><b>0</b><span>검증 실패 (OSV 404)</span></div></div>
+<p class="note">도달성 <code>not-imported</code> 는 직접 import 를 찾지 못했다는 뜻일 뿐, 전이 의존성일 수 있어 안전을 의미하지 않는다.</p>
+<h2>도구 상태</h2>
+<div class="wrap"><table><thead><tr><th>도구</th><th>상태</th><th>비고</th></tr></thead><tbody>
+<tr><td>osv-scanner</td><td>available</td><td>osv-scanner version: 2.7.0</td></tr>
+<tr><td>trivy</td><td>available</td><td>Version: 0.76.1</td></tr>
+<tr><td>govulncheck</td><td>missing</td><td>install: go install golang.org/x/vuln/cmd/govulncheck@latest</td></tr>
+<tr><td>elixir-security-audit</td><td>available</td><td>(설치됨)</td></tr>
+<tr><td>osv-scanner</td><td>ok</td><td>phoenix-saas-assets: exit 0 (no vulns)</td></tr>
+<tr><td>osv-scanner</td><td>ok</td><td>phoenix-saas: exit 0 (no vulns)</td></tr>
+<tr><td>trivy</td><td>ok</td><td>phoenix-saas-assets: fs secret,misconfig</td></tr>
+<tr><td>trivy</td><td>ok</td><td>phoenix-saas: fs secret,misconfig</td></tr>
+</tbody></table></div>
+<h2>P0 / P1</h2>
+<div class="wrap"><table><thead><tr><th>우선순위</th><th>대상</th><th>패키지/종류</th><th>ID</th><th>심각도</th><th>근거</th><th>수정 버전</th><th>위치</th></tr></thead><tbody>
+<tr><td><span class="chip P1">P1</span></td><td>phoenix-saas</td><td>코드 패턴</td><td><span class="mono">EXS-CFG-001</span></td><td><span class="chip sev high">high</span></td><td></td><td></td><td><span class="mono">config/config.exs:36</span></td></tr>
+</tbody></table></div>
+<h2>대상별 결과</h2>
+<h3>프로젝트: phoenix-saas</h3>
+<p class="meta"><code>/home/dev/projects/phoenix-saas</code></p>
+<div class="wrap"><table><thead><tr><th>우선순위</th><th>종류</th><th>패키지</th><th>ID</th><th>심각도</th><th>검증</th><th>도달성</th><th>KEV</th><th>EPSS</th><th>수정 버전</th><th>출처</th><th>위치</th><th>설명</th></tr></thead><tbody>
+<tr><td><span class="chip P1">P1</span></td><td>코드 패턴</td><td>코드 패턴</td><td><span class="mono">EXS-CFG-001</span></td><td><span class="chip sev high">high</span></td><td>-</td><td>n/a</td><td></td><td></td><td></td><td>grep</td><td><span class="mono">config/config.exs:36</span></td><td>비밀 값 하드코딩 (secret_key_base / signing_salt)</td></tr>
+</tbody></table></div>
+<h2>검증 실패 (OSV 404)</h2>
+<p class="note">없음.</p>
+<h2>다음 행동</h2>
+<p class="note">스윕은 아무것도 수정하지 않았다. 검토 후 프로젝트별 브랜치에서 실행하고 테스트한다.</p>
+<p class="note">수정할 취약 의존성 없음.</p>
+</main></body></html>

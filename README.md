@@ -87,6 +87,10 @@ CVE-2026-97853 이 우리 프로젝트에 영향 있는지 확인해줘
 
 더 많은 예시: [`references/prompts.md`](skills/security-sweep/references/prompts.md)
 
+### 실제 예시
+
+개발 머신 한 대(프로젝트 26개)를 한 번 돌리고 → 한 프로젝트를 코드로 검토하고 → 패치한 뒤 → 그 프로젝트만 다시 스캔해 5건이 1건으로 줄어드는 과정을, 가명 처리한 실제 보고서와 함께 정리했습니다: [`examples/dev-machine-2026-10-23`](examples/dev-machine-2026-10-23)
+
 ## 동작 방식
 
 ```mermaid

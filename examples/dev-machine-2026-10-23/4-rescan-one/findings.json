@@ -1,0 +1,25 @@
+[
+  {
+    "target": "project",
+    "name": "phoenix-saas",
+    "path_or_host": "/home/dev/projects/phoenix-saas",
+    "kind": "code",
+    "id": "EXS-CFG-001",
+    "aliases": [],
+    "package": "",
+    "version": "",
+    "ecosystem": "",
+    "fixed": "",
+    "severity": "high",
+    "verified": null,
+    "kev": false,
+    "epss": null,
+    "reach": "n/a",
+    "reach_evidence": [],
+    "reach_note": "",
+    "source": "grep",
+    "location": "config/config.exs:36",
+    "message": "비밀 값 하드코딩 (secret_key_base / signing_salt)",
+    "priority": "P1"
+  }
+]

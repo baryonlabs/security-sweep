@@ -1,6 +1,6 @@
 {
   "name": "security-sweep",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "One-prompt vulnerability sweep across many projects, servers and container images: osv-scanner + trivy, OSV-verified CVE/GHSA IDs, KEV/EPSS enrichment, code reachability, and a prioritized P0-P3 report.",
   "author": { "name": "Baryon Labs", "url": "https://github.com/baryonlabs" },
   "homepage": "https://github.com/baryonlabs/security-sweep",
