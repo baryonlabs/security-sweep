@@ -323,6 +323,37 @@ def parse_osv_scanner(path, name, proj_path):
     return out
 
 
+
+def parse_inventory(path):
+    out = []
+    data = as_dict(load_json(path, {}))
+    host = str(data.get("host") or "")
+    name = str(data.get("name") or host)
+    env_path = str(data.get("environment") or "")
+    for pk in as_list(data.get("packages")):
+        pk = as_dict(pk)
+        pinfo = as_dict(pk.get("package"))
+        pkg_name = str(pinfo.get("name", ""))
+        pkg_ver = str(pinfo.get("version", ""))
+        eco = "pypi"
+        for v in as_list(pk.get("vulnerabilities")):
+            v = as_dict(v)
+            vid = str(v.get("id") or "")
+            if not vid:
+                continue
+            aliases = [str(a) for a in as_list(v.get("aliases")) if a and str(a) != vid]
+            sev = norm_sev(as_dict(v.get("database_specific")).get("severity"))
+            out.append(_rec(
+                target="server", name=name, path_or_host=host,
+                id=vid, aliases=list(dict.fromkeys(aliases)),
+                package=pkg_name, version=pkg_ver, ecosystem=eco,
+                fixed_candidates=record_fixed(v, eco, pkg_name),
+                severity=sev, source="inventory",
+                location=env_path,
+                message=str(v.get("summary") or str(v.get("details", ""))[:160]),
+                record=v))
+    return out
+
 def parse_trivy(path, target, name, path_or_host):
     out = []
     data = as_dict(load_json(path, {}))
@@ -489,6 +520,8 @@ def load_raw(out):
     for p in sorted(glob.glob(os.path.join(raw, "server", "*.json"))):
         n = _stem(p)
         recs += parse_trivy(p, "server", n, n)
+    for p in sorted(glob.glob(os.path.join(raw, "inventory", "*.json"))):
+        recs += parse_inventory(p)
     for p in sorted(glob.glob(os.path.join(raw, "server", "*.packages.txt"))):
         host = os.path.basename(p)[:-len(".packages.txt")]
         try:
