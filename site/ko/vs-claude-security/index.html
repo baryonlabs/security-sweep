@@ -49,8 +49,8 @@
    "applicationCategory": "DeveloperApplication",
    "applicationSubCategory": "Security",
    "operatingSystem": "macOS, Linux",
-   "softwareVersion": "0.1.1",
-   "datePublished": "2026-10-23",
+   "softwareVersion": "0.2.0",
+   "datePublished": "2026-11-04",
    "image": "https://baryonlabs.github.io/security-sweep/og.jpg",
    "license": "https://opensource.org/licenses/MIT",
    "offers": {
@@ -77,7 +77,7 @@
    ],
    "runtimePlatform": "Claude Code",
    "license": "https://opensource.org/licenses/MIT",
-   "version": "0.1.1",
+   "version": "0.2.0",
    "author": {
     "@id": "https://baryonlabs.github.io/security-sweep/#org"
    },
@@ -92,7 +92,7 @@
    "name": "Claude Security·Codex Security와 security-sweep의 차이 비교",
    "description": "Claude Security·Codex Security·/security-review는 코드를 읽어 로직 결함을 찾고, security-sweep은 알려진 취약점(CVE)을 스캐너로 빠짐없이 훑습니다. 탐정과 공항 검색대 비유와 도구별 비교표, 권장 사용 순서를 정리했습니다.",
    "inLanguage": "ko",
-   "dateModified": "2026-10-23",
+   "dateModified": "2026-11-04",
    "about": {
     "@id": "https://baryonlabs.github.io/security-sweep/#app"
    },
@@ -169,7 +169,7 @@
 <tr><td>확인 방법</td><td>다른 에이전트가 한 번 더 검증</td><td>수배 목록이 진짜인지 OSV로 조회하고, 실제로 꺼내 쓰는지(도달성) 확인</td></tr>
 <tr><td>비용</td><td>모델 토큰 (스캔마다)</td><td>스캐너는 무료, LLM은 분류할 때만</td></tr>
 </tbody></table></div>
-<h2>도구별 자세한 비교 (2026-10-23 기준)</h2>
+<h2>도구별 자세한 비교 (2026-11-04 기준)</h2>
 <div class="table-wrap wide"><table><thead><tr><th scope="col"></th><th scope="col">OpenAI Codex Security</th><th scope="col">Claude Code /security-review</th><th scope="col">Anthropic Claude Security 플러그인</th><th scope="col">elixir-security-audit</th><th scope="col">security-sweep</th></tr></thead><tbody>
 <tr><td>접근 방식</td><td>LLM이 코드를 읽고 탐지 (CLI·SDK·Codex 플러그인·GitHub Action)</td><td>LLM 1회 보안 패스</td><td>LLM 멀티에이전트 (아키텍처 → 위협 모델 → 탐색 → 독립 검증)</td><td>결정적 스캐너 + LLM 분류·수정</td><td>결정적 스캐너 + LLM 분류</td></tr>
 <tr><td>범위</td><td>저장소·경로·diff, deep 모드, 여러 저장소 bulk 스캔</td><td>현재 브랜치</td><td>저장소 전체·일부, 브랜치·PR·커밋 diff</td><td>Elixir/Phoenix 프로젝트 1개</td><td>디렉터리 아래 모든 프로젝트 + 서버 + 컨테이너 이미지</td></tr>
@@ -180,7 +180,7 @@
 <tr><td>필요 조건</td><td>OpenAI 로그인·API 키 (Bedrock 등 가능), Node 22+</td><td>Claude Code</td><td>유료 플랜·API, python3 3.9+</td><td>Claude Code, Elixir</td><td>Claude Code, osv-scanner, trivy</td></tr>
 </tbody></table></div>
 <figure><img src="../../assets/comparison.svg" alt="보안 점검 도구 비교: Codex Security, /security-review, Claude Security, elixir-security-audit, security-sweep" width="1240" height="960" loading="lazy" decoding="async"></figure>
-<p class="muted small">출처: <a href="https://github.com/openai/codex-security">openai/codex-security</a> README·<a href="https://github.com/openai/codex-security/blob/main/docs/agent-workflows.md">agent workflows</a>, <a href="https://code.claude.com/docs/en/claude-security">Claude Security 문서</a>, <a href="https://github.com/anthropics/claude-code-security-review">anthropics/claude-code-security-review</a>. 2026-10-23 기준이며 각 도구는 계속 바뀝니다.</p>
+<p class="muted small">출처: <a href="https://github.com/openai/codex-security">openai/codex-security</a> README·<a href="https://github.com/openai/codex-security/blob/main/docs/agent-workflows.md">agent workflows</a>, <a href="https://code.claude.com/docs/en/claude-security">Claude Security 문서</a>, <a href="https://github.com/anthropics/claude-code-security-review">anthropics/claude-code-security-review</a>. 2026-11-04 기준이며 각 도구는 계속 바뀝니다.</p>
 <h2>무엇부터 쓰면 되나</h2>
 <div class="table-wrap"><table><thead><tr><th scope="col">이럴 때</th><th scope="col">이것부터</th></tr></thead><tbody>
 <tr><td>“우리 프로젝트·서버 전체에 알려진 취약점 있나?”</td><td><strong>security-sweep</strong></td></tr>
@@ -206,7 +206,7 @@
 <footer class="site-footer"><div class="wrap"><div class="cols">
 <div><h2>security-sweep</h2><p>여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬. MIT 라이선스 © 2026 Baryon Labs.</p></div>
 <div><h2>질문별 안내</h2><ul><li><a href="../../ko/scan-all-projects/">여러 프로젝트를 한 번에 점검하려면?</a></li><li><a href="../../ko/verify-cve/">CVE 번호가 진짜인지 확인하는 법</a></li><li><a href="../../ko/priority/">P0~P3 우선순위는 어떻게 정하나요?</a></li><li><a href="../../ko/vs-claude-security/">Claude Security·Codex Security와 차이</a></li></ul></div>
-<div><h2>저장소</h2><ul><li><a href="https://github.com/baryonlabs/security-sweep">GitHub 저장소</a></li><li><a href="https://github.com/baryonlabs/security-sweep/releases">릴리스</a></li><li><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">실제 예시 보고서</a></li><li><a href="https://github.com/baryonlabs/security-sweep/issues">이슈·제보</a></li><li><a href="https://github.com/baryonlabs/elixir-security-audit">elixir-security-audit</a></li></ul></div>
-</div><p class="updated">최종 갱신 2026-10-23 · v0.1.1 · <a href="../../en/" hreflang="en" lang="en">English</a></p></div></footer>
+<div><h2>저장소</h2><ul><li><a href="https://github.com/baryonlabs/security-sweep">GitHub 저장소</a></li><li><a href="https://github.com/baryonlabs/security-sweep/releases">릴리스</a></li><li><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-11-04">실제 예시 보고서</a></li><li><a href="https://github.com/baryonlabs/security-sweep/issues">이슈·제보</a></li><li><a href="https://github.com/baryonlabs/elixir-security-audit">elixir-security-audit</a></li></ul></div>
+</div><p class="updated">최종 갱신 2026-11-04 · v0.2.0 · <a href="../../en/" hreflang="en" lang="en">English</a></p></div></footer>
 </body>
 </html>

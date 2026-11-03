@@ -6,7 +6,7 @@ usage: verify_cves.py OUT [--offline] [--cache DIR] [--workers N]
 Writes OUT/verified.json ({id: {...}}) and OUT/verified.meta.json.
 An ID is judged only by what OSV returns for it — never by its shape.
   exists true   OSV returned the record (or osv-scanner/govulncheck embedded it)
-  exists false  OSV returned 404
+  exists false  OSV returned 404 (not proof the vulnerability is fictitious)
   exists null   network failure / offline with no OSV-sourced record
 KEV (CISA) and EPSS (FIRST) enrich CVE aliases; failures there never abort.
 """
@@ -145,7 +145,9 @@ def summarize(vid, rec, source):
     osv_id = str(rec.get("id") or vid)
     if osv_id != vid and osv_id not in aliases:
         aliases.append(osv_id)
-    return {"exists": True, "osv_id": osv_id,
+    lookup_status = ("embedded-alias" if source.startswith("embedded-alias") else
+                     "embedded" if source.startswith("embedded") else "found")
+    return {"exists": True, "lookup_status": lookup_status, "osv_id": osv_id,
             "aliases": [a for a in dict.fromkeys(aliases) if a != vid],
             "summary": str(rec.get("summary") or str(rec.get("details", ""))[:200]),
             "published": str(rec.get("published") or ""),
@@ -155,7 +157,7 @@ def summarize(vid, rec, source):
 
 
 def unknown_entry(vid, source, error=""):
-    return {"exists": None, "osv_id": "", "aliases": [], "summary": "", "published": "",
+    return {"exists": None, "lookup_status": "unavailable", "osv_id": "", "aliases": [], "summary": "", "published": "",
             "severity": "unknown", "cvss": "", "affected": [], "functions": [], "symbols": [],
             "kev": False, "epss": None, "source": source, "error": error}
 
@@ -357,6 +359,7 @@ def main(argv=None):
         if status == 404:
             e = unknown_entry(vid, source)
             e["exists"] = False
+            e["lookup_status"] = "not-found-in-osv"
             return vid, e
         if vid in embedded:
             e = summarize(vid, embedded[vid], "embedded (%s)" % source)

@@ -49,8 +49,8 @@
    "applicationCategory": "DeveloperApplication",
    "applicationSubCategory": "Security",
    "operatingSystem": "macOS, Linux",
-   "softwareVersion": "0.1.1",
-   "datePublished": "2026-10-23",
+   "softwareVersion": "0.2.0",
+   "datePublished": "2026-11-04",
    "image": "https://baryonlabs.github.io/security-sweep/og.jpg",
    "license": "https://opensource.org/licenses/MIT",
    "offers": {
@@ -77,7 +77,7 @@
    ],
    "runtimePlatform": "Claude Code",
    "license": "https://opensource.org/licenses/MIT",
-   "version": "0.1.1",
+   "version": "0.2.0",
    "author": {
     "@id": "https://baryonlabs.github.io/security-sweep/#org"
    },
@@ -92,7 +92,7 @@
    "name": "CVE 번호가 진짜인지 확인하는 법: OSV API 200/404 조회 | security-sweep",
    "description": "CVE·GHSA 번호의 진위는 생김새가 아니라 OSV API 조회 결과로 확인해야 합니다. CVE-2026-97853은 200(실재), CVE-2099-00001은 404였습니다. 직접 확인하는 curl 명령과 security-sweep이 결과를 다루는 방식을 정리했습니다.",
    "inLanguage": "ko",
-   "dateModified": "2026-10-23",
+   "dateModified": "2026-11-04",
    "about": {
     "@id": "https://baryonlabs.github.io/security-sweep/#app"
    },
@@ -164,7 +164,7 @@
 # 200
 curl -s https://api.osv.dev/v1/vulns/CVE-2099-00001
 # {"code":5,"message":"Vulnerability not found"}  (HTTP 404)</code></pre>
-<h2>실측 결과 (2026-10-23 조회)</h2>
+<h2>실측 결과 (2026-11-04 조회)</h2>
 <div class="table-wrap"><table><thead><tr><th scope="col">ID</th><th scope="col">OSV 응답</th><th scope="col">판정</th><th scope="col">내용</th></tr></thead><tbody>
 <tr><td><code>CVE-2026-97853</code></td><td>200</td><td>실재</td><td>Elixir <code>decimal</code>의 <code>Decimal.round/3</code> DoS (places 인자로 메모리 과다 할당). 영향 범위: 0.1.0 이상 3.1.2 미만. OSV 레코드의 별칭(aliases): EEF-CVE-2026-97853, GHSA-6c27-994x-c52f</td></tr>
 <tr><td><code>CVE-2099-00001</code></td><td>404</td><td>검증 실패</td><td>형식은 그럴듯하지만 OSV에 레코드가 없습니다</td></tr>
@@ -178,7 +178,7 @@ curl -s https://api.osv.dev/v1/vulns/CVE-2099-00001
 </tbody></table></div>
 <p>실재가 확인된 CVE는 CISA KEV(실제 악용 확인 목록) 등재 여부와 EPSS(30일 내 악용 확률 추정치)로 보강됩니다. KEV 등재 항목은 도달성과 무관하게 P0입니다.</p>
 <h2>실제 예시</h2>
-<p>개발 머신 한 대의 26개 프로젝트를 점검한 예시에서는 고유 권고 75개가 <strong>전부 OSV에서 실재 확인</strong>됐습니다 (404 0건, KEV 0건). <a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">예시 보고서 보기</a></p>
+<p>개발 머신 한 대의 26개 프로젝트를 점검한 예시에서는 고유 권고 75개가 <strong>전부 OSV에서 실재 확인</strong>됐습니다 (404 0건, KEV 0건). <a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-11-04">예시 보고서 보기</a></p>
 <h2>security-sweep으로 확인하기</h2>
 <pre><code>/security-sweep:security-sweep CVE-2026-97853 이 우리 프로젝트에 영향 있는지 확인해줘</code></pre>
 <p><a href="../../">security-sweep 설치 방법 보기</a> · <a href="../../ko/priority/">우선순위 규칙 보기</a></p>
@@ -198,7 +198,7 @@ curl -s https://api.osv.dev/v1/vulns/CVE-2099-00001
 <footer class="site-footer"><div class="wrap"><div class="cols">
 <div><h2>security-sweep</h2><p>여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬. MIT 라이선스 © 2026 Baryon Labs.</p></div>
 <div><h2>질문별 안내</h2><ul><li><a href="../../ko/scan-all-projects/">여러 프로젝트를 한 번에 점검하려면?</a></li><li><a href="../../ko/verify-cve/">CVE 번호가 진짜인지 확인하는 법</a></li><li><a href="../../ko/priority/">P0~P3 우선순위는 어떻게 정하나요?</a></li><li><a href="../../ko/vs-claude-security/">Claude Security·Codex Security와 차이</a></li></ul></div>
-<div><h2>저장소</h2><ul><li><a href="https://github.com/baryonlabs/security-sweep">GitHub 저장소</a></li><li><a href="https://github.com/baryonlabs/security-sweep/releases">릴리스</a></li><li><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">실제 예시 보고서</a></li><li><a href="https://github.com/baryonlabs/security-sweep/issues">이슈·제보</a></li><li><a href="https://github.com/baryonlabs/elixir-security-audit">elixir-security-audit</a></li></ul></div>
-</div><p class="updated">최종 갱신 2026-10-23 · v0.1.1 · <a href="../../en/" hreflang="en" lang="en">English</a></p></div></footer>
+<div><h2>저장소</h2><ul><li><a href="https://github.com/baryonlabs/security-sweep">GitHub 저장소</a></li><li><a href="https://github.com/baryonlabs/security-sweep/releases">릴리스</a></li><li><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-11-04">실제 예시 보고서</a></li><li><a href="https://github.com/baryonlabs/security-sweep/issues">이슈·제보</a></li><li><a href="https://github.com/baryonlabs/elixir-security-audit">elixir-security-audit</a></li></ul></div>
+</div><p class="updated">최종 갱신 2026-11-04 · v0.2.0 · <a href="../../en/" hreflang="en" lang="en">English</a></p></div></footer>
 </body>
 </html>

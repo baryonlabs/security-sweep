@@ -5,11 +5,12 @@ usage: report.py OUT
 
 Writes OUT/findings.json, OUT/REPORT.md, OUT/REPORT.html.
 Priority (references/prioritize.md):
-  P0  KEV, or critical|high with reach=called
-  P1  critical|high with reach in {imported, unknown, n/a}, or EPSS >= 0.1, or a secret
-  P2  medium, or critical|high with reach=not-imported
+  P0  KEV, or critical|high with an evidenced govulncheck call trace
+  P1  other critical|high, or EPSS >= 0.1, or a secret
+  P2  medium
   P3  low / unknown
-verified=false (OSV 404) vulns get priority null and go to the "검증 실패" section.
+OSV 404 means not found in OSV, not a false positive. Scanner findings retain
+their priority, with lookup provenance and affectedness reported separately.
 """
 
 import html
@@ -19,7 +20,7 @@ import sys
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _common import (SEV_RANK, as_dict, as_list, load_json, load_raw, load_targets,  # noqa: E402
+from _common import (OSV_ECOSYSTEMS, SEV_RANK, as_dict, as_list, load_json, load_raw, load_targets,  # noqa: E402
                      load_tools, mask_secrets, norm_pkg, norm_sev, norm_version,
                      pick_fixed, record_fixed, version_key, warn, write_json)
 
@@ -29,19 +30,20 @@ SOURCE_PREF = {"osv-scanner": 0, "govulncheck": 1, "mix_audit": 2, "trivy": 3}
 TARGET_LABEL = {"project": "프로젝트", "server": "서버", "image": "이미지"}
 KIND_LABEL = {"vuln": "취약 의존성", "secret": "비밀값", "misconfig": "설정 오류", "code": "코드 패턴"}
 EPSS_THRESHOLD = 0.1
+POLICY_VERSION = "2"
 
 
 def priority(f):
     sev, reach = f["severity"], f["reach"]
     hi = sev in ("critical", "high")
-    if f["kind"] == "vuln" and f["verified"] is False:
-        return None
-    if f["kev"] or (hi and reach == "called"):
+    strong_call = (reach == "called" and f.get("reach_method") == "govulncheck"
+                   and bool(f.get("reach_evidence")))
+    if f["kev"] or (hi and strong_call):
         return "P0"
-    if (hi and reach in ("imported", "unknown", "n/a")) or (f["epss"] or 0) >= EPSS_THRESHOLD \
+    if hi or (f["epss"] or 0) >= EPSS_THRESHOLD \
             or f["kind"] == "secret":
         return "P1"
-    if sev == "medium" or (hi and reach == "not-imported"):
+    if sev == "medium":
         return "P2"
     return "P3"
 
@@ -105,16 +107,32 @@ def verify_state(ids, verified):
 
 def reach_state(target, name, eco, pkg, ids, reach):
     if target != "project" or eco.startswith("os:"):
-        return "n/a", [], ""
+        return "n/a", [], "", "none"
     slot = as_dict(as_dict(reach.get(name)).get(norm_pkg(eco, pkg)))
-    cands = [as_dict(slot[i]) for i in ids if i in slot]
+    cands = [as_dict(slot[i]) for i in sorted(ids) if i in slot]
     if not cands:
-        return "unknown", [], ""
+        return "unknown", [], "", "none"
     gv = [c for c in cands if c.get("method") == "govulncheck"]
     best = min(gv or cands, key=lambda c: REACH_RANK.get(c.get("status"), 9))
     return (str(best.get("status") or "unknown"),
             [mask_secrets(e) for e in as_list(best.get("evidence"))[:5]],
-            str(best.get("note") or ""))
+            str(best.get("note") or ""), str(best.get("method") or "none"))
+
+
+def verification_details(ids, verified):
+    """Lookup evidence only; a returned advisory does not validate this version."""
+    evidence = {}
+    for vid in sorted(ids):
+        entry = as_dict(verified.get(vid))
+        state = entry.get("lookup_status")
+        if not state:
+            state = {True: "found", False: "not-found-in-osv", None: "unavailable"}.get(
+                entry.get("exists"), "unavailable")
+        evidence[vid] = {"status": state, "source": entry.get("source", "unknown"),
+                         "record_id": entry.get("osv_id", "")}
+    state = verify_state(ids, verified)
+    return ({True: "record-found", False: "not-found-in-osv", None: "unavailable"}[state],
+            evidence)
 
 
 def build_findings(out):
@@ -131,8 +149,11 @@ def build_findings(out):
             osv_ids = [as_dict(verified.get(m["id"])).get("osv_id") for m in members]
             primary = next((x for x in osv_ids if x), primary)
         aliases = sorted(ids - {primary})
+        # Distribution advisories account for backports; generic OSV severity
+        # and upstream fixed versions must not override their package evidence.
+        is_os = top["ecosystem"].startswith("os:")
         sev = "unknown"
-        for i in [primary] + aliases:
+        for i in ([] if is_os else [primary] + aliases):
             s = norm_sev(as_dict(verified.get(i)).get("severity"))
             if s != "unknown":
                 sev = s
@@ -143,19 +164,21 @@ def build_findings(out):
         fixed_c = []
         for m in members:
             fixed_c += m["fixed_candidates"]
-        if not fixed_c:
-            for i in ids:
+        if not fixed_c and not is_os:
+            for i in sorted(ids):
                 for a in as_list(as_dict(verified.get(i)).get("affected")):
                     a = as_dict(a)
-                    if norm_pkg(top["ecosystem"], a.get("name")) == norm_pkg(top["ecosystem"], top["package"]):
+                    eco = OSV_ECOSYSTEMS.get(str(a.get("ecosystem", "")).lower())
+                    if eco == top["ecosystem"] and norm_pkg(eco, a.get("name")) == norm_pkg(eco, top["package"]):
                         fixed_c += as_list(a.get("fixed"))
-        if not fixed_c and isinstance(top.get("record"), dict):
+        if not fixed_c and not is_os and isinstance(top.get("record"), dict):
             fixed_c = record_fixed(top["record"], top["ecosystem"], top["package"])
         kev = any(as_dict(verified.get(i)).get("kev") for i in ids)
         epss_vals = [as_dict(verified.get(i)).get("epss") for i in ids]
         epss_vals = [e for e in epss_vals if isinstance(e, (int, float))]
-        rstat, rev, rnote = reach_state(top["target"], top["name"], top["ecosystem"],
+        rstat, rev, rnote, rmethod = reach_state(top["target"], top["name"], top["ecosystem"],
                                         top["package"], ids, reach)
+        vstatus, vevidence = verification_details(ids, verified)
         summary = next((as_dict(verified.get(i)).get("summary") for i in [primary] + aliases
                         if as_dict(verified.get(i)).get("summary")), "") or top["message"]
         f = {"target": top["target"], "name": top["name"], "path_or_host": top["path_or_host"],
@@ -163,8 +186,11 @@ def build_findings(out):
              "version": top["version"], "ecosystem": top["ecosystem"],
              "fixed": pick_fixed(top["version"], fixed_c), "severity": sev,
              "verified": verify_state(ids, verified), "kev": bool(kev),
+             "verification_status": vstatus, "verification_by_id": vevidence,
+             "affectedness": "scanner-reported", "affectedness_independently_checked": False,
              "epss": max(epss_vals) if epss_vals else None, "reach": rstat,
-             "reach_evidence": rev, "reach_note": rnote,
+             "reach_evidence": rev, "reach_note": rnote, "reach_method": rmethod,
+             "priority_policy_version": POLICY_VERSION,
              "source": ", ".join(dict.fromkeys(m["source"] for m in members)),
              "location": ", ".join(dict.fromkeys(m["location"] for m in members if m["location"])),
              "message": mask_secrets(str(summary))[:300]}
@@ -268,7 +294,7 @@ def md(s):
 
 
 def fmt_verified(v):
-    return {True: "확인", False: "404", None: "미확인"}[v]
+    return {True: "레코드 확인", False: "OSV 미등재", None: "조회 미확인"}[v]
 
 
 def fmt_epss(e):
@@ -282,7 +308,9 @@ def reason(f):
     if f["epss"] is not None and f["epss"] >= EPSS_THRESHOLD:
         bits.append("EPSS %.2f" % f["epss"])
     if f["kind"] == "vuln":
-        bits.append("도달성 %s" % f["reach"])
+        bits.append("도달성 %s (%s)" % (f["reach"], f.get("reach_method", "none")))
+        if f["verified"] is not True:
+            bits.append(fmt_verified(f["verified"]))
     if f["kind"] == "secret":
         bits.append("비밀값 노출")
     return ", ".join(bits)
@@ -339,18 +367,19 @@ def render_md(findings, s, actions):
     L.append("")
     L.append("| 우선순위 | 건수 | 기준 |")
     L.append("|---|---:|---|")
-    crit = {"P0": "KEV 등재 또는 critical/high + 실제 호출",
-            "P1": "critical/high + import·불명, EPSS ≥ 0.1, 비밀값",
-            "P2": "medium, 또는 high 인데 직접 import 없음",
+    crit = {"P0": "KEV 등재 또는 critical/high + govulncheck 호출 근거",
+            "P1": "그 외 critical/high, EPSS ≥ 0.1, 비밀값",
+            "P2": "medium",
             "P3": "low / unknown"}
     for p in PRIORITIES:
         L.append("| %s | %d | %s |" % (p, s["counts"][p], crit[p]))
-    L.append("| 검증 실패(OSV 404) | %d | 우선순위 산정 제외 |" % len(s["failed"]))
+    L.append("| OSV 미등재(404) | %d | 위 우선순위 건수에 포함; 원 출처 확인 필요 |" % len(s["failed"]))
     L.append("")
     if s["unverified"]:
         L.append("> 미확인 %d건: OSV 조회 실패/오프라인. 우선순위는 매겼지만 실재 여부는 확인되지 않음." % s["unverified"])
         L.append("")
     L.append("> 도달성 `not-imported` 는 직접 import 를 못 찾았다는 뜻일 뿐이다. 전이 의존성으로 쓰일 수 있으므로 안전을 의미하지 않는다.")
+    L.append("> OSV 레코드 확인과 설치 버전의 영향 여부는 별개다. 영향 여부는 스캐너 판정을 보존하며 독립 재검증하지 않았다. grep 결과만으로 P0 승격 또는 high/critical 강등을 하지 않는다.")
     L.append("")
 
     L.append("## 도구 상태")
@@ -422,10 +451,10 @@ def render_md(findings, s, actions):
             L.append("… 외 %d건은 findings.json 참고" % (len(fs) - 300))
         L.append("")
 
-    L.append("## 검증 실패 (OSV 404)")
+    L.append("## OSV 미등재 (404)")
     L.append("")
     if s["failed"]:
-        L.append("OSV 가 404 를 돌려준 ID 다. OSV 가 수록하지 않는 DB 의 ID(예: NSWG-*), 철회·오기된 ID, 또는 아직 공개되지 않은 ID 일 수 있다. 실재가 확인되지 않아 우선순위를 매기지 않았다 — 필요하면 원 출처에서 직접 확인한다.")
+        L.append("OSV 조회에서 찾지 못한 항목이다. OSV 미수록·철회·오기·공개 지연 등의 원인일 수 있으며, 가짜나 영향 없음으로 판정하지 않는다. 스캐너 근거와 우선순위를 유지했으므로 원 출처에서 확인한다.")
         L.append("")
         L.append("| 대상 | 패키지 | ID | 스캐너 심각도 | 출처 | 위치 | 스캐너 설명 |")
         L.append("|---|---|---|---|---|---|---|")
@@ -517,10 +546,11 @@ def render_html(findings, s, actions):
     E.append("<div class=\"cards\">")
     for p in PRIORITIES:
         E.append("<div class=\"card %s\"><b>%d</b><span>%s</span></div>" % (p.lower(), s["counts"][p], p))
-    E.append("<div class=\"card\"><b>%d</b><span>검증 실패 (OSV 404)</span></div></div>" % len(s["failed"]))
+    E.append("<div class=\"card\"><b>%d</b><span>OSV 미등재 (404, 우선순위에 포함)</span></div></div>" % len(s["failed"]))
     if s["unverified"]:
         E.append("<p class=\"note\">미확인 %d건: OSV 조회 실패/오프라인. 실재 여부는 확인되지 않았다.</p>" % s["unverified"])
     E.append("<p class=\"note\">도달성 <code>not-imported</code> 는 직접 import 를 찾지 못했다는 뜻일 뿐, 전이 의존성일 수 있어 안전을 의미하지 않는다.</p>")
+    E.append("<p class=\"note\">OSV 레코드 확인과 설치 버전의 영향 여부는 별개다. 영향 여부는 스캐너 판정을 보존하며 독립 재검증하지 않았다. grep 결과만으로 P0 승격 또는 high/critical 강등을 하지 않는다.</p>")
 
     def table(headers, rows):
         E.append("<div class=\"wrap\"><table><thead><tr>%s</tr></thead><tbody>" % "".join("<th>%s</th>" % h(x) for x in headers))
@@ -584,9 +614,9 @@ def render_html(findings, s, actions):
         if len(fs) > 500:
             E.append("<p class=\"note\">… 외 %d건은 findings.json 참고</p>" % (len(fs) - 500))
 
-    E.append("<h2>검증 실패 (OSV 404)</h2>")
+    E.append("<h2>OSV 미등재 (404)</h2>")
     if s["failed"]:
-        E.append("<p class=\"note\">OSV 가 404 를 돌려준 ID 다. OSV 가 수록하지 않는 DB 의 ID(예: NSWG-*), 철회·오기된 ID, 또는 아직 공개되지 않은 ID 일 수 있다. 실재가 확인되지 않아 우선순위를 매기지 않았다 — 필요하면 원 출처에서 직접 확인한다.</p>")
+        E.append("<p class=\"note\">OSV 조회에서 찾지 못한 항목이다. OSV 미수록·철회·오기·공개 지연 등의 원인일 수 있으며, 가짜나 영향 없음으로 판정하지 않는다. 스캐너 근거와 우선순위를 유지했으므로 원 출처에서 확인한다.</p>")
         table(["대상", "패키지", "ID", "스캐너 심각도", "출처", "위치", "스캐너 설명"],
               [[h(f["name"]), h(pkg_cell(f)), "<span class=\"mono\">%s</span>" % h(f["id"]), sev(f["severity"]),
                 h(f["source"]), h(f["location"]), h(f["message"][:160])] for f in s["failed"]])
@@ -628,8 +658,13 @@ def main(argv=None):
         fh.write(render_md(findings, s, actions))
     with open(os.path.join(out, "REPORT.html"), "w", encoding="utf-8") as fh:
         fh.write(render_html(findings, s, actions))
+    try:
+        import operations
+        operations.export(out, findings)
+    except Exception as exc:
+        warn("operations export: %s" % exc)
     c = s["counts"]
-    print("report: P0 %d, P1 %d, P2 %d, P3 %d, 검증 실패 %d → %s" % (
+    print("report: P0 %d, P1 %d, P2 %d, P3 %d, OSV 미등재 %d → %s" % (
         c["P0"], c["P1"], c["P2"], c["P3"], len(s["failed"]), os.path.join(out, "REPORT.md")))
     return 0
 

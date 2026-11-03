@@ -40,7 +40,7 @@ description: >-
      별칭 `EEF-CVE-2026-97853`).
    - 반대로 그럴듯한 ID 가 OSV 에서 404 일 수 있다. **별칭도 따로 확인한다**: 같은 레코드에 적힌
      `GHSA-6c27-994x-c52f` 는 2026-10-23 기준 OSV·GitHub Advisory 둘 다 직접 조회하면 404 다.
-     별칭 목록에 있다고 그 ID 가 조회되는 것은 아니다. 그 항목은 우선순위를 매기지 않고 "검증 실패"로 분리한다.
+     별칭 목록에 있다고 그 ID 가 조회되는 것은 아니다. OSV 미등재(404) 항목은 가짜로 단정하지 않고 원래 스캐너 심각도/우선순위를 보존하며 'OSV 미등재'로 기록한다.
    - `exists:null`(네트워크 실패/오프라인)은 "미검증"이지 "가짜"가 아니다.
 6. **not-imported ≠ 안전.** 전이 의존성은 직접 import 가 없어도 다른 패키지를 통해 실행될 수 있다.
 7. 근거 없이 우선순위를 올리거나 내리지 않는다 (6단계).
@@ -128,7 +128,7 @@ python3 "$S/reachability.py" "$OUT"
 python3 "$S/report.py" "$OUT"
 ```
 
-`OUT/findings.json`, `OUT/REPORT.md`, `OUT/REPORT.html` 생성. 우선순위 규칙: [references/prioritize.md](references/prioritize.md).
+`OUT/findings.json`, `OUT/REPORT.md`, `OUT/REPORT.html`, `OUT/summary.json` 생성. 우선순위 규칙: [references/prioritize.md](references/prioritize.md).
 
 ## 6. Claude 분류 (triage)
 
@@ -175,7 +175,7 @@ python3 "$S/report.py" "$OUT"
 0 9 * * 1  cd ~/work && claude -p "/security-sweep:security-sweep ~/work 전체 점검, P0/P1 만 요약" >> ~/.cache/security-sweep/weekly.log 2>&1
 ```
 
-  이전 `OUT/findings.json` 과 비교해 신규/해결 항목을 요약하도록 제안한다.
+  `python3 "$S/operations.py" "$OUT" --previous "$PREV_OUT"` 를 실행해 `diff.json` 을 생성하고 신규/해결/미관측 항목을 요약한다.
 
 ## 한계
 

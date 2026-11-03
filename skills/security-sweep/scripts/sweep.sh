@@ -46,6 +46,7 @@ JOBS=4
 DRY_RUN=0
 NO_SECRETS=0
 RUNNING_IMAGES=0
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SERVERS=()
 IMAGES=()
 
@@ -88,6 +89,7 @@ fi
 if [ $DRY_RUN -eq 0 ]; then
   mkdir -p "$OUT_DIR" || { warn "cannot create $OUT_DIR"; exit 1; }
   OUT_DIR=$(cd "$OUT_DIR" && pwd) || { warn "cannot resolve $OUT_DIR"; exit 1; }
+  python3 -I "$SCRIPT_DIR/coverage.py" init "$OUT_DIR" || exit 1
   RAW="$OUT_DIR/raw"; LOGS="$OUT_DIR/logs"; TOOLS="$OUT_DIR/tools.txt"
   mkdir -p "$RAW/osv" "$RAW/trivy-fs" "$RAW/elixir" "$RAW/govulncheck" "$RAW/image" "$RAW/server" "$LOGS" \
     || { warn "cannot create $RAW"; exit 1; }
@@ -102,6 +104,19 @@ fi
 tool_row() { printf '%s\t%s\t%s\n' "$1" "$2" "$3" | tr -d '\r' >>"$TOOLS"; }
 
 safe_name() { printf '%s' "$1" | LC_ALL=C sed 's/[^A-Za-z0-9._-]/_/g'; }
+
+# Preserve exact source identity in the journal; artifact names additionally use
+# a digest so different users/hosts/tags cannot overwrite each other's results.
+artifact_name() {
+  python3 -I -c 'import hashlib,re,sys; s=sys.argv[1]; print(re.sub(r"[^A-Za-z0-9._-]", "_", s)[:100]+"-"+hashlib.sha256(s.encode()).hexdigest()[:12])' "$1"
+}
+coverage_row() { # target name path component status reason [artifact] [complete]
+  [ "$DRY_RUN" -eq 0 ] || return 0
+  local extra=()
+  [ "${8:-}" = complete ] && extra+=(--scope-complete)
+  python3 -I "$SCRIPT_DIR/coverage.py" record "$OUT_DIR" --target "$1" --name "$2" \
+    --path "$3" --component "$4" --status "$5" --reason "$6" --artifact "${7:-}" "${extra[@]}"
+}
 
 # show_cmd OUTFILE CMD... — dry-run printer (shell-quoted).
 show_cmd() {
@@ -144,17 +159,23 @@ TRIVY_SKIP_DIRS="**/node_modules,**/deps,**/_build,**/.venv,**/venv,**/target,**
 HAVE_OSV=0; HAVE_TRIVY=0; HAVE_GOVULN=0; ELIXIR_SCAN=""
 
 if have osv-scanner; then
+  if [ $DRY_RUN -eq 0 ]; then
   HAVE_OSV=1; tool_row osv-scanner available "$(osv-scanner --version 2>/dev/null | head -1)"
+  else HAVE_OSV=1; fi
 else
   tool_row osv-scanner missing "install: brew install osv-scanner | go install github.com/google/osv-scanner/v2/cmd/osv-scanner@latest"
 fi
 if have trivy; then
+  if [ $DRY_RUN -eq 0 ]; then
   HAVE_TRIVY=1; tool_row trivy available "$(trivy --version 2>/dev/null | head -1)"
+  else HAVE_TRIVY=1; fi
 else
   tool_row trivy missing "install: brew install trivy | https://trivy.dev/latest/getting-started/installation/"
 fi
 if have govulncheck; then
+  if [ $DRY_RUN -eq 0 ]; then
   HAVE_GOVULN=1; tool_row govulncheck available "$(govulncheck -version 2>/dev/null | grep -i 'scanner' | head -1)"
+  else HAVE_GOVULN=1; fi
 else
   tool_row govulncheck missing "install: go install golang.org/x/vuln/cmd/govulncheck@latest"
 fi
@@ -221,8 +242,9 @@ PY
 
 scan_osv() { # name path lockfiles
   local name="$1" path="$2" locks="$3" out="$RAW/osv/$1.json" log="$LOGS/osv-$1.log"
-  [ $HAVE_OSV -eq 1 ] || return 0
-  if [ -z "$locks" ]; then tool_row osv-scanner skipped "$name: no lockfile (manifest only)"; return 0; fi
+  coverage_row project "$name" "$path" osv pending "lockfile analysis requested"
+  [ $HAVE_OSV -eq 1 ] || { coverage_row project "$name" "$path" osv skipped "osv-scanner not installed"; return 0; }
+  if [ -z "$locks" ]; then tool_row osv-scanner skipped "$name: no lockfile (manifest only)"; coverage_row project "$name" "$path" osv unsupported "no lockfile (manifest only)"; return 0; fi
   local args=() l old_ifs="$IFS"
   IFS=$'\036'
   for l in $locks; do args+=(-L "$l"); done
@@ -236,20 +258,23 @@ scan_osv() { # name path lockfiles
     0|1|128)
       if ! valid_json "$out"; then
         if [ $rc -eq 128 ]; then printf '{"results": []}\n' >"$out"
-        else tool_row osv-scanner error "$name: exit $rc but output not valid JSON (see logs/osv-$name.log)"; return 0; fi
+        else tool_row osv-scanner error "$name: exit $rc but output not valid JSON (see logs/osv-$name.log)"; rm -f "$out"; coverage_row project "$name" "$path" osv failed "invalid output (exit $rc)"; return 0; fi
       fi
       case $rc in
         0) tool_row osv-scanner ok "$name: exit 0 (no vulns)" ;;
         1) tool_row osv-scanner ok "$name: exit 1 (vulns found)" ;;
         128) tool_row osv-scanner ok "$name: exit 128 (no packages)" ;;
-      esac ;;
-    *) tool_row osv-scanner error "$name: exit $rc (see logs/osv-$name.log)" ;;
+      esac
+      if [ $rc -eq 128 ]; then coverage_row project "$name" "$path" osv unsupported "scanner found no packages" "$out"
+      else coverage_row project "$name" "$path" osv scanned "declared lockfiles analyzed" "$out" complete; fi ;;
+    *) tool_row osv-scanner error "$name: exit $rc (see logs/osv-$name.log)"; rm -f "$out"; coverage_row project "$name" "$path" osv failed "scanner exit $rc" ;;
   esac
 }
 
 scan_trivy_fs() { # name path nested
   local name="$1" path="$2" nested="$3" out="$RAW/trivy-fs/$1.json" log="$LOGS/trivy-fs-$1.log"
-  [ $HAVE_TRIVY -eq 1 ] || return 0
+  coverage_row project "$name" "$path" trivy-fs pending "filesystem scanner requested"
+  [ $HAVE_TRIVY -eq 1 ] || { coverage_row project "$name" "$path" trivy-fs skipped "trivy not installed"; return 0; }
   local scanners="secret,misconfig" skip="$TRIVY_SKIP_DIRS"
   [ $NO_SECRETS -eq 1 ] && scanners="misconfig"
   [ -n "$nested" ] && skip="$skip,$nested"
@@ -258,38 +283,42 @@ scan_trivy_fs() { # name path nested
   if [ $DRY_RUN -eq 1 ]; then show_cmd "" "${cmd[@]}"; return 0; fi
   "${cmd[@]}" >"$log" 2>&1
   local rc=$?
-  if [ $rc -eq 0 ] && valid_json "$out"; then strip_secret_code "$out"; tool_row trivy ok "$name: fs $scanners"
-  else tool_row trivy error "$name: fs exit $rc (see logs/trivy-fs-$name.log)"; fi
+  if [ $rc -eq 0 ] && valid_json "$out" && strip_secret_code "$out"; then
+    tool_row trivy ok "$name: fs $scanners"
+    coverage_row project "$name" "$path" trivy-fs scanned "scanners=$scanners; excluded=$skip; file readability not established" "$out"
+  else tool_row trivy error "$name: fs exit $rc (see logs/trivy-fs-$name.log)"; rm -f "$out"; coverage_row project "$name" "$path" trivy-fs failed "scanner/output validation exit $rc"; fi
 }
 
 scan_elixir() { # name path
   local name="$1" path="$2" out="$RAW/elixir/$1" log="$LOGS/elixir-$1.log"
-  [ -n "$ELIXIR_SCAN" ] || { tool_row elixir-security-audit skipped "$name: scan.sh not found"; return 0; }
+  coverage_row project "$name" "$path" elixir pending "Elixir analyzer requested"
+  [ -n "$ELIXIR_SCAN" ] || { tool_row elixir-security-audit skipped "$name: scan.sh not found"; coverage_row project "$name" "$path" elixir skipped "scan.sh not found"; return 0; }
   if [ $DRY_RUN -eq 1 ]; then show_cmd "" bash "$ELIXIR_SCAN" --no-deps-fetch --out "$out" "$path"; return 0; fi
   mkdir -p "$out"
   bash "$ELIXIR_SCAN" --no-deps-fetch --out "$out" "$path" >"$log" 2>&1
   local rc=$?
   case $rc in
-    0) tool_row elixir-security-audit ok "$name" ;;
-    2) tool_row elixir-security-audit skipped "$name: not an Elixir project (exit 2)" ;;
-    *) tool_row elixir-security-audit error "$name: exit $rc (see logs/elixir-$name.log)" ;;
+    0) tool_row elixir-security-audit ok "$name"; coverage_row project "$name" "$path" elixir scanned "Elixir analyzer completed; nested tool coverage not established" "$out" ;;
+    2) tool_row elixir-security-audit skipped "$name: not an Elixir project (exit 2)"; coverage_row project "$name" "$path" elixir unsupported "not an Elixir project" ;;
+    *) tool_row elixir-security-audit error "$name: exit $rc (see logs/elixir-$name.log)"; coverage_row project "$name" "$path" elixir failed "analyzer exit $rc" ;;
   esac
 }
 
 scan_govuln() { # name path
   local name="$1" path="$2" out="$RAW/govulncheck/$1.json" log="$LOGS/govulncheck-$1.log"
-  [ $HAVE_GOVULN -eq 1 ] || { tool_row govulncheck skipped "$name: govulncheck not installed"; return 0; }
+  coverage_row project "$name" "$path" govulncheck pending "Go call analysis requested"
+  [ $HAVE_GOVULN -eq 1 ] || { tool_row govulncheck skipped "$name: govulncheck not installed"; coverage_row project "$name" "$path" govulncheck skipped "govulncheck not installed"; return 0; }
   if [ $DRY_RUN -eq 1 ]; then printf 'cd %q && govulncheck -json ./... > %q\n' "$path" "$out"; return 0; fi
   (cd "$path" && govulncheck -json ./...) >"$out" 2>"$log"
   local rc=$?
   # -json exits 0 even when vulnerabilities are found; non-zero means it could not analyze.
-  if [ $rc -eq 0 ]; then tool_row govulncheck ok "$name"
-  else tool_row govulncheck error "$name: exit $rc (see logs/govulncheck-$name.log)"; fi
+  if [ $rc -eq 0 ]; then tool_row govulncheck ok "$name"; coverage_row project "$name" "$path" govulncheck scanned "Go analyzer completed for ./..." "$out" complete
+  else tool_row govulncheck error "$name: exit $rc (see logs/govulncheck-$name.log)"; rm -f "$out"; coverage_row project "$name" "$path" govulncheck failed "scanner exit $rc"; fi
 }
 
 scan_project() { # name path ecosystems lockfiles nested
   local name="$1" path="$2" ecos="$3" locks="$4" nested="$5"
-  if [ ! -d "$path" ]; then tool_row sweep error "$name: path missing: $path"; return 0; fi
+  if [ ! -d "$path" ]; then tool_row sweep error "$name: path missing: $path"; coverage_row project "$name" "$path" project failed "path missing"; return 0; fi
   [ $DRY_RUN -eq 1 ] || info "project $name ($ecos)"
   scan_osv "$name" "$path" "$locks"
   scan_trivy_fs "$name" "$path" "$nested"
@@ -326,19 +355,22 @@ fi
 # ---------------------------------------------------------------- images
 
 if [ $RUNNING_IMAGES -eq 1 ]; then
-  if have docker; then
-    if [ $DRY_RUN -eq 1 ]; then show_cmd "" docker ps --format '{{.Image}}'; fi
+  if [ $DRY_RUN -eq 1 ]; then
+    show_cmd "" docker ps --format '{{.Image}}'
+  elif have docker; then
     RUNNING=$(docker ps --format '{{.Image}}' 2>/dev/null)
     rc=$?
-    if [ $rc -ne 0 ]; then tool_row docker error "docker ps failed (exit $rc; daemon not running?)"
+    if [ $rc -ne 0 ]; then tool_row docker error "docker ps failed (exit $rc; daemon not running?)"; coverage_row image running-images docker:running discovery failed "docker ps failed (exit $rc)"
     else
       tool_row docker ok "running images: $(printf '%s\n' "$RUNNING" | grep -c . | tr -d ' ')"
+      coverage_row image running-images docker:running discovery scanned "running image enumeration only; snapshot at collection time" "" complete
       while IFS= read -r img; do [ -n "$img" ] && IMAGES+=("$img"); done <<EOF
 $(printf '%s\n' "$RUNNING" | sort -u)
 EOF
     fi
   else
     tool_row docker missing "--running-images needs the docker CLI"
+    coverage_row image running-images docker:running discovery skipped "docker CLI unavailable"
   fi
 fi
 
@@ -348,16 +380,19 @@ for img in ${IMAGES[@]+"${IMAGES[@]}"}; do
   case " ${SEEN_IMAGES:-} " in *" $img "*) continue ;; esac
   SEEN_IMAGES="${SEEN_IMAGES:-} $img"
   N_IMAGES=$((N_IMAGES + 1))
-  sname=$(safe_name "$img"); out="$RAW/image/$sname.json"; log="$LOGS/image-$sname.log"
-  if [ $HAVE_TRIVY -eq 0 ]; then tool_row trivy-image skipped "$img: trivy not installed"; continue; fi
+  sname=$(artifact_name "$img"); out="$RAW/image/$sname.json"; log="$LOGS/image-$sname.log"
+  coverage_row image "$img" "$img" trivy-image pending "image analysis requested"
+  if [ $HAVE_TRIVY -eq 0 ]; then tool_row trivy-image skipped "$img: trivy not installed"; coverage_row image "$img" "$img" trivy-image skipped "trivy not installed"; continue; fi
   scanners="vuln,secret"; [ $NO_SECRETS -eq 1 ] && scanners="vuln"
   cmd=(trivy image --scanners "$scanners" --format json --output "$out" --quiet --timeout 10m --skip-version-check "$img")
   if [ $DRY_RUN -eq 1 ]; then show_cmd "" "${cmd[@]}"; continue; fi
   info "image $img"
   "${cmd[@]}" >"$log" 2>&1
   rc=$?
-  if [ $rc -eq 0 ] && valid_json "$out"; then strip_secret_code "$out"; tool_row trivy-image ok "$img"
-  else tool_row trivy-image error "$img: exit $rc ($(tail -1 "$log" 2>/dev/null | cut -c1-160))"; fi
+  if [ $rc -eq 0 ] && valid_json "$out" && strip_secret_code "$out"; then
+    tool_row trivy-image ok "$img"
+    coverage_row image "$img" "$img" trivy-image scanned "scanners=$scanners; registry/daemon artifact scanned; running-container equivalence not established" "$out" complete
+  else tool_row trivy-image error "$img: exit $rc ($(tail -1 "$log" 2>/dev/null | cut -c1-160))"; rm -f "$out"; coverage_row image "$img" "$img" trivy-image failed "scanner/output validation exit $rc"; fi
 done
 
 # ---------------------------------------------------------------- servers
@@ -376,6 +411,7 @@ elif command -v apk >/dev/null 2>&1; then
   echo "# pm: apk"; apk info -v
 else
   echo "# pm: none"
+  exit 3
 fi
 '
 REMOTE_TRIVY='trivy rootfs --scanners vuln --format json --quiet --timeout 15m --skip-version-check --skip-dirs /proc,/sys,/dev,/run /'
@@ -383,8 +419,9 @@ REMOTE_TRIVY='trivy rootfs --scanners vuln --format json --quiet --timeout 15m -
 N_SERVERS=0
 for host in ${SERVERS[@]+"${SERVERS[@]}"}; do
   N_SERVERS=$((N_SERVERS + 1))
-  sname=$(safe_name "${host##*@}"); out="$RAW/server/$sname.json"; log="$LOGS/server-$sname.log"
-  if ! have ssh; then tool_row ssh missing "$host: ssh client not installed"; continue; fi
+  sname=$(artifact_name "$host"); out="$RAW/server/$sname.json"; log="$LOGS/server-$sname.log"
+  coverage_row server "$host" "$host" rootfs pending "readable rootfs analysis requested"
+  if ! have ssh; then tool_row ssh missing "$host: ssh client not installed"; coverage_row server "$host" "$host" rootfs skipped "ssh client unavailable"; continue; fi
   if [ $DRY_RUN -eq 1 ]; then
     show_cmd "" ssh "${SSH_OPTS[@]}" "$host" 'command -v trivy'
     show_cmd "$out" ssh "${SSH_OPTS[@]}" "$host" "$REMOTE_TRIVY"
@@ -396,24 +433,31 @@ for host in ${SERVERS[@]+"${SERVERS[@]}"}; do
   ssh "${SSH_OPTS[@]}" "$host" 'command -v trivy' >"$log" 2>&1 </dev/null
   rc=$?
   if [ $rc -eq 255 ]; then
-    tool_row ssh error "$host: connection failed (exit 255: $(tail -1 "$log" | cut -c1-160))"; continue
+    tool_row ssh error "$host: connection failed (exit 255: $(tail -1 "$log" | cut -c1-160))"; coverage_row server "$host" "$host" rootfs failed "SSH connection failed (exit 255)"; continue
   fi
   tool_row ssh ok "$host: connected"
   if [ $rc -eq 0 ]; then
     # shellcheck disable=SC2029  # REMOTE_TRIVY is a fixed local string by design
     ssh "${SSH_OPTS[@]}" "$host" "$REMOTE_TRIVY" >"$out" 2>>"$log" </dev/null
     rc=$?
-    if [ $rc -eq 0 ] && valid_json "$out"; then tool_row trivy ok "$host: rootfs /"; continue; fi
+    if [ $rc -eq 0 ] && valid_json "$out"; then
+      tool_row trivy ok "$host: rootfs /"
+      coverage_row server "$host" "$host" rootfs scanned "readable rootfs only; /proc,/sys,/dev,/run excluded; other users' venvs and unreadable paths not established" "$out"
+      continue
+    fi
     tool_row trivy error "$host: remote trivy rootfs exit $rc; falling back to package list"
+    coverage_row server "$host" "$host" rootfs failed "remote scanner/output validation exit $rc; inventory fallback attempted"
     rm -f "$out"
   else
     tool_row trivy missing "$host: no trivy on server; collected package list only. To install (manually, with approval): https://trivy.dev/latest/getting-started/installation/"
+    coverage_row server "$host" "$host" rootfs skipped "remote trivy unavailable; inventory fallback attempted"
   fi
   pkgs="$RAW/server/$sname.packages.txt"
   rc=1
   { printf '# host: %s\n' "$host"; printf '%s' "$PKG_SCRIPT" | ssh "${SSH_OPTS[@]}" "$host" 'sh -s' 2>>"$log"; rc=$?; } >"$pkgs"
-  if [ "$rc" -eq 0 ]; then tool_row ssh ok "$host: package list ($(grep -vc '^#' "$pkgs" | tr -d ' ') packages)"
-  else tool_row ssh error "$host: package list exit $rc"; fi
+  if [ "$rc" -eq 0 ]; then tool_row ssh ok "$host: package list ($(grep -vc '^#' "$pkgs" | tr -d ' ') packages)"; coverage_row server "$host" "$host" package-inventory inventory-only "package inventory collected; vulnerability matching not performed" "$pkgs"
+  elif [ "$rc" -eq 3 ]; then tool_row ssh error "$host: package manager unsupported"; coverage_row server "$host" "$host" package-inventory unsupported "no supported package manager" "$pkgs"
+  else tool_row ssh error "$host: package list exit $rc"; rm -f "$pkgs"; coverage_row server "$host" "$host" package-inventory failed "inventory collection exit $rc"; fi
 done
 
 # ---------------------------------------------------------------- summary
@@ -422,6 +466,8 @@ if [ $DRY_RUN -eq 1 ]; then
   info "dry-run: $N_PROJECTS projects, ${N_IMAGES} images, ${N_SERVERS} servers planned; nothing executed"
   exit 0
 fi
+
+python3 -I "$SCRIPT_DIR/coverage.py" finalize "$OUT_DIR" || exit 1
 
 {
   printf '[sweep] done: %d projects, %d images, %d servers -> %s\n' "$N_PROJECTS" "$N_IMAGES" "$N_SERVERS" "$OUT_DIR"

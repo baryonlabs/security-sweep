@@ -1,8 +1,8 @@
 # security-sweep — key facts
 
-> Open-source Claude Code skill and plugin by Baryon Labs (MIT). Version 0.1.1, released 2026-10-23.
+> Open-source Claude Code skill and plugin by Baryon Labs (MIT). Version 0.2.0, released 2026-11-04.
 > Repository: https://github.com/baryonlabs/security-sweep · Site: https://baryonlabs.github.io/security-sweep/
-> All facts below are taken from the repository README, CHANGELOG, SKILL.md and the published example (as of 2026-10-23).
+> All facts below are taken from the repository README, CHANGELOG, SKILL.md and the published example (as of 2026-11-04).
 
 ## What it is
 
@@ -42,12 +42,12 @@ Requirements: macOS or Linux, bash, python3 (standard library only), at least on
 
 not-imported is not "safe": transitive dependencies run without a direct import.
 
-## CVE verification example (OSV API, queried 2026-10-23)
+## CVE verification example (OSV API, queried 2026-11-04)
 
 - CVE-2026-97853 → HTTP 200. Elixir `decimal`, `Decimal.round/3` DoS via the places argument; affects decimal from 0.1.0 before 3.1.2. OSV aliases: EEF-CVE-2026-97853, GHSA-6c27-994x-c52f.
 - CVE-2099-00001 → HTTP 404 ("Vulnerability not found").
 
-## Real example (one developer laptop, 2026-10-23, pseudonymized)
+## Real example (one developer laptop, 2026-11-04, pseudonymized)
 
 - Projects found: 26 (npm, PyPI, Hex, Go, Maven); 15 with findings
 - Unique advisories: 75, all verified to exist in OSV (0 × 404, 0 × CISA KEV)
@@ -55,9 +55,9 @@ not-imported is not "safe": transitive dependencies run without a direct import.
 - 99 of the 107 P1 come from two packages: pillow 12.3.0 (27 advisories × 3 projects = 81) and sharp 0.34.5 (6 projects = 18)
 - Secrets: 3 (1 GitHub OAuth token, 2 JWTs) in git-ignored build folders, values masked
 - One Elixir/Phoenix project reviewed in code, upgraded (bandit 1.12.5 → 1.13.1, decimal 3.1.1 → 3.2.0, plug_crypto 2.2.0 → 2.2.1; mix test 226 tests, 0 failures) and rescanned: 5 findings → 1 (the remaining one is a recorded false positive)
-- Source: https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23
+- Source: https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-11-04
 
-## How it differs from AI security review tools (as of 2026-10-23)
+## How it differs from AI security review tools (as of 2026-11-04)
 
 - Codex Security (OpenAI), Claude Code `/security-review`, and the Anthropic Claude Security plugin use an LLM to read code and find logic flaws (authorization bypass, broken trust boundaries). They do not scan dependency CVEs themselves; the Claude Security docs recommend running it alongside existing dependency scanners.
 - security-sweep uses deterministic scanners to find known vulnerabilities (dependency CVEs, server OS packages, secrets) across many projects, servers and images, verifies each ID in OSV, and checks reachability. LLM is used only for triage; the scripts can run without an LLM.

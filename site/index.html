@@ -51,8 +51,8 @@
    "applicationCategory": "DeveloperApplication",
    "applicationSubCategory": "Security",
    "operatingSystem": "macOS, Linux",
-   "softwareVersion": "0.1.1",
-   "datePublished": "2026-10-23",
+   "softwareVersion": "0.2.0",
+   "datePublished": "2026-11-04",
    "image": "https://baryonlabs.github.io/security-sweep/og.jpg",
    "license": "https://opensource.org/licenses/MIT",
    "offers": {
@@ -79,7 +79,7 @@
    ],
    "runtimePlatform": "Claude Code",
    "license": "https://opensource.org/licenses/MIT",
-   "version": "0.1.1",
+   "version": "0.2.0",
    "author": {
     "@id": "https://baryonlabs.github.io/security-sweep/#org"
    },
@@ -94,7 +94,7 @@
    "name": "security-sweep: 여러 프로젝트·서버 취약점을 한 번에 점검하는 Claude Code 스킬",
    "description": "한 문장 요청으로 여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 점검하는 오픈소스 Claude Code 스킬. osv-scanner·trivy로 훑고 모든 CVE를 OSV로 실재 검증한 뒤 도달성까지 판정해 P0~P3 보고서를 만듭니다. 기본은 읽기 전용입니다.",
    "inLanguage": "ko",
-   "dateModified": "2026-10-23",
+   "dateModified": "2026-11-04",
    "about": {
     "@id": "https://baryonlabs.github.io/security-sweep/#app"
    },
@@ -216,7 +216,7 @@ python3 $S/reachability.py "$OUT"
 python3 $S/report.py "$OUT"</code></pre>
 </section>
 <section id="example"><h2><span class="num">03</span>실제 예시: 26개 프로젝트, 5건 → 1건</h2>
-<p>실제 개발자 맥북의 <code>~/projects</code> 아래 프로젝트 26개를 security-sweep으로 한 번 돌린 결과입니다 (2026-10-23, 프로젝트명·경로는 가명 처리, 취약점 ID·버전·우선순위는 실제 결과 그대로).</p>
+<p>실제 개발자 맥북의 <code>~/projects</code> 아래 프로젝트 26개를 security-sweep으로 한 번 돌린 결과입니다 (2026-11-04, 프로젝트명·경로는 가명 처리, 취약점 ID·버전·우선순위는 실제 결과 그대로).</p>
 <div class="table-wrap"><table><thead><tr><th scope="col">항목</th><th scope="col">결과</th></tr></thead><tbody>
 <tr><td>탐지된 프로젝트</td><td>26개 (npm · PyPI · Hex · Go · Maven), 그중 취약점이 나온 곳 15개</td></tr>
 <tr><td>취약점 권고</td><td>고유 <span class=stat>75개</span>, 전부 OSV에서 실재 확인 (404 0건, CISA KEV 0건)</td></tr>
@@ -232,7 +232,7 @@ python3 $S/report.py "$OUT"</code></pre>
 <tr><td>합계</td><td><strong>5건</strong></td><td><strong>1건</strong></td></tr>
 </tbody></table></div>
 <figure><img src="assets/before-after.webp" alt="한 번 돌리고, 고치고, 다시 확인: 5건에서 1건으로" width="1536" height="1024" loading="lazy" decoding="async"></figure>
-<p><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">가명 처리한 실제 보고서 전체 보기 (GitHub)</a></p>
+<p><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-11-04">가명 처리한 실제 보고서 전체 보기 (GitHub)</a></p>
 </section>
 <section id="compare"><h2><span class="num">04</span>탐정과 공항 검색대: 다른 보안 도구와의 차이</h2>
 <p>Claude Security, Codex Security, <code>/security-review</code>는 <strong>탐정</strong>처럼 코드를 읽고 추리해 로직 결함을 찾습니다. security-sweep은 <strong>공항 검색대</strong>처럼 모든 프로젝트·서버·이미지를 통과시키며 알려진 취약점(CVE)을 빠짐없이 찾습니다. 대체가 아니라 조합입니다.</p>
@@ -299,7 +299,7 @@ python3 $S/report.py "$OUT"</code></pre>
 <footer class="site-footer"><div class="wrap"><div class="cols">
 <div><h2>security-sweep</h2><p>여러 프로젝트·서버·컨테이너 이미지의 알려진 취약점을 한 번에 점검하는 오픈소스 Claude Code 스킬. MIT 라이선스 © 2026 Baryon Labs.</p></div>
 <div><h2>질문별 안내</h2><ul><li><a href="ko/scan-all-projects/">여러 프로젝트를 한 번에 점검하려면?</a></li><li><a href="ko/verify-cve/">CVE 번호가 진짜인지 확인하는 법</a></li><li><a href="ko/priority/">P0~P3 우선순위는 어떻게 정하나요?</a></li><li><a href="ko/vs-claude-security/">Claude Security·Codex Security와 차이</a></li></ul></div>
-<div><h2>저장소</h2><ul><li><a href="https://github.com/baryonlabs/security-sweep">GitHub 저장소</a></li><li><a href="https://github.com/baryonlabs/security-sweep/releases">릴리스</a></li><li><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">실제 예시 보고서</a></li><li><a href="https://github.com/baryonlabs/security-sweep/issues">이슈·제보</a></li><li><a href="https://github.com/baryonlabs/elixir-security-audit">elixir-security-audit</a></li></ul></div>
-</div><p class="updated">최종 갱신 2026-10-23 · v0.1.1 · <a href="en/" hreflang="en" lang="en">English</a></p></div></footer>
+<div><h2>저장소</h2><ul><li><a href="https://github.com/baryonlabs/security-sweep">GitHub 저장소</a></li><li><a href="https://github.com/baryonlabs/security-sweep/releases">릴리스</a></li><li><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-11-04">실제 예시 보고서</a></li><li><a href="https://github.com/baryonlabs/security-sweep/issues">이슈·제보</a></li><li><a href="https://github.com/baryonlabs/elixir-security-audit">elixir-security-audit</a></li></ul></div>
+</div><p class="updated">최종 갱신 2026-11-04 · v0.2.0 · <a href="en/" hreflang="en" lang="en">English</a></p></div></footer>
 </body>
 </html>

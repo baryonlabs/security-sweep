@@ -66,3 +66,21 @@ ssh -o BatchMode=yes HOST "docker ps --format '{{.Image}}'" | sort -u
 ```bash
 kubectl get pods -A -o jsonpath='{range .items[*]}{range .spec.containers[*]}{.image}{"\n"}{end}{end}' | sort -u
 ```
+
+## 원격 Python venv 인벤토리 수집 및 로컬 반입 (inventory.py)
+
+서버에 Trivy나 인터넷 연결이 없거나 다른 사용자의 venv를 안전하게 점검해야 하는 경우, 원격에서 Python 코드를 실행하지 않고 dist-info 메타데이터만 읽어 인벤토리를 만든 뒤 로컬로 가져와 분석할 수 있다.
+
+1. **서버 인벤토리 수집 (원격 실행 또는 배치 작업):**
+   ```bash
+   python3 scripts/inventory.py collect --host HOST --venv /path/to/venv1 [--venv /path/to/venv2] --output inventory.json
+   ```
+   - Python 인터프리터나 `pip list`를 실행하지 않고 정적 메타데이터 파일만 읽음 (임의 코드 실행 방지).
+   - 심볼릭 링크 및 특수 파일 차단 (`O_NOFOLLOW`).
+
+2. **로컬 분석 및 취약점 질의:**
+   ```bash
+   python3 scripts/inventory.py import inventory.json --out OUT_DIR [--offline]
+   ```
+   - OSV API를 통해 각 패키지/버전의 취약점을 로컬에서 조회.
+   - `inventory.coverage.json`을 생성하여 점검 성공 여부와 누락 범위를 기록.

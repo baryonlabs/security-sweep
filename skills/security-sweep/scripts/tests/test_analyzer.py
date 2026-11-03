@@ -58,17 +58,30 @@ class PriorityTest(unittest.TestCase):
     def test_rules(self):
         p = report.priority
         self.assertEqual(p(finding(severity="low", kev=True)), "P0")
-        self.assertEqual(p(finding(severity="critical", reach="called")), "P0")
+        self.assertEqual(p(finding(severity="critical", reach="called")), "P1")
+        self.assertEqual(p(finding(severity="critical", reach="called", reach_method="govulncheck",
+                                   reach_evidence=["main.go:10 main.main"])), "P0")
         self.assertEqual(p(finding(severity="high", reach="imported")), "P1")
         self.assertEqual(p(finding(severity="high", reach="unknown")), "P1")
         self.assertEqual(p(finding(severity="low", epss=0.1)), "P1")
         self.assertEqual(p(finding(kind="secret", severity="low", reach="n/a", verified=None)), "P1")
         self.assertEqual(p(finding(severity="medium", reach="called")), "P2")
-        self.assertEqual(p(finding(severity="high", reach="not-imported")), "P2")
+        self.assertEqual(p(finding(severity="high", reach="not-imported")), "P1")
         self.assertEqual(p(finding(severity="low", reach="imported")), "P3")
         self.assertEqual(p(finding(severity="unknown")), "P3")
         self.assertEqual(p(finding(kind="misconfig", severity="low", reach="n/a", verified=None)), "P3")
-        self.assertIsNone(p(finding(severity="critical", kev=True, verified=False)))
+        self.assertEqual(p(finding(severity="critical", kev=True, verified=False)), "P0")
+
+    def test_heuristics_and_missing_call_evidence_do_not_change_priority(self):
+        for method in ("none", "symbol-grep", "import-grep", "govulncheck"):
+            with self.subTest(method=method):
+                self.assertEqual(report.priority(finding(reach="called", reach_method=method)), "P1")
+                self.assertEqual(report.priority(finding(reach="not-imported", reach_method=method)), "P1")
+        self.assertEqual(report.priority(finding(reach="called", reach_method="symbol-grep",
+                                                reach_evidence=["app.py:12 text match"])), "P1")
+
+    def test_osv_404_keeps_scanner_risk(self):
+        self.assertEqual(report.priority(finding(verified=False)), "P1")
 
 
 class DedupTest(unittest.TestCase):
@@ -179,7 +192,7 @@ class PipelineTest(unittest.TestCase):
 
     def test_not_imported(self):
         f = self.find(name="webapp", package="minimist")
-        self.assertEqual((f["severity"], f["reach"], f["priority"]), ("critical", "not-imported", "P2"))
+        self.assertEqual((f["severity"], f["reach"], f["priority"]), ("critical", "not-imported", "P1"))
 
     def test_govulncheck_called(self):
         f = self.find(name="goapp", id="GO-2021-0113")
@@ -188,18 +201,30 @@ class PipelineTest(unittest.TestCase):
 
     def test_elixir_symbol_grep(self):
         f = self.find(name="exapp", id="CVE-2026-97853")
-        self.assertEqual((f["reach"], f["priority"]), ("called", "P0"))
+        self.assertEqual((f["reach"], f["priority"]), ("called", "P1"))
+        self.assertEqual(f["reach_method"], "symbol-grep")
         self.assertEqual(self.reach["exapp"]["decimal"]["CVE-2026-97853"]["method"], "symbol-grep")
         code = self.find(name="exapp", id="EXS-CFG-001")
         self.assertEqual(code["kind"], "code")
 
     def test_failed_verification_section(self):
         f = self.find(id="CVE-2099-00001")
-        self.assertIsNone(f["priority"])
+        self.assertEqual(f["priority"], "P1")
         self.assertIs(f["verified"], False)
-        failed = self.md.split("## 검증 실패")[1].split("## 다음 행동")[0]
+        self.assertEqual(f["verification_status"], "not-found-in-osv")
+        failed = self.md.split("## OSV 미등재")[1].split("## 다음 행동")[0]
         self.assertIn("CVE-2099-00001", failed)
-        self.assertNotIn("CVE-2099-00001", self.md.split("## 검증 실패")[0])
+        self.assertIn("CVE-2099-00001", self.md.split("## OSV 미등재")[0])
+
+    def test_lookup_is_separate_from_affectedness(self):
+        for f in self.findings:
+            if f["kind"] != "vuln":
+                continue
+            self.assertEqual(f["affectedness"], "scanner-reported")
+            self.assertIs(f["affectedness_independently_checked"], False)
+            self.assertIn(f["id"], f["verification_by_id"])
+        self.assertEqual(self.verified["CVE-2099-00001"]["lookup_status"], "not-found-in-osv")
+        self.assertEqual(self.verified["CVE-2021-23337"]["lookup_status"], "embedded-alias")
 
     def test_image_and_server(self):
         f = self.find(target="image", id="CVE-2023-4911")

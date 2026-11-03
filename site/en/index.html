@@ -51,8 +51,8 @@
    "applicationCategory": "DeveloperApplication",
    "applicationSubCategory": "Security",
    "operatingSystem": "macOS, Linux",
-   "softwareVersion": "0.1.1",
-   "datePublished": "2026-10-23",
+   "softwareVersion": "0.2.0",
+   "datePublished": "2026-11-04",
    "image": "https://baryonlabs.github.io/security-sweep/og.jpg",
    "license": "https://opensource.org/licenses/MIT",
    "offers": {
@@ -79,7 +79,7 @@
    ],
    "runtimePlatform": "Claude Code",
    "license": "https://opensource.org/licenses/MIT",
-   "version": "0.1.1",
+   "version": "0.2.0",
    "author": {
     "@id": "https://baryonlabs.github.io/security-sweep/#org"
    },
@@ -94,7 +94,7 @@
    "name": "security-sweep: Find Known CVEs Across Projects and Servers",
    "description": "Open-source Claude Code skill that sweeps many projects, servers and images for known vulnerabilities, verifies every CVE in OSV and ranks findings P0–P3.",
    "inLanguage": "en",
-   "dateModified": "2026-10-23",
+   "dateModified": "2026-11-04",
    "about": {
     "@id": "https://baryonlabs.github.io/security-sweep/#app"
    },
@@ -188,7 +188,7 @@ cp -r security-sweep/skills/security-sweep ~/.claude/skills/</code></pre>
 <p>Claude then opens the code evidence for every P0/P1, confirms or adjusts the priority with a one-line reason, and proposes (but does not perform) per-project fixes. Elixir projects are handed to elixir-security-audit.</p>
 </section>
 <section id="example"><h2><span class="num">03</span>Real example: 26 projects, 5 → 1</h2>
-<p>One run over the 26 projects under <code>~/projects</code> on a real developer laptop (2026-10-23; project names and paths pseudonymized, IDs, versions and priorities unchanged).</p>
+<p>One run over the 26 projects under <code>~/projects</code> on a real developer laptop (2026-11-04; project names and paths pseudonymized, IDs, versions and priorities unchanged).</p>
 <div class="table-wrap"><table><thead><tr><th scope="col">Item</th><th scope="col">Result</th></tr></thead><tbody>
 <tr><td>Projects found</td><td>26 (npm · PyPI · Hex · Go · Maven), 15 with findings</td></tr>
 <tr><td>Advisories</td><td><span class=stat>75</span> unique, all verified to exist in OSV (0 × 404, 0 × CISA KEV)</td></tr>
@@ -198,7 +198,7 @@ cp -r security-sweep/skills/security-sweep ~/.claude/skills/</code></pre>
 <div class="callout"><p><strong>99 of the 107 P1 findings come from two packages:</strong> 81 are 27 advisories on <code>pillow 12.3.0</code> repeated across 3 projects, and 18 are <code>sharp 0.34.5</code> repeated across 6 projects.</p></div>
 <p>After reviewing one Elixir/Phoenix project in code (one false positive, <code>decimal</code> not reachable), upgrading with <code>mix deps.update bandit decimal plug_crypto</code> and passing <code>mix test</code> (226 tests, 0 failures), a rescan of that project went from <strong>5 findings to 1</strong> (the remaining one is the recorded false positive).</p>
 <figure><img src="../assets/before-after.webp" alt="Run, fix, rescan: from 5 findings to 1 (Korean labels)" width="1536" height="1024" loading="lazy" decoding="async"></figure>
-<p><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">See the pseudonymized real reports on GitHub</a></p>
+<p><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-11-04">See the pseudonymized real reports on GitHub</a></p>
 </section>
 <section id="compare"><h2><span class="num">04</span>The detective and the airport scanner</h2>
 <p>AI security reviews (Codex Security, Claude Security, <code>/security-review</code>) are the <strong>detective</strong>: they read code and reason about logic flaws. security-sweep is the <strong>airport scanner</strong>: every project, server and image passes through and is checked against the wanted list (CVE databases). Use both.</p>
@@ -233,7 +233,7 @@ cp -r security-sweep/skills/security-sweep ~/.claude/skills/</code></pre>
 </div></main>
 <footer class="site-footer"><div class="wrap"><div class="cols">
 <div><h2>security-sweep</h2><p>An open-source Claude Code skill that checks many projects, servers and container images for known vulnerabilities. MIT License © 2026 Baryon Labs.</p></div>
-<div><h2>Repository</h2><ul><li><a href="https://github.com/baryonlabs/security-sweep">GitHub repository</a></li><li><a href="https://github.com/baryonlabs/security-sweep/releases">Releases</a></li><li><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-10-23">Real example reports</a></li><li><a href="https://github.com/baryonlabs/security-sweep/issues">Issues</a></li><li><a href="https://github.com/baryonlabs/elixir-security-audit">elixir-security-audit</a></li></ul></div>
-</div><p class="updated">Last updated 2026-10-23 · v0.1.1 · <a href="../" hreflang="ko" lang="ko">한국어</a></p></div></footer>
+<div><h2>Repository</h2><ul><li><a href="https://github.com/baryonlabs/security-sweep">GitHub repository</a></li><li><a href="https://github.com/baryonlabs/security-sweep/releases">Releases</a></li><li><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-11-04">Real example reports</a></li><li><a href="https://github.com/baryonlabs/security-sweep/issues">Issues</a></li><li><a href="https://github.com/baryonlabs/elixir-security-audit">elixir-security-audit</a></li></ul></div>
+</div><p class="updated">Last updated 2026-11-04 · v0.2.0 · <a href="../" hreflang="ko" lang="ko">한국어</a></p></div></footer>
 </body>
 </html>
