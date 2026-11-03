@@ -174,19 +174,54 @@ python3 $S/report.py "$OUT"
 open "$OUT/REPORT.html"
 ```
 
+
+## 활용법 (CI & 정기 운영)
+
+### 1. CI 게이트 (PR 머지 차단)
+의존성 파일(`package-lock.json`, `poetry.lock`, `requirements.txt` 등)이 변경된 PR에서 신규 P0(KEV 악용 중인 취약점)이 발견되면 CI를 실패로 처리합니다:
+
+```bash
+# 빠른 스캔 후 P0 유입 시 빌드 차단 (종료 코드 1)
+python3 -c "import json; s=json.load(open('OUT/summary.json')); exit(1 if s['counts']['P0'] > 0 else 0)"
+```
+
+### 2. 서버 무설치 정기 점검 (주간 Cron)
+Trivy 등 외부 도구 설치가 제한되거나 권한이 분리된 서버(GPU 서버, 프로덕션 VM 등)를 안전하게 점검합니다 (임의 코드 실행 없이 `.dist-info`만 정적 수집):
+
+```bash
+# 1) 서버에서 venv 메타데이터만 수집
+python3 scripts/inventory.py collect --host gpu-server --venv /path/to/venv --output inventory.json
+# 2) 로컬에서 OSV 취약점 질의 및 보고서 생성
+python3 scripts/inventory.py import inventory.json --out ./weekly-out
+python3 scripts/report.py ./weekly-out
+```
+
+### 3. 주간 변경 추적 & 메신저 알림 (Discord / Slack)
+`operations.py`로 지난주 보고서와 비교하여 신규 유입·해결·미관측 항목을 구분하고 `summary.json`을 웹훅으로 전송합니다:
+
+```bash
+# 지난주 결과와 비교 (diff.json 생성: new, persistent, resolved, not_observed)
+python3 scripts/operations.py ./this-week --previous ./last-week
+# Discord/Slack 웹훅에 summary.json의 P0/P1 건수 및 점검 커버리지 연동
+```
+
 ## 출력
 
 ```
 security-sweep-YYYYMMDD-HHMM/
+  coverage.json     대상별 점검 상태 (scanned / inventory-only / failed)
+  manifest.json     실행 환경, 도구 버전 및 재현성 정보
   targets.json      탐색된 프로젝트 (경로, 생태계, lockfile)
   tools.txt         도구·서버별 실행 상태 (건너뜀 사유)
-  raw/              osv/, trivy-fs/, elixir/, govulncheck/, image/, server/
+  raw/              osv/, trivy-fs/, elixir/, govulncheck/, image/, server/, inventory/
   verified.json     ID 별 OSV 실재 여부, 별칭, 심각도, 수정 버전, KEV, EPSS
   reach.json        called / imported / not-imported / unknown + 근거 file:line
   findings.json     정규화·우선순위가 매겨진 전체 항목
-  REPORT.md         요약 → P0/P1 → 대상별 → 검증 실패 → 다음 행동
+  summary.json      운영/알림 연동용 기계 판독형 요약
+  diff.json         주간 비교 결과 (new, persistent, resolved, not_observed)
+  REPORT.md         요약 → P0/P1 → 대상별 → OSV 미등재 → 다음 행동
   REPORT.html       같은 내용, 외부 리소스 없는 단일 파일 (다크모드)
-  triage.md         Claude 가 P0/P1 을 확정·조정한 표 (스킬 실행 시)
+  triage.md / .json Claude 조정 표 및 증거 해시 바인딩 재검토 파일
 ```
 
 ## 우선순위
