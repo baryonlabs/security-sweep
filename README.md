@@ -177,33 +177,88 @@ open "$OUT/REPORT.html"
 
 ## 활용법 (CI & 정기 운영)
 
+보안은 한 번 검사하고 끝나는 것이 아니라, **"코드가 추가될 때 막고(CI)"**, **"새 제로데이가 발표될 때 발견하는(정기 운영)"** 지속적인 루틴이 핵심입니다.
+
 ### 1. CI 게이트 (PR 머지 차단)
-의존성 파일(`package-lock.json`, `poetry.lock`, `requirements.txt` 등)이 변경된 PR에서 신규 P0(KEV 악용 중인 취약점)이 발견되면 CI를 실패로 처리합니다:
+의존성 파일(`package-lock.json`, `poetry.lock`, `requirements.txt`, `mix.lock` 등)이 변경된 PR에서 신규 **P0(KEV 실전 악용 취약점)**이나 치명적인 비밀값이 발견되면 머지를 자동 차단합니다:
 
 ```bash
-# 빠른 스캔 후 P0 유입 시 빌드 차단 (종료 코드 1)
-python3 -c "import json; s=json.load(open('OUT/summary.json')); exit(1 if s['counts']['P0'] > 0 else 0)"
+# 1) 변경된 프로젝트 스캔
+bash skills/security-sweep/scripts/sweep.sh --targets targets.json --out ./out
+python3 skills/security-sweep/scripts/verify_cves.py ./out --offline
+python3 skills/security-sweep/scripts/report.py ./out
+
+# 2) P0 취약점 유입 시 빌드 실패 (종료 코드 1)
+python3 -c "import json, sys; s=json.load(open('./out/summary.json')); sys.exit(1 if s['counts']['P0'] > 0 else 0)"
 ```
 
-### 2. 서버 무설치 정기 점검 (주간 Cron)
-Trivy 등 외부 도구 설치가 제한되거나 권한이 분리된 서버(GPU 서버, 프로덕션 VM 등)를 안전하게 점검합니다 (임의 코드 실행 없이 `.dist-info`만 정적 수집):
+### 2. 서버 무설치 정기 점검 (Zero-Install Weekly Cron)
+외부 도구(Trivy 등) 설치가 금지된 폐쇄망 서버나 여러 사용자/학생이 공용으로 쓰는 GPU 서버도 안전하게 점검할 수 있습니다. 서버에서 코드를 실행하지 않고 정적 메타데이터(`.dist-info`)만 수집하여 로컬 분석 머신으로 가져옵니다:
 
 ```bash
-# 1) 서버에서 venv 메타데이터만 수집
-python3 scripts/inventory.py collect --host gpu-server --venv /path/to/venv --output inventory.json
-# 2) 로컬에서 OSV 취약점 질의 및 보고서 생성
+# [원격 서버 실행] Python 인터프리터 실행 없이 메타데이터만 정적 수집 (심볼릭링크 차단)
+python3 scripts/inventory.py collect --host 4090-gpu --venv /home/user/venv1 --output inventory.json
+
+# [로컬 머신 실행] 가져온 인벤토리를 OSV API에 질의하여 취약점 판정
 python3 scripts/inventory.py import inventory.json --out ./weekly-out
 python3 scripts/report.py ./weekly-out
 ```
 
 ### 3. 주간 변경 추적 & 메신저 알림 (Discord / Slack)
-`operations.py`로 지난주 보고서와 비교하여 신규 유입·해결·미관측 항목을 구분하고 `summary.json`을 웹훅으로 전송합니다:
+단순한 취약점 건수만 비교하면 네트워크 장애로 인한 누락을 "해결"로 오인하기 쉽습니다. `operations.py`는 실제 점검 범위(`coverage.json`)와 결합하여 **신규 유입(`new`), 해결 확인(`resolved`), 미점검(`not_observed`)**을 정밀하게 구분합니다:
 
 ```bash
-# 지난주 결과와 비교 (diff.json 생성: new, persistent, resolved, not_observed)
+# 지난주 결과와 비교하여 diff.json 및 알림용 summary.json 생성
 python3 scripts/operations.py ./this-week --previous ./last-week
-# Discord/Slack 웹훅에 summary.json의 P0/P1 건수 및 점검 커버리지 연동
+
+# Discord / Slack 웹훅으로 P0/P1 변동 내역 전송
+# 예: "🔔 [4090 주간 보안 점검] P0: 0건 · P1: 2건 (신규 1, 해결 2, 미관측 1)"
 ```
+
+---
+
+## 누구나 쉽게 보안을 유지하는 법 & 공식 보안 사이트
+
+보안 사고의 90% 이상은 복잡한 해킹 기법이 아니라, **"이미 수개월 전 패치가 공개된 알려진 취약점(1-day CVE)"**을 방치해서 일어납니다. 아래의 3단계 루틴과 공식 보안 사이트들을 활용하면 개인 개발자나 소규모 팀도 기업 수준의 보안 체계를 유지할 수 있습니다.
+
+### 💡 누구나 쉽게 실천하는 3단계 보안 루틴
+
+1. **자동화된 정기 점검 (주 1회 월요일)**
+   - 코드를 수정하지 않아도 매일 새로운 CVE가 취약점 DB에 등록됩니다.
+   - `security-sweep` 주간 Cron을 걸어두고, 평소에는 메신저(Discord/Slack) 요약 알림만 확인합니다.
+2. **우선순위 기반 패치 (P0 즉시 조치 → P1 계획 조치)**
+   - 수백 개의 경고를 한 번에 다 고칠 수는 없습니다.
+   - **P0 (CISA KEV 등재):** 지금 해커들이 실제로 공격 도구로 쓰고 있는 취약점이므로 즉시 라이브러리를 업데이트합니다.
+   - **P1 (High/Critical 또는 EPSS ≥ 0.1):** 외부 서비스에 노출된 인터페이스와 연관된 패키지부터 순차적으로 업그레이드합니다.
+3. **공식 정부·보안 기관의 보안 공지 정기 구독**
+   - 아래 안내된 공식 정부 사이트(보호나라 등)의 주간 보안공지 및 긴급 보안 패치 알림을 확인합니다.
+
+### 🏛️ 대한민국 정부 & 공공 보안 포털
+
+취약점 확인, 최신 사이버 위협 동향 파악, 침해사고 발생 시 공식 신고 창구입니다:
+
+| 기관 / 서비스 | 링크 | 주요 역할 및 활용법 |
+|---|---|---|
+| **KISA 보호나라 (KrCERT/CC)** | [boho.or.kr](https://www.boho.or.kr) | **한국인터넷진흥원 국가사이버위협 침해대응센터.** 주간 보안공지, 최신 취약점 권고문, 랜섬웨어 복구도구 및 침해사고 무료 신고 지원 |
+| **KISA 취약점 신고·포상제 (Bug Bounty)** | [취약점 제보 포털](https://www.boho.or.kr/kr/subPage.do?menuNo=205020) | 소프트웨어/제품의 신규 보안 결함 발견 시 정부에 공식 제보하여 개발사 패치를 유도하고 포상금을 지원받는 공식 창구 |
+| **국가사이버안보센터 (NCSC)** | [ncsc.go.kr](https://www.ncsc.go.kr) | **국가정보원 주관.** 국가 사이버위협 경보 단계(정상/관심/주의/경계/심각), 공공·IT 보안 가이드라인 및 주요 침해사고 분석 보고서 제공 |
+| **경찰청 사이버범죄 신고시스템 (ECRM)** | [ecrm.police.go.kr](https://ecrm.police.go.kr) | 해킹 피해, 서버 침해, 악성코드 유포 등 사이버 범죄 피해 시 온라인 수사의뢰 및 정식 피해 접수 |
+| **개인정보보호위원회 (PIPC)** | [pipc.go.kr](https://www.pipc.go.kr) | 개인정보 유출 사고 신고, 개인정보 안전성 확보조치 기술 기준(암호화, 접속기록 보관 등) 공식 안내 |
+
+### 🌐 글로벌 공인 취약점 데이터베이스 & 연구 기관
+
+`security-sweep`이 실시간으로 교차 검증하는 글로벌 표준 보안 리소스입니다:
+
+| 데이터베이스 / 기관 | 링크 | 신뢰도 및 판정 기준 |
+|---|---|---|
+| **CISA KEV Catalog** | [cisa.gov/known-exploited-vulnerabilities-catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | **미국 사이버안보청(CISA) 공식 카탈로그.** 해커가 실제 공격에 사용 중임이 확인된 취약점 목록 (security-sweep **P0** 판정 기준) |
+| **NIST NVD (National Vulnerability Database)** | [nvd.nist.gov](https://nvd.nist.gov) | **미국 국립표준기술연구소 공식 DB.** 모든 공인 CVE의 CVSS 점수, 공격 벡터(Network/Local), 영향도 공식 분석 |
+| **OSV.dev (Open Source Vulnerabilities)** | [osv.dev](https://osv.dev) | **구글 및 OpenSSF 주도 오픈소스 통합 DB.** 정확한 커밋/버전 범위 검증 (security-sweep 실재 판정 기준) |
+| **FIRST EPSS** | [first.org/epss](https://www.first.org/epss/) | **향후 30일 내 실제 악용될 확률(0~1)을 통계 모델로 예측.** EPSS ≥ 0.1(상위 10% 악용 가능성) 항목을 security-sweep **P1**으로 지정 |
+| **CVE.org (CVE Program)** | [cve.org](https://www.cve.org) | **국제 표준 CVE 식별자 등록소 (MITRE 운영).** 공식 취약점 명명 및 공인 레코드 조회 |
+| **GitHub Advisory Database** | [github.com/advisories](https://github.com/advisories) | npm, PyPI, Go, Maven, Cargo, Composer, NuGet, Hex 등 생태계별 상세 보안 권고 (GHSA) |
+
+---
 
 ## 출력
 

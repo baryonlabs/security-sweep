@@ -57,6 +57,18 @@ not-imported is not "safe": transitive dependencies run without a direct import.
 - One Elixir/Phoenix project reviewed in code, upgraded (bandit 1.12.5 → 1.13.1, decimal 3.1.1 → 3.2.0, plug_crypto 2.2.0 → 2.2.1; mix test 226 tests, 0 failures) and rescanned: 5 findings → 1 (the remaining one is a recorded false positive)
 - Source: https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-11-04
 
+## Operations & authoritative security resources
+
+- CI/CD quality gate: automatically abort pull request builds if a new P0 (CISA KEV) vulnerability is introduced.
+- Zero-install server sweeps: `inventory.py collect` grabs package metadata (`.dist-info`) over SSH without running python on the server; `inventory.py import` evaluates vulnerabilities via OSV on the audit workstation.
+- Weekly differential: `operations.py` compares current scan against previous scan and accurately distinguishes new, persistent, resolved, and not-observed (unobserved != fixed).
+- Authoritative government resources:
+  - CISA KEV (US): catalog of actively exploited vulnerabilities in the wild (triggers P0).
+  - NIST NVD (US): official CVSS severity metrics and attack vector metadata.
+  - KISA KrCERT/CC (South Korea, boho.or.kr): weekly advisories, ransomware tools, cyber threat reporting.
+  - NCSC (South Korea, ncsc.go.kr): national cyber security center alert levels and institutional guidelines.
+- Standard vulnerability databases: OSV.dev (Google/OpenSSF), FIRST EPSS (exploit probability), CVE.org (MITRE), GitHub Advisory Database.
+
 ## How it differs from AI security review tools (as of 2026-11-04)
 
 - Codex Security (OpenAI), Claude Code `/security-review`, and the Anthropic Claude Security plugin use an LLM to read code and find logic flaws (authorization bypass, broken trust boundaries). They do not scan dependency CVEs themselves; the Claude Security docs recommend running it alongside existing dependency scanners.

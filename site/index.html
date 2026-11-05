@@ -165,7 +165,7 @@
 <a class="skip" href="#main">본문 바로가기</a>
 <header class="site-header"><div class="wrap">
 <a class="brand" href=""><img src="favicon.svg" alt="" width="28" height="28"><span>security-sweep</span></a>
-<nav class="site-nav" aria-label="주요 메뉴"><a href="#install">설치</a><a href="#how">동작 방식</a><a href="#example">실제 예시</a><a href="#compare">비교</a><a href="#faq">FAQ</a><a href="https://github.com/baryonlabs/security-sweep">GitHub</a><a class="lang" href="en/" hreflang="en" lang="en">English</a></nav>
+<nav class="site-nav" aria-label="주요 메뉴"><a href="#install">설치</a><a href="#how">동작 방식</a><a href="#example">실제 예시</a><a href="#operations">활용법</a><a href="#resources">보안 사이트</a><a href="#compare">비교</a><a href="#faq">FAQ</a><a href="https://github.com/baryonlabs/security-sweep">GitHub</a><a class="lang" href="en/" hreflang="en" lang="en">English</a></nav>
 </div></header>
 <div class="hero"><div class="wrap">
 <p class="eyebrow">Open source · Claude Code skill · MIT</p>
@@ -234,7 +234,74 @@ python3 $S/report.py "$OUT"</code></pre>
 <figure><img src="assets/before-after.webp" alt="한 번 돌리고, 고치고, 다시 확인: 5건에서 1건으로" width="1536" height="1024" loading="lazy" decoding="async"></figure>
 <p><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-11-04">가명 처리한 실제 보고서 전체 보기 (GitHub)</a></p>
 </section>
-<section id="compare"><h2><span class="num">04</span>탐정과 공항 검색대: 다른 보안 도구와의 차이</h2>
+<section id="operations"><h2><span class="num">04</span>실무 활용법: CI 게이트 &amp; 무설치 정기 운영</h2>
+<p>보안은 일회성 점검보다 <strong>“새 취약 코드가 들어올 때 차단하고(CI)”, “새로 발표된 제로데이를 놓치지 않는(정기 운영)”</strong> 자동화 루틴이 핵심입니다.</p>
+<div class="cards">
+<div class="card">
+<h3>1. CI 게이트 (PR 머지 차단)</h3>
+<p>의존성 파일(<code>package-lock.json</code>, <code>poetry.lock</code> 등)이 바뀔 때 신규 <strong>P0(KEV 실전 악용 취약점)</strong>이 유입되면 CI 빌드를 실패로 처리해 머지를 자동 차단합니다.</p>
+<pre><code># P0 취약점 발견 시 종료 코드 1 반환
+python3 -c "import json, sys; s=json.load(open('OUT/summary.json')); sys.exit(1 if s['counts']['P0'] > 0 else 0)"</code></pre>
+</div>
+<div class="card">
+<h3>2. 서버 무설치 정기 점검 (Zero-Install)</h3>
+<p>외부 도구 설치가 차단된 폐쇄망 서버나 공용 GPU 서버도 안전합니다. 서버에서 Python을 실행하지 않고 <code>.dist-info</code> 메타데이터만 긁어와 로컬에서 취약점을 조회합니다.</p>
+<pre><code># 서버에서 메타데이터만 정적 수집
+python3 scripts/inventory.py collect --host 4090-gpu --venv /path/to/venv --output inventory.json
+# 로컬에서 OSV 질의 및 보고서 생성
+python3 scripts/inventory.py import inventory.json --out ./out &amp;&amp; python3 scripts/report.py ./out</code></pre>
+</div>
+<div class="card">
+<h3>3. 주간 변경 추적 &amp; 메신저 알림</h3>
+<p>단순 건수 비교가 아니라, <code>coverage.json</code>과 결합하여 <strong>신규 유입, 해결 완료, 미점검</strong>을 구분한 뒤 Discord/Slack으로 신뢰할 수 있는 요약을 보냅니다.</p>
+<pre><code># 지난주 보고서와 비교하여 diff.json 생성
+python3 scripts/operations.py ./this-week --previous ./last-week</code></pre>
+</div>
+</div>
+</section>
+
+<section id="resources"><h2><span class="num">05</span>누구나 쉽게 보안을 유지하는 법 &amp; 공식 보안 사이트</h2>
+<p>보안 사고의 90% 이상은 첨단 해킹 기술이 아니라, <strong>이미 수개월 전에 패치가 나온 알려진 취약점(1-day CVE)</strong>을 방치해서 일어납니다. 아래의 3단계 루틴과 공식 보안 기관 사이트를 활용하면 누구나 높은 보안 수준을 유지할 수 있습니다.</p>
+
+<ol class="steps">
+<li><b>1. 정기 자동 점검</b><span>코드를 고치지 않아도 새 CVE는 매일 발표됩니다. 주 1회 Cron으로 자동 스캔을 걸어두세요.</span></li>
+<li><b>2. P0 우선 패치</b><span>수백 개 경고를 다 못 고쳐도 됩니다. 지금 해커가 악용 중인 CISA KEV(P0)부터 먼저 업데이트하세요.</span></li>
+<li><b>3. 공식 보안 공지 확인</b><span>KISA 보호나라 등 국가 기관의 주간 보안공지 권고를 정기적으로 확인하세요.</span></li>
+</ol>
+
+<h3>대한민국 정부 &amp; 공공 보안 포털</h3>
+<p>보안 공지 확인, 침해사고 무료 지원, 취약점 포상제 신고 창구입니다:</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>기관 / 서비스</th><th>공식 링크</th><th>주요 역할 및 활용법</th></tr></thead>
+<tbody>
+<tr><td><strong>KISA 보호나라 (KrCERT/CC)</strong></td><td><a href="https://www.boho.or.kr" target="_blank" rel="noopener">boho.or.kr</a></td><td>한국인터넷진흥원 침해대응센터. 주간 보안공지, 랜섬웨어 복구도구 배포, 중소기업·개인 침해사고 무료 신고 및 기술 지원</td></tr>
+<tr><td><strong>KISA 취약점 신고·포상제</strong></td><td><a href="https://www.boho.or.kr/kr/subPage.do?menuNo=205020" target="_blank" rel="noopener">취약점 제보 포털</a></td><td>S/W 보안 결함 발견 시 정부에 공식 제보하여 제조사 보안 패치를 유도하고 포상금을 지급받는 공인 버그바운티</td></tr>
+<tr><td><strong>국가사이버안보센터 (NCSC)</strong></td><td><a href="https://www.ncsc.go.kr" target="_blank" rel="noopener">ncsc.go.kr</a></td><td>국가정보원 주관. 국가 사이버위협 경보(정상~심각 단계), IT 제품 보안 가이드라인 및 주요 침해사고 분석 보고서</td></tr>
+<tr><td><strong>경찰청 사이버범죄 신고시스템 (ECRM)</strong></td><td><a href="https://ecrm.police.go.kr" target="_blank" rel="noopener">ecrm.police.go.kr</a></td><td>해킹, 악성코드, 정보유출 피해 발생 시 온라인 수사의뢰 및 정식 범죄 피해 접수</td></tr>
+<tr><td><strong>개인정보보호위원회 (PIPC)</strong></td><td><a href="https://www.pipc.go.kr" target="_blank" rel="noopener">pipc.go.kr</a></td><td>개인정보 유출 신고, 안전성 확보조치 기술 기준(암호화, 접근통제 등) 공식 법령 안내</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>글로벌 공인 취약점 데이터베이스 &amp; 연구 기관</h3>
+<p>security-sweep이 실시간으로 교차 검증하는 국제 표준 보안 리소스입니다:</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>데이터베이스 / 기관</th><th>공식 링크</th><th>신뢰도 및 판정 기준</th></tr></thead>
+<tbody>
+<tr><td><strong>CISA KEV Catalog</strong></td><td><a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener">cisa.gov/known-exploited-vulnerabilities-catalog</a></td><td>미국 사이버안보청 공식 카탈로그. 실제 해커가 공격에 악용 중인 취약점 목록 (security-sweep <strong>P0</strong> 판정 기준)</td></tr>
+<tr><td><strong>NIST NVD</strong></td><td><a href="https://nvd.nist.gov" target="_blank" rel="noopener">nvd.nist.gov</a></td><td>미국 국립표준기술연구소 국가 취약점 DB. 공식 CVSS 점수 및 공격 벡터(Network/Local) 메타데이터 제공</td></tr>
+<tr><td><strong>OSV.dev</strong></td><td><a href="https://osv.dev" target="_blank" rel="noopener">osv.dev</a></td><td>구글/OpenSSF 주도 오픈소스 분산 취약점 DB. 생태계별 정확한 커밋/버전 범위 검증 (security-sweep 핵심 실재 판정)</td></tr>
+<tr><td><strong>FIRST EPSS</strong></td><td><a href="https://www.first.org/epss/" target="_blank" rel="noopener">first.org/epss</a></td><td>향후 30일 내 악용될 확률(0~1) 통계 예측. EPSS ≥ 0.1(상위 10% 악용 가능성) 항목을 <strong>P1</strong>으로 선제 대응</td></tr>
+<tr><td><strong>CVE.org</strong></td><td><a href="https://www.cve.org" target="_blank" rel="noopener">cve.org</a></td><td>국제 표준 CVE 고유 식별자 공식 등록소 (MITRE 운영)</td></tr>
+<tr><td><strong>GitHub Advisory Database</strong></td><td><a href="https://github.com/advisories" target="_blank" rel="noopener">github.com/advisories</a></td><td>npm, PyPI, Go, Maven, Cargo, Composer, NuGet, Hex 등 생태계별 GHSA 보안 권고</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="compare"><h2><span class="num">06</span>탐정과 공항 검색대: 다른 보안 도구와의 차이</h2>
 <p>Claude Security, Codex Security, <code>/security-review</code>는 <strong>탐정</strong>처럼 코드를 읽고 추리해 로직 결함을 찾습니다. security-sweep은 <strong>공항 검색대</strong>처럼 모든 프로젝트·서버·이미지를 통과시키며 알려진 취약점(CVE)을 빠짐없이 찾습니다. 대체가 아니라 조합입니다.</p>
 <figure><img src="assets/easy-compare.webp" alt="탐정과 공항 검색대: 로직 결함은 AI 보안 리뷰가, 알려진 취약점은 스캐너 스윕이 찾습니다" width="1536" height="1024" loading="lazy" decoding="async"></figure>
 <div class="table-wrap wide"><table><thead><tr><th scope="col"></th><th scope="col">탐정: AI 보안 리뷰<br><span class=muted>Codex Security · Claude Security · /security-review</span></th><th scope="col">공항 검색대: 스캐너 스윕<br><span class=muted>security-sweep · elixir-security-audit</span></th></tr></thead><tbody>
@@ -254,7 +321,7 @@ python3 $S/report.py "$OUT"</code></pre>
 </tbody></table></div>
 <p><a href="ko/vs-claude-security/">도구별 자세한 비교표 보기 (Codex Security · /security-review · Claude Security)</a></p>
 </section>
-<section id="priority"><h2><span class="num">05</span>우선순위 P0~P3</h2>
+<section id="priority"><h2><span class="num">07</span>우선순위 P0~P3</h2>
 <div class="table-wrap"><table><thead><tr><th scope="col">우선순위</th><th scope="col">조건</th><th scope="col">의미</th></tr></thead><tbody>
 <tr><td><span class="badge b-p0">P0</span></td><td>CISA KEV 등재, 또는 critical/high 이고 실제 호출(called)</td><td>지금 고친다</td></tr>
 <tr><td><span class="badge b-p1">P1</span></td><td>critical/high 이고 imported/unknown, 또는 EPSS ≥ 0.1, 또는 비밀 발견</td><td>이번 주</td></tr>
@@ -264,7 +331,7 @@ python3 $S/report.py "$OUT"</code></pre>
 </tbody></table></div>
 <p><code>not-imported</code>는 "안전"이 아닙니다. 전이 의존성은 직접 import 없이도 실행됩니다. <a href="ko/priority/">우선순위 규칙과 근거 자세히 보기</a></p>
 </section>
-<section id="principles"><h2><span class="num">06</span>안전 원칙</h2>
+<section id="principles"><h2><span class="num">08</span>안전 원칙</h2>
 <ul class="checklist">
 <li><strong>기본 읽기 전용.</strong> 코드·lockfile을 바꾸지 않습니다. 수정은 사용자가 지시한 프로젝트만, 별도 브랜치에서 합니다.</li>
 <li><strong>서버에 아무것도 설치하지 않습니다.</strong> ssh는 <code>BatchMode=yes</code>, 사용자가 이름을 댄 호스트만, sudo는 명시할 때만 씁니다.</li>
@@ -280,7 +347,7 @@ python3 $S/report.py "$OUT"</code></pre>
 <li>네트워크: api.osv.dev, cisa.gov(KEV), api.first.org(EPSS). 없으면 <code>--offline</code></li>
 </ul>
 </section>
-<section id="guides"><h2><span class="num">07</span>질문별 안내</h2><div class="cards"><a class="card" href="ko/scan-all-projects/"><h3>여러 프로젝트를 한 번에 점검하려면?</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/verify-cve/"><h3>CVE 번호가 진짜인지 확인하는 법</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/priority/"><h3>P0~P3 우선순위는 어떻게 정하나요?</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/vs-claude-security/"><h3>Claude Security·Codex Security와 차이</h3><p class="go">답 보기 →</p></a></div></section>
+<section id="guides"><h2><span class="num">09</span>질문별 안내</h2><div class="cards"><a class="card" href="ko/scan-all-projects/"><h3>여러 프로젝트를 한 번에 점검하려면?</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/verify-cve/"><h3>CVE 번호가 진짜인지 확인하는 법</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/priority/"><h3>P0~P3 우선순위는 어떻게 정하나요?</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/vs-claude-security/"><h3>Claude Security·Codex Security와 차이</h3><p class="go">답 보기 →</p></a></div></section>
 <section id="faq" class="faq"><h2>자주 묻는 질문</h2>
 <h3>서버에 뭔가 설치되나요?</h3>
 <p>아니요. <code>ssh -o BatchMode=yes</code>로 사용자가 이름을 댄 호스트에만 접속하고, 원격에 trivy가 있으면 <code>trivy rootfs</code>를 읽기 전용으로 실행합니다. trivy가 없으면 패키지 목록(<code>dpkg-query</code>/<code>rpm -qa</code>/<code>apk info</code>)만 수집합니다. sudo는 사용자가 명시할 때만 씁니다.</p>

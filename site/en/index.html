@@ -149,7 +149,7 @@
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="wrap">
 <a class="brand" href="../en/"><img src="../favicon.svg" alt="" width="28" height="28"><span>security-sweep</span></a>
-<nav class="site-nav" aria-label="Main"><a href="#install">Install</a><a href="#how">How it works</a><a href="#example">Example</a><a href="#compare">Compare</a><a href="#faq">FAQ</a><a href="https://github.com/baryonlabs/security-sweep">GitHub</a><a class="lang" href="../" hreflang="ko" lang="ko">한국어</a></nav>
+<nav class="site-nav" aria-label="Main"><a href="#install">Install</a><a href="#how">How it works</a><a href="#example">Example</a><a href="#operations">Operations</a><a href="#resources">Resources</a><a href="#compare">Compare</a><a href="#faq">FAQ</a><a href="https://github.com/baryonlabs/security-sweep">GitHub</a><a class="lang" href="../" hreflang="ko" lang="ko">한국어</a></nav>
 </div></header>
 <div class="hero"><div class="wrap">
 <p class="eyebrow">Open source · Claude Code skill · MIT</p>
@@ -200,7 +200,69 @@ cp -r security-sweep/skills/security-sweep ~/.claude/skills/</code></pre>
 <figure><img src="../assets/before-after.webp" alt="Run, fix, rescan: from 5 findings to 1 (Korean labels)" width="1536" height="1024" loading="lazy" decoding="async"></figure>
 <p><a href="https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-11-04">See the pseudonymized real reports on GitHub</a></p>
 </section>
-<section id="compare"><h2><span class="num">04</span>The detective and the airport scanner</h2>
+<section id="operations"><h2><span class="num">04</span>Operations: CI Gates &amp; Zero-Install Periodic Sweeps</h2>
+<p>Effective security is not a one-time audit, but a continuous routine: <strong>blocking vulnerable dependencies at PR review (CI)</strong> and <strong>catching newly disclosed CVEs on existing servers</strong>.</p>
+<div class="cards">
+<div class="card">
+<h3>1. CI Gate (Block PR Merges)</h3>
+<p>When lockfiles (<code>package-lock.json</code>, <code>poetry.lock</code>) change, automatically fail the build if a new <strong>P0 (CISA KEV actively exploited)</strong> vulnerability is introduced.</p>
+<pre><code># Return exit code 1 if P0 vulnerabilities exist
+python3 -c "import json, sys; s=json.load(open('OUT/summary.json')); sys.exit(1 if s['counts']['P0'] > 0 else 0)"</code></pre>
+</div>
+<div class="card">
+<h3>2. Zero-Install Server Sweeps</h3>
+<p>Safely audit air-gapped or shared GPU servers without installing external binaries or running target code. Reads static <code>.dist-info</code> metadata and queries OSV locally.</p>
+<pre><code># Collect metadata on remote host without running Python
+python3 scripts/inventory.py collect --host gpu-box --venv /path/to/venv --output inventory.json
+# Import and query OSV on local audit workstation
+python3 scripts/inventory.py import inventory.json --out ./out &amp;&amp; python3 scripts/report.py ./out</code></pre>
+</div>
+<div class="card">
+<h3>3. Weekly Differential &amp; Chatbot Alerts</h3>
+<p>By pairing raw findings with <code>coverage.json</code>, distinguish between true fixes and unobserved targets due to network/permission errors before sending Slack/Discord alerts.</p>
+<pre><code># Generate diff.json against previous scan
+python3 scripts/operations.py ./this-week --previous ./last-week</code></pre>
+</div>
+</div>
+</section>
+
+<section id="resources"><h2><span class="num">05</span>Essential Security Hygiene &amp; Authoritative Portals</h2>
+<p>Over 90% of security incidents result from <strong>known vulnerabilities (1-day CVEs)</strong> with available patches left unapplied. Follow this 3-step routine and reference authoritative security agencies to maintain robust posture.</p>
+
+<ol class="steps">
+<li><b>1. Automated Weekly Sweeps</b><span>New CVEs drop every day even when your code never changes. Automate weekly cron sweeps.</span></li>
+<li><b>2. Fix P0 First</b><span>You don't need to fix 100+ low warnings at once. Prioritize CISA KEV (P0) actively weaponized in the wild.</span></li>
+<li><b>3. Subscribe to Official Alerts</b><span>Monitor advisory bulletins from national agencies (CISA, KISA KrCERT/CC, NCSC).</span></li>
+</ol>
+
+<h3>Authoritative Government &amp; Public Portals</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Organization</th><th>Portal</th><th>Role &amp; Guidance</th></tr></thead>
+<tbody>
+<tr><td><strong>CISA (US Cybersecurity &amp; Infrastructure Security Agency)</strong></td><td><a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener">cisa.gov/kev</a></td><td>Official US federal catalog of vulnerabilities exploited in the wild (security-sweep <strong>P0</strong> criterion).</td></tr>
+<tr><td><strong>NIST NVD (National Vulnerability Database)</strong></td><td><a href="https://nvd.nist.gov" target="_blank" rel="noopener">nvd.nist.gov</a></td><td>Authoritative US government vulnerability repository providing official CVSS severity scores and attack vectors.</td></tr>
+<tr><td><strong>KISA KrCERT/CC (Korea Internet &amp; Security Agency)</strong></td><td><a href="https://www.boho.or.kr" target="_blank" rel="noopener">boho.or.kr</a></td><td>South Korea's national cyber threat center. Weekly advisories, incident reporting, and bug bounty coordination.</td></tr>
+<tr><td><strong>NCSC (National Cyber Security Center)</strong></td><td><a href="https://www.ncsc.go.kr" target="_blank" rel="noopener">ncsc.go.kr</a></td><td>National cyber threat alert levels, institutional security guidelines, and incident response whitepapers.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Standard Vulnerability Databases &amp; Metrics</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Database / Tool</th><th>Link</th><th>Purpose in security-sweep</th></tr></thead>
+<tbody>
+<tr><td><strong>OSV.dev (Open Source Vulnerabilities)</strong></td><td><a href="https://osv.dev" target="_blank" rel="noopener">osv.dev</a></td><td>Google/OpenSSF distributed database with commit-level package version precision (core existence verification).</td></tr>
+<tr><td><strong>FIRST EPSS</strong></td><td><a href="https://www.first.org/epss/" target="_blank" rel="noopener">first.org/epss</a></td><td>Exploit Prediction Scoring System estimating 30-day exploit probability. EPSS ≥ 0.1 triggers <strong>P1</strong>.</td></tr>
+<tr><td><strong>CVE.org (CVE Program)</strong></td><td><a href="https://www.cve.org" target="_blank" rel="noopener">cve.org</a></td><td>International registry of Common Vulnerabilities and Exposures operated by MITRE.</td></tr>
+<tr><td><strong>GitHub Advisory Database</strong></td><td><a href="https://github.com/advisories" target="_blank" rel="noopener">github.com/advisories</a></td><td>Ecosystem security advisories across npm, PyPI, Go, Maven, Cargo, Composer, NuGet, and Hex.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="compare"><h2><span class="num">06</span>The detective and the airport scanner</h2>
 <p>AI security reviews (Codex Security, Claude Security, <code>/security-review</code>) are the <strong>detective</strong>: they read code and reason about logic flaws. security-sweep is the <strong>airport scanner</strong>: every project, server and image passes through and is checked against the wanted list (CVE databases). Use both.</p>
 <figure><img src="../assets/easy-compare.webp" alt="Detective vs airport scanner illustration (Korean labels)" width="1536" height="1024" loading="lazy" decoding="async"></figure>
 <div class="table-wrap wide"><table><thead><tr><th scope="col"></th><th scope="col">Detective: AI security review</th><th scope="col">Airport scanner: security-sweep</th></tr></thead><tbody>
@@ -211,7 +273,7 @@ cp -r security-sweep/skills/security-sweep ~/.claude/skills/</code></pre>
 <tr><td>Cost</td><td>Model tokens per scan</td><td>Scanners are free; LLM only for triage</td></tr>
 </tbody></table></div>
 </section>
-<section id="principles"><h2><span class="num">05</span>Safety principles</h2>
+<section id="principles"><h2><span class="num">07</span>Safety principles</h2>
 <ul class="checklist">
 <li><strong>Read-only by default.</strong> No code or lockfile changes; fixes only for projects you name, on a separate branch.</li>
 <li><strong>Nothing is installed on servers.</strong> <code>ssh -o BatchMode=yes</code>, only hosts you name, sudo only when you say so.</li>

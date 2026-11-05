@@ -16,6 +16,13 @@
 - [취약점 우선순위 P0~P3는 어떻게 정하나요?](https://baryonlabs.github.io/security-sweep/ko/priority/): KEV·심각도·도달성·EPSS 규칙
 - [Claude Security·Codex Security와 무엇이 다른가요?](https://baryonlabs.github.io/security-sweep/ko/vs-claude-security/): 로직 결함(AI 리뷰) vs 알려진 취약점(스캐너 스윕)
 
+## Operations & Authoritative Security Resources
+
+- Operations: CI quality gate (exit 1 on P0), zero-install server metadata collection (`inventory.py`), weekly diff comparison & webhook summary (`operations.py`)
+- Authoritative Government Portals: CISA KEV (US), NIST NVD (US), KISA KrCERT/CC (South Korea, boho.or.kr), NCSC (South Korea, ncsc.go.kr)
+- Standard Vulnerability Databases: OSV.dev (Google/OpenSSF), FIRST EPSS, CVE.org (MITRE), GitHub Advisory Database (GHSA)
+- 3-Step Routine: 1) Weekly automated sweeps, 2) Fix P0 (KEV) immediately, 3) Track official national security advisories
+
 ## Data policy
 
 - Example numbers come from one real run on 2026-11-04 published (pseudonymized) in https://github.com/baryonlabs/security-sweep/tree/main/examples/dev-machine-2026-11-04
