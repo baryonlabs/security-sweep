@@ -1,6 +1,6 @@
 # security-sweep — key facts
 
-> Open-source Claude Code skill and plugin by Baryon Labs (MIT). Version 0.2.0, released 2026-11-04.
+> Open-source Claude Code skill and plugin by Seongwook Hong (Baryon Labs, Adjunct Professor at Yonsei University Global Leaders College) under MIT License. Version 0.2.0, released 2026-11-04. Open source feedback and contributions welcome. Zero telemetry, no data collection or code exfiltration.
 > Repository: https://github.com/baryonlabs/security-sweep · Site: https://baryonlabs.github.io/security-sweep/
 > All facts below are taken from the repository README, CHANGELOG, SKILL.md and the published example (as of 2026-11-04).
 

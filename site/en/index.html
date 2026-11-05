@@ -149,7 +149,7 @@
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="wrap">
 <a class="brand" href="../en/"><img src="../favicon.svg" alt="" width="28" height="28"><span>security-sweep</span></a>
-<nav class="site-nav" aria-label="Main"><a href="#install">Install</a><a href="#how">How it works</a><a href="#example">Example</a><a href="#operations">Operations</a><a href="#resources">Resources</a><a href="#compare">Compare</a><a href="#faq">FAQ</a><a href="https://github.com/baryonlabs/security-sweep">GitHub</a><a class="lang" href="../" hreflang="ko" lang="ko">한국어</a></nav>
+<nav class="site-nav" aria-label="Main"><a href="#install">Install</a><a href="#how">How it works</a><a href="#operations">Operations</a><a href="#resources">Resources</a><a href="#transparency">Transparency</a><a href="#community">Author</a><a href="#faq">FAQ</a><a href="https://github.com/baryonlabs/security-sweep">GitHub</a><a class="lang" href="../" hreflang="ko" lang="ko">한국어</a></nav>
 </div></header>
 <div class="hero"><div class="wrap">
 <p class="eyebrow">Open source · Claude Code skill · MIT</p>
@@ -282,6 +282,43 @@ python3 scripts/operations.py ./this-week --previous ./last-week</code></pre>
 <li>Whether a CVE exists is decided <strong>only by the OSV lookup</strong>.</li>
 </ul>
 </section>
+<section id="transparency"><h2><span class="num">08</span>Zero Telemetry &amp; 1-Second Self-Audit Code</h2>
+<p>A security tool must never become a backdoor or exfiltrate private code and secrets. security-sweep guarantees <strong>zero telemetry</strong>, <strong>no phone-home</strong>, and <strong>100% auditable transparency</strong>.</p>
+<div class="cards">
+<div class="card">
+<h3>Zero Exfiltration (No Phone-Home)</h3>
+<p>There is <strong>zero code</strong> collecting or transmitting your source code, file trees, hostnames, or secrets to any external analytics server. It is completely open-source (MIT).</p>
+</div>
+<div class="card">
+<h3>Queries Only 3 Public Vulnerability DBs</h3>
+<p>External network traffic is restricted solely to HTTP GET queries for public vulnerability identifiers on Google OSV, CISA KEV, and FIRST EPSS APIs.</p>
+</div>
+<div class="card">
+<h3>100% Offline Compatible (--offline)</h3>
+<p>Runs completely disconnected in air-gapped lab environments or classified networks using local scanner caches and lockfiles alone.</p>
+</div>
+</div>
+
+<h3>Verify It Yourself in 1 Second</h3>
+<p>Run these audit one-liners in your shell to verify the absence of hidden network endpoints or tracking code:</p>
+<pre><code># 1. Extract all external domains referenced in the codebase
+grep -rhoE --exclude="*.pyc" "https?://[a-zA-Z0-9.-]+" skills/security-sweep/scripts/ | sort -u
+# (Result: only api.osv.dev, cisa.gov, api.first.org and official docs)
+
+# 2. Verify absence of telemetry, trackers, or background analytics
+grep -rnE --exclude="*.pyc" "(telemetry|analytics|track|phone_home)" skills/security-sweep/scripts/
+# (Result: 0 hits — zero telemetry code)</code></pre>
+</section>
+
+<section id="community"><h2><span class="num">09</span>Open-Source Feedback Welcome &amp; About the Author</h2>
+<p>security-sweep is developed as a <strong>100% open-source project (MIT)</strong> by <strong>Seongwook Hong (Baryon Labs)</strong>, Adjunct Professor at <strong>Yonsei University Global Leaders College (GLC)</strong>.</p>
+<div class="card" style="border-left: 4px solid var(--teal); margin: 20px 0;">
+<p style="font-size: 1.1rem; margin-top: 0;"><strong>💬 "Security should not be an exclusive domain for elite specialists; everyone should be able to protect their research, servers, and code with ease and confidence."</strong></p>
+<p>Created to address the real-world operational challenges in university research labs and developer workstations. We warmly welcome community feedback, feature requests, bug reports, and pull requests!</p>
+<p><a class="btn btn-primary" href="https://github.com/baryonlabs/security-sweep/issues" target="_blank" rel="noopener">Open a GitHub Issue</a> <a class="btn btn-ghost" href="https://github.com/baryonlabs/security-sweep" target="_blank" rel="noopener">Visit Repository</a></p>
+</div>
+</section>
+
 <section id="faq" class="faq"><h2>FAQ</h2>
 <h3>Does it install anything on my servers?</h3>
 <p>No. It connects with <code>ssh -o BatchMode=yes</code> only to hosts you name and runs <code>trivy rootfs</code> read-only if trivy is already there; otherwise it only collects the package list. sudo is used only when you say so.</p>

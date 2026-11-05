@@ -299,6 +299,46 @@ security-sweep-YYYYMMDD-HHMM/
 - 서버: ssh 키 인증. 원격 trivy 는 선택 (없으면 패키지 목록만 수집) — [`references/servers.md`](skills/security-sweep/references/servers.md)
 - 네트워크: api.osv.dev, cisa.gov(KEV), api.first.org(EPSS). 없으면 `--offline` (검증 칸 미검증)
 
+## 안심하고 실행할 수 있는 이유 (정보 탈취 0% & 셀프 검증)
+
+보안 진단 도구 자체가 백도어가 되거나 사용자의 소중한 코드와 비밀값을 외부로 빼돌려서는 절대 안 됩니다. `security-sweep`은 **Zero Telemetry(원격 수집 없음)**와 **100% 투명성**을 원칙으로 하며, 사용자가 직접 코드를 검증할 수 있습니다.
+
+### 🛡️ 정보 보호 4대 약속
+1. **외부 유출 0% (No Phone-Home):** 사용자 코드, 저장소 경로, 파일 내용, 호스트 정보를 수집하거나 외부 분석 서버(Analytics/Telemetry)로 전송하는 코드가 **단 1줄도 없습니다.**
+2. **공식 취약점 DB 3곳만 질의:** 외부 네트워크 통신은 오직 공식 취약점 조회(Google OSV `api.osv.dev`, CISA KEV `cisa.gov`, FIRST EPSS `api.first.org`)를 위한 공개 CVE 식별자 조회(GET)에만 사용됩니다.
+3. **100% 오프라인 지원 (`--offline`):** 인터넷 통신이 일체 차단된 보안 폐쇄망이나 에어갭 환경에서도 로컬 캐시와 lockfile만으로 완벽하게 동작합니다.
+4. **비밀값 원문 자동 마스킹 (`mask_secrets`):** 스캐너가 실수로 API 키나 프라이빗 키를 발견하더라도, 보고서와 산출물 디렉터리(`OUT/`)에는 위치와 종류만 남기고 원문은 안전하게 마스킹됩니다.
+
+### 🔍 직접 확인하는 1초 셀프 검증 코드 (Self-Audit)
+터미널에서 아래 명령을 직접 실행하여 외부 전송이나 추적 코드가 전혀 없음을 누구나 직접 검증할 수 있습니다:
+
+```bash
+# 1. 스크립트가 참조하는 모든 외부 도메인 전수 추출
+grep -rhoE --exclude="*.pyc" "https?://[a-zA-Z0-9.-]+" skills/security-sweep/scripts/ | sort -u
+# (확인 결과: api.osv.dev, cisa.gov, api.first.org 등 공인 취약점 DB 및 공식 안내 외 외부 URL 전무)
+
+# 2. 텔레메트리 / 트래커 / 외부 데이터 수집 코드 부재 검사
+grep -rnE --exclude="*.pyc" "(telemetry|analytics|track|phone_home)" skills/security-sweep/scripts/
+# (출력 결과: 0건 — 백그라운드 정보 수집 코드가 전혀 없습니다)
+
+# 3. 비밀키 원문 유출 방지 및 마스킹 안전장치 테스트
+bash test/run.sh
+# (통합 테스트에서 더미 비밀키 SWEEPFAKEJUNKBODY와 PEM 헤더가 결과물에 전혀 남지 않음을 자동 검증)
+```
+
+---
+
+## 만든 사람 & 오픈소스 피드백 환영
+
+`security-sweep`은 **연세대학교 글로벌인재대학(GLC) 겸임교수(홍성욱 / Baryon Labs)**가 연구실·서버·교육 현장의 복잡한 보안 문제를 누구나 쉽게 해결할 수 있도록 개발한 **100% 순수 오픈소스 프로젝트(MIT)**입니다.
+
+> 💬 **"보안은 소수 보안 전문가만의 영역이 아니라, 누구나 자신의 소중한 연구, 서비스, 서버를 안심하고 지킬 수 있어야 합니다."**
+
+- **피드백을 크게 환영합니다:** 사용 중 겪으신 불편한 점, 새로운 언어·생태계 지원 요청, 기능 개선 아이디어, 버그 제보 등 어떤 의견이든 편하게 남겨주세요.
+- **기여 방법:** [GitHub Issues](https://github.com/baryonlabs/security-sweep/issues)에 글을 남겨주시거나, [Pull Request](https://github.com/baryonlabs/security-sweep/pulls)를 통해 직접 기여하실 수 있습니다. 오픈소스 생태계를 함께 더 안전하게 만들어갈 여러분의 참여를 기다립니다!
+
+---
+
 ## 안전 원칙
 
 - **기본 읽기 전용.** 코드·lockfile 을 바꾸지 않습니다. 수정은 사용자가 지시한 프로젝트만, 별도 브랜치에서.

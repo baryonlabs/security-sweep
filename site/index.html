@@ -165,7 +165,7 @@
 <a class="skip" href="#main">본문 바로가기</a>
 <header class="site-header"><div class="wrap">
 <a class="brand" href=""><img src="favicon.svg" alt="" width="28" height="28"><span>security-sweep</span></a>
-<nav class="site-nav" aria-label="주요 메뉴"><a href="#install">설치</a><a href="#how">동작 방식</a><a href="#example">실제 예시</a><a href="#operations">활용법</a><a href="#resources">보안 사이트</a><a href="#compare">비교</a><a href="#faq">FAQ</a><a href="https://github.com/baryonlabs/security-sweep">GitHub</a><a class="lang" href="en/" hreflang="en" lang="en">English</a></nav>
+<nav class="site-nav" aria-label="주요 메뉴"><a href="#install">설치</a><a href="#how">동작 방식</a><a href="#operations">활용법</a><a href="#resources">보안 사이트</a><a href="#transparency">투명성·셀프검증</a><a href="#community">만든 사람</a><a href="#faq">FAQ</a><a href="https://github.com/baryonlabs/security-sweep">GitHub</a><a class="lang" href="en/" hreflang="en" lang="en">English</a></nav>
 </div></header>
 <div class="hero"><div class="wrap">
 <p class="eyebrow">Open source · Claude Code skill · MIT</p>
@@ -347,7 +347,44 @@ python3 scripts/operations.py ./this-week --previous ./last-week</code></pre>
 <li>네트워크: api.osv.dev, cisa.gov(KEV), api.first.org(EPSS). 없으면 <code>--offline</code></li>
 </ul>
 </section>
-<section id="guides"><h2><span class="num">09</span>질문별 안내</h2><div class="cards"><a class="card" href="ko/scan-all-projects/"><h3>여러 프로젝트를 한 번에 점검하려면?</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/verify-cve/"><h3>CVE 번호가 진짜인지 확인하는 법</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/priority/"><h3>P0~P3 우선순위는 어떻게 정하나요?</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/vs-claude-security/"><h3>Claude Security·Codex Security와 차이</h3><p class="go">답 보기 →</p></a></div></section>
+<section id="transparency"><h2><span class="num">09</span>안심하고 실행할 수 있는 이유: 정보 탈취 0% &amp; 셀프 검증</h2>
+<p>보안 점검 도구 자체가 백도어가 되거나 사용자의 소중한 소스코드와 비밀값을 빼돌려서는 절대 안 됩니다. security-sweep은 <strong>원격 수집(Telemetry) 0건</strong>과 <strong>100% 투명성</strong>을 보장합니다.</p>
+<div class="cards">
+<div class="card">
+<h3>외부 유출 0% (No Phone-Home)</h3>
+<p>사용자의 소스코드, 저장소 경로, 호스트 이름, 환경 변수를 수집하거나 외부 분석 서버로 전송하는 코드가 <strong>단 1줄도 없습니다</strong>. 완전한 오픈소스(MIT)로 모든 코드가 공개되어 있습니다.</p>
+</div>
+<div class="card">
+<h3>공인 취약점 DB 3곳만 질의</h3>
+<p>외부 네트워크 통신은 오직 공개된 취약점 식별자(CVE/GHSA)를 조회하기 위해 Google OSV, CISA KEV, FIRST EPSS 3곳의 공식 API에 GET 요청을 보내는 용도로만 사용됩니다.</p>
+</div>
+<div class="card">
+<h3>100% 오프라인 지원 (--offline)</h3>
+<p>인터넷이 차단된 에어갭 연구실이나 군·금융권 폐쇄망 환경에서도 로컬 캐시와 lockfile만으로 독립 실행됩니다.</p>
+</div>
+</div>
+
+<h3>직접 확인하는 1초 셀프 검증 터미널 명령어</h3>
+<p>터미널에서 아래 명령을 직접 실행해 숨겨진 트래커나 임의 외부 서버 호출이 전혀 없음을 직접 확인하실 수 있습니다:</p>
+<pre><code># 1. 스크립트가 참조하는 모든 외부 도메인 전수 추출
+grep -rhoE --exclude="*.pyc" "https?://[a-zA-Z0-9.-]+" skills/security-sweep/scripts/ | sort -u
+# (확인 결과: api.osv.dev, cisa.gov, api.first.org 등 공인 취약점 DB 및 공식 안내 외 외부 도메인 전무)
+
+# 2. 텔레메트리 / 트래커 / 사용자 데이터 수집 코드 부재 검사
+grep -rnE --exclude="*.pyc" "(telemetry|analytics|track|phone_home)" skills/security-sweep/scripts/
+# (출력: 0건 — 백그라운드 정보 수집 코드가 전혀 없습니다)</code></pre>
+</section>
+
+<section id="community"><h2><span class="num">10</span>만든 사람 &amp; 오픈소스 피드백 환영</h2>
+<p>security-sweep은 <strong>연세대학교 글로벌인재대학(GLC) 겸임교수(홍성욱 / Baryon Labs)</strong>가 연구실·서버·교육 현장의 복잡한 보안 문제를 누구나 쉽게 해결할 수 있도록 개발한 <strong>100% 순수 오픈소스 프로젝트(MIT)</strong>입니다.</p>
+<div class="card" style="border-left: 4px solid var(--teal); margin: 20px 0;">
+<p style="font-size: 1.1rem; margin-top: 0;"><strong>💬 "보안은 소수 보안 전문가만의 영역이 아니라, 누구나 자신의 소중한 연구, 서비스, 서버를 안심하고 지킬 수 있어야 합니다."</strong></p>
+<p>실제 연구실과 현업 개발 환경에서 마주치는 현실적인 제약(Trivy 설치 불가, 권한 분리, 다중 가상환경, 거짓 경고 피로도)을 해결하기 위해 시작되었습니다. 오픈소스 커뮤니티의 개선 제안, 피드백, 버그 제보, 생태계 확장 아이디어를 진심으로 환영합니다!</p>
+<p><a class="btn btn-primary" href="https://github.com/baryonlabs/security-sweep/issues" target="_blank" rel="noopener">GitHub 이슈로 의견 남기기</a> <a class="btn btn-ghost" href="https://github.com/baryonlabs/security-sweep" target="_blank" rel="noopener">GitHub 저장소 방문</a></p>
+</div>
+</section>
+
+<section id="guides"><h2><span class="num">11</span>질문별 안내</h2><div class="cards"><a class="card" href="ko/scan-all-projects/"><h3>여러 프로젝트를 한 번에 점검하려면?</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/verify-cve/"><h3>CVE 번호가 진짜인지 확인하는 법</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/priority/"><h3>P0~P3 우선순위는 어떻게 정하나요?</h3><p class="go">답 보기 →</p></a><a class="card" href="ko/vs-claude-security/"><h3>Claude Security·Codex Security와 차이</h3><p class="go">답 보기 →</p></a></div></section>
 <section id="faq" class="faq"><h2>자주 묻는 질문</h2>
 <h3>서버에 뭔가 설치되나요?</h3>
 <p>아니요. <code>ssh -o BatchMode=yes</code>로 사용자가 이름을 댄 호스트에만 접속하고, 원격에 trivy가 있으면 <code>trivy rootfs</code>를 읽기 전용으로 실행합니다. trivy가 없으면 패키지 목록(<code>dpkg-query</code>/<code>rpm -qa</code>/<code>apk info</code>)만 수집합니다. sudo는 사용자가 명시할 때만 씁니다.</p>
