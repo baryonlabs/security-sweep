@@ -127,6 +127,28 @@ cp -r security-sweep/skills/security-sweep ~/.claude/skills/
 
 개발 머신 한 대(프로젝트 26개)를 한 번 돌리고 → 한 프로젝트를 코드로 검토하고 → 패치한 뒤 → 그 프로젝트만 다시 스캔해 5건이 1건으로 줄어드는 과정을, 가명 처리한 실제 보고서와 함께 정리했습니다: [`examples/dev-machine-2026-10-23`](examples/dev-machine-2026-10-23)
 
+### 실제 실행 결과: Java / Spring 의존성 점검
+
+사용자가 제공한 실제 실행 결과입니다. Tomcat, Spring, Jackson, PostgreSQL JDBC 등의 취약 의존성과 수정 후보 버전을 패키지별로 요약했습니다.
+
+![Java / Spring 의존성 점검의 실제 실행 결과: 패키지별 현재 버전, 수정 후보 버전, 심각도와 발견 건수](docs/java-spring-sweep-result.png)
+
+| 패키지 | 현재 버전 → 수정 후보 버전 | 표시 심각도 | 보고 건수 |
+|---|---|---|---:|
+| tomcat-embed-core | 10.1.46 → 10.1.58 | critical | 16 |
+| spring-webmvc | 6.2.11 → 6.2.19 | critical | 4 |
+| spring-security-web | 6.5.5 → 6.5.9 | critical | 1 |
+| jackson-databind · jackson-core | 2.19.2 → 2.21.7 | high | 8 |
+| spring-boot · spring-expression | 3.5.6 → 3.5.14 · 6.2.11 → 6.2.19 | high | 2 |
+| postgresql (JDBC) | 42.7.7 → 42.7.12 | high | 2 |
+| assertj-core | 3.27.4 → 3.27.7 | high | 1 |
+
+표의 보고 건수 합계는 **34건**입니다. `critical` 표시 행에 21건, `high` 표시 행에 13건이 포함됩니다. 패키지별 심각도가 최댓값으로 표시됐거나 취약점이 중복 집계됐을 수 있으므로, 이를 고유 CVE 34개 또는 개별 취약점의 심각도 분포로 해석하지 않습니다.
+
+> 이미지의 “현재 → 수정”은 **해당 실행에서 제시된 수정 후보**입니다. 이 사례에는 원본 CVE/GHSA 목록과 의존성 트리가 첨부되지 않아 후보 버전의 정확성·호환성·전체 취약점 해소 여부를 독립적으로 검증하지 않았습니다. 실행 시점의 결과이며 최신 권장 버전을 뜻하지 않습니다.
+
+실제 수정 전에는 `findings.json`의 권고 ID와 출처를 확인하고, Spring Boot의 의존성 관리(BOM)를 기준으로 Spring·Tomcat·Jackson의 호환 조합을 검토합니다. 테스트 전용 의존성과 배포에 포함되는 의존성을 구분하고, 변경 후 테스트와 재스캔으로 결과를 확인합니다.
+
 ## 동작 방식
 
 ![한 문장으로 전체 보안 스윕: 탐색 → 스캔 → 검증 → 도달성 → 보고서](docs/sweep-pipeline.webp)
